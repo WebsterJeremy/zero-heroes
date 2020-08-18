@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--here each of the object definitions are listed, use the generator program to achieve this, unless you may break the xml file. -->
+
+<Objects>
+  <Object>
+    <Id>0</Id>
+    <Name>Tree</Name>
+    <AssetName>treee</AssetName>
+    <Description>a big tree</Description>
+    <Sprites>
+      <Sprite>tree</Sprite>
+    </Sprites>
+
+    <BoundingBox><!--todo--></BoundingBox>
+  </Object>
+
+  </Objects>

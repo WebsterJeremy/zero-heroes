@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--here each of the entity definitions are listed, use the generator program to achieve this, unless you may break the xml file. -->
+
+<Entities>
+  <Entity>
+    <Id>0</Id>
+    <Name>Player</Name>
+    <AssetName>player</AssetName>
+    <!-- todo to change animation states make it like this..
+    
+    <Animations>
+      <Animation>
+        <Name>default</Name>
+        <Sprites>
+          <Sprite>man</Sprite>
+        </Sprites>
+      </Animation>
+    </Animations>-->
+
+    <Sprites>
+      <Sprite>player</Sprite>
+    </Sprites>
+
+    <QuestGiver>false</QuestGiver>
+    <Type>FRIENDLY</Type>
+    <!--this is the type of entity, eg.. hostile, friendly, passive?? etc..-->
+    <!--should probably add some sort of specifics.. eg stats? or behaviour.. etc since entities can be living...-->
+  </Entity>
+
+
+  <Entity>
+    <Id>1</Id>
+    <Name>Man</Name>
+    <AssetName>man</AssetName>
+    <!-- todo to change animation states make it like this..
+    
+    <Animations>
+      <Animation>
+        <Name>default</Name>
+        <Sprites>
+          <Sprite>man</Sprite>
+        </Sprites>
+      </Animation>
+    </Animations>-->
+
+    <Sprites>
+      <Sprite>man</Sprite>
+    </Sprites>
+
+    <QuestGiver>false</QuestGiver>
+    <Type>FRIENDLY</Type>
+    <!--this is the type of entity, eg.. hostile, friendly, passive?? etc..-->
+    <!--should probably add some sort of specifics.. eg stats? or behaviour.. etc since entities can be living...-->
+  </Entity>
+
+</Entities>

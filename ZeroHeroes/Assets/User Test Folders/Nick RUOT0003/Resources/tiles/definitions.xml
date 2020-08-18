@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--here each of the tile definitions are listed, use the generator program to achieve this, unless you may break the xml file. -->
+
+<Tiles>
+  <Tile>
+    <Id>0</Id>
+    <Name>Grass</Name>
+    <AssetName>grass</AssetName>
+    <Description>green grass</Description>
+    <Traversable>true</Traversable>
+    <Sprites>
+      <Sprite>grass</Sprite>
+    </Sprites>
+  </Tile>
+
+  <Tile>
+    <Id>1</Id>
+    <Name>Dirt</Name>
+    <AssetName>dirt</AssetName>
+    <Description>dirty dirt</Description>
+    <Traversable>true</Traversable>
+    <Sprites>
+      <Sprite>dirt</Sprite>
+    </Sprites>
+  </Tile>
+
+  <Tile>
+    <Id>2</Id>
+    <Name>Water</Name>
+    <AssetName>water</AssetName>
+    <Description>clear water</Description>
+    <Traversable>false</Traversable>
+    <Sprites>
+      <Sprite>water_0</Sprite>
+      <Sprite>water_1</Sprite>
+    </Sprites>
+  </Tile>
+
+  </Tiles>
