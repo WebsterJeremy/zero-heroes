@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
+  m_Script: {fileID: 11500000, guid: 090c98dcea79d9e43928b570d53e4dcb, type: 3}
   m_Name: buckets_3
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: -8400847440359697983, guid: 97a4c355e22c47e44bc9c43b8324d5aa,
