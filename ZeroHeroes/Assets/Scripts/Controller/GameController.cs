@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Tilemaps;
 
 #pragma warning disable 649
 
@@ -29,7 +26,6 @@ public class GameController : MonoBehaviour
     private Texture2D screenshot;
 
     private Dictionary<string, string> stats = new Dictionary<string, string>();
-    private Tilemap[] tileMaps;
 
 
     #endregion
@@ -64,13 +60,14 @@ public class GameController : MonoBehaviour
 
         money = GetStat("MONEY", 0);
 
-        tileMaps = FindObjectsOfType<Tilemap>();
-
         EffectController.TweenFadeScene(1f, 0f, 2f, () => {}); // Fade in from White on start.
 
         yield return new WaitForSeconds(0.3f);
 
-//        SpawnPlayer();
+        UIController.Instance.GetHUD().DisplayMoney(money);
+        Debug.Log(money);
+
+        //        SpawnPlayer();
     }
 
     /**
@@ -136,39 +133,6 @@ public class GameController : MonoBehaviour
         GAME_STATE = GameState.PLAYING;
     }
 
-
-    void Update()
-    {
-        TrackMouse();
-    }
-
-    private void TrackMouse()
-    {
-        if (tileMaps == null || tileMaps.Length == 0) return;
-
-        UIController.SetDebugStatistic("Mouse Pos XYZ", Input.mousePosition);
-
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = -Camera.main.transform.position.z;
-        Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);
-        pos.x += 1.0f;
-        pos.y += 1.0f;
-
-        UIController.SetDebugStatistic("World Pos XYZ", pos);
-        Vector3Int tilePos = tileMaps[0].WorldToCell(pos);
-
-        string tileNames = "";
-        foreach (Tilemap tileMap in tileMaps)
-        {
-            TileBase tile = tileMap.GetTile(tileMap.WorldToCell(pos));
-
-            tileNames += "\t"+ tileMap.name + ": " + (tile != null ? tile.name : "null") +"\n";
-        }
-
-        UIController.SetDebugStatistic("Hovered Tile XY", tilePos.x + " " + tilePos.y + "\n" + tileNames);
-
-        tileHoverSprite.transform.position = tilePos;
-    }
 
     #endregion
 }

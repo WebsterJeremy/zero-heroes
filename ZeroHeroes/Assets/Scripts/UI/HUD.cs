@@ -68,10 +68,10 @@ public class HUD : MonoBehaviour
         }
     }
 
-    private void DisplayMoney(int money)
+    public void DisplayMoney(int money)
     {
         textMoney.text = money.ToString();
-        rectMoney.sizeDelta = new Vector2(100 + (textMoney.text.Length * 40), rectMoney.sizeDelta.y);
+        rectMoney.sizeDelta = new Vector2(0 + (textMoney.text.Length * 40), rectMoney.sizeDelta.y);
     }
 
 
