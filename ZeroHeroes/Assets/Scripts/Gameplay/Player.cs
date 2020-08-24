@@ -1,63 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Player : CharacterBase
+﻿
+namespace Assets.Scripts.world
 {
-    #region AccessVariables
-
-
-    [Header("Stats")]
-    [SerializeField] private float maxHealth = 100f; //Unsure if health is required
-
-
-    #endregion
-    #region PrivateVariables
-
-
-    private float health = 100f;
-
-
-    #endregion
-    #region Initlization
-
-
-    protected override void Start()
+    public class Player
     {
-        base.Start();
+        private string _id;
+        private Entity playerEntity;
 
-        health = maxHealth;
+        public Player(string _id, Position _position) {
+            playerEntity = GameController.Instance.World.SpawnPlayer(_id, _position);
+        }
+
+        /// <summary>
+        /// Attempts to move the player's entity to the given position
+        /// </summary>
+        public void AttemptMoveTo(Position _position) {
+            playerEntity.MoveTo(_position);
+        }
+
+        public Entity Entity {
+            get { return playerEntity; }
+        }
     }
-
-
-    #endregion
-    #region Getters & Setters
-
-
-    public float GetHealth()
-    {
-        return health;
-    }
-
-
-    #endregion
-    #region Main
-
-
-    public void OnDamaged(float dmg, GameObject inflictor)
-    {
-        if (dmg < 0) return;
-
-        this.health = Mathf.Clamp(this.health - dmg, 0, maxHealth);
-    }
-
-    private void FixedUpdate()
-    {
-        rigidbody.velocity = new Vector2(
-            Mathf.Lerp(0, Input.GetAxis("Horizontal") * GetSpeed(), 0.8f),
-            Mathf.Lerp(0, Input.GetAxis("Vertical") * GetSpeed(), 0.8f));
-    }
-
-
-    #endregion
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FollowPlayer : MonoBehaviour
+public class CameraFollower : MonoBehaviour
 {
     void Update()
     {

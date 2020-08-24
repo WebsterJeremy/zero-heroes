@@ -4,15 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.XR.WSA;
 
 #pragma warning disable 649
 
 public class GameController : MonoBehaviour
 {
-    private PathRequestManager pathRequestManager;
-    private PathFinder pathFinder;
-    private World world;
     #region AccessVariables
 
     public enum GameState { PAUSED, PLAYING };
@@ -23,7 +19,7 @@ public class GameController : MonoBehaviour
     public Transform gameplayContainer;
 
     [Header("Player")]
-    private NewPlayer player;
+    private Player player;
     public GameObject playerPrefab;
 
 
@@ -32,18 +28,18 @@ public class GameController : MonoBehaviour
 
 
     private int money = 0;
-
+    private Dictionary<string, string> stats = new Dictionary<string, string>();
     private Texture2D screenshot;
 
-    private Dictionary<string, string> stats = new Dictionary<string, string>();
+    private PathRequestManager pathRequestManager;
+    private PathFinder pathFinder;
+    private World world;
+    private Tilemap collisionTilemap;
 
 
     #endregion
     #region Initlization
 
-    /**
-     * Creates an Perament(static) instance of this class, so on scene change data isn't lost
-     */
     private static GameController instance;
     public static GameController Instance // Assign Singlton
     {
@@ -78,22 +74,11 @@ public class GameController : MonoBehaviour
         StartGame();
     }
 
-    /**
-     * Save's all the players stat's such as Money, when they exit the application (Mobile Version)
-     * -- Todo --
-     * - Instead of just saving to PlayerPrefs, also save to SQLite (Database)
-     */
-    private void OnApplicationQuit() {
+    private void OnApplicationQuit() { // Force save in SQL
         foreach (string key in stats.Keys) {
             PlayerPrefs.SetString(key, stats[key]);
         }
     }
-
-
-    public GameState CurrentGameState {
-        get { return GAME_STATE; }
-    }
-
 
 
     #endregion
@@ -124,18 +109,44 @@ public class GameController : MonoBehaviour
         stats[key] = stat;
     }
 
+    public GameState CurrentGameState
+    {
+        get { return GAME_STATE; }
+    }
+
+
+    public Player Player
+    {
+        get { return player; }
+    }
+
+    public PathRequestManager PathRequestManager
+    {
+        get { return pathRequestManager; }
+    }
+
+    public PathFinder PathFinder
+    {
+        get { return pathFinder; }
+    }
+
+    public World World
+    {
+        get { return world; }
+    }
+
     #endregion
     #region Main
 
-    Tilemap tm;
+    private void OnDrawGizmos() //this is just a test gizmos
+    { 
 
-    private void OnDrawGizmos() {
-        //this is just a test gizmos
-        if(tm != null) {
-            foreach (var pos in tm.cellBounds.allPositionsWithin) {
+        if (collisionTilemap != null) {
+            foreach (var pos in collisionTilemap.cellBounds.allPositionsWithin) {
                 Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-                Vector3 place = tm.CellToWorld(localPlace);
-                if (tm.HasTile(localPlace)) {
+                Vector3 place = collisionTilemap.CellToWorld(localPlace);
+
+                if (collisionTilemap.HasTile(localPlace)) {
                     Gizmos.DrawCube(new Vector3(localPlace.x + 1, localPlace.y + 1), new Vector3(1, 1, 1));
                 }
             }
@@ -145,59 +156,80 @@ public class GameController : MonoBehaviour
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
 
-        //set up the pathfinding manager and pathfinder
-        pathRequestManager = new PathRequestManager();
+        pathRequestManager = new PathRequestManager(); //set up the pathfinding manager and pathfinder
         pathFinder = new PathFinder();
-
         world = new World();
 
-        //pass the tilemap into world to generate stuff about it.. just see the code to understand.
+        collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
 
-        //todo this could be done a better way to find it AND/OR reference a collision tilemap grid NOT the background....
-         tm = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
+        world.GenerateWorld(collisionTilemap);
 
-        world.GenerateWorld(tm);
-
-
-        //todo this is placed here as a test... it would be elsewhere..
-        //need to spawn the player
-        //position would be passed in from last save point...
-        player = new NewPlayer("1", new Position(15, 15));
-
+        Position spawnPoint = new Position(15, 15);
+        player = new Player("1", spawnPoint);
 
         yield return new WaitForSeconds(0.3f);
 
         GAME_STATE = GameState.PLAYING;
     }
 
-    public NewPlayer Player {
-        get { return player; }
-    }
     #endregion
-
-    
-
+    #region Utility
 
 
-    //todo these below need to be moved to appropriate position within the class, but dont edit them.
-    public PathRequestManager PathRequestManager {
-        get { return pathRequestManager; }
-    }
-
-    public PathFinder PathFinder {
-        get { return pathFinder; }
-    }
-
-    public World World {
-        get { return world; }
-    }
-
-    public Coroutine StartChildCoroutine(IEnumerator coroutineMethod) {
+    public Coroutine StartChildCoroutine(IEnumerator coroutineMethod)
+    {
         return StartCoroutine(coroutineMethod);
     }
 
-    public void StopChildCoroutine(Coroutine coroutineMethod) {
+    public void StopChildCoroutine(Coroutine coroutineMethod)
+    {
         StopCoroutine(coroutineMethod);
     }
 
+
+    #endregion
+
+    #region Testing
+    /*
+    private void TrackMouse()
+    {
+        if (tileMaps == null || tileMaps.Length == 0) return;
+        if (EventSystem.current.IsPointerOverGameObject()) return;
+
+        
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = -Camera.main.transform.position.z;
+        Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);
+        pos.x += 1.0f;
+        pos.y += 1.0f;
+
+        Vector3Int tilePos = tileMaps[0].WorldToCell(pos);
+
+        hoveredPos.x = tilePos.x;
+        hoveredPos.y = tilePos.y;
+
+        for (int i = 0;i < tileMaps.Length;i++)
+        {
+            hoveredTiles[i] = tileMaps[i].GetTile(tileMaps[i].WorldToCell(tilePos));
+        }
+
+        tileHoverSprite.transform.position = tilePos;
+
+        ShowDebugInfo();
+    }
+
+    private void ShowDebugInfo()
+    {
+        UIController.SetDebugStatistic("Mouse Pos XYZ", Input.mousePosition);
+
+        string tileNames = "";
+        for (int i = 0; i < hoveredTiles.Length; i++)
+        {
+            tileNames += "\t" + tileMaps[i].name + ": " + (hoveredTiles[i] != null ? hoveredTiles[i].name : "null") + "\n";
+        }
+
+        UIController.SetDebugStatistic("Hovered Tile XY", hoveredPos + "\n" + tileNames);
+    }
+     */
+    #endregion
 }
