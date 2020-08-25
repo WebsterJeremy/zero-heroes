@@ -3069,6 +3069,7 @@ GameObject:
   - component: {fileID: 1490593906}
   - component: {fileID: 1490593905}
   - component: {fileID: 1490593904}
+  - component: {fileID: 1490593911}
   m_Layer: 0
   m_Name: GameController
   m_TagString: GameController
@@ -3359,6 +3360,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileHover: {fileID: 1552962768}
+--- !u!114 &1490593911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490593902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e87844a2d83e341a8c183b9b5fadf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1491580788
 PrefabInstance:
   m_ObjectHideFlags: 0

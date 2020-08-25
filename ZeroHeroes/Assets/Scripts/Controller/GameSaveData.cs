@@ -6,9 +6,9 @@ using UnityEngine;
 //When the game is saved, an instance of this class will be written to the user's device
 //When the game is loaded, an instance of this class will will be leaded inot ram to update game values
 [System.Serializable]
-public class GameSaveData{
+public class GameSaveData {
 
-    //Add any data to be saved here
+    //Add any data to be saved here (make sure its public)
 
     //Test data
     public int[] testData1 = new int[5];
@@ -46,15 +46,5 @@ public class GameSaveData{
         int randomIndex = Random.Range(0, testData2.Length);
         int randomValue = Random.Range(0, 500);
         testData2[randomIndex] = randomValue;
-    }
-
-    //This is where we update the in-game variables to the values loaded by the manager
-    public void restoreSavedData(){
-
-        /*e.g
-         * 
-         * GameManager.playerScore = this.playerScore;
-         * 
-         */
     }
 }

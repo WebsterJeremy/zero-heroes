@@ -8,7 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 //This should be attached to the game manager
 public class SaveLoadManager : MonoBehaviour
 {
-    private static GameSaveData currentSaveData = new GameSaveData();
+    public static GameSaveData currentSaveData = new GameSaveData();
 
     //This is the name of the file where the data will be stored to
     private static string defaultSaveFileName;
@@ -18,13 +18,6 @@ public class SaveLoadManager : MonoBehaviour
 
         //This sets the save location of the game's data to an external folder accessible on Windows and Android
         defaultSaveFileName = Application.persistentDataPath + "/save.dat";
-
-        //Test Saving
-        for (int i = 0; i < 10; i++){
-            updateCheckpointData();
-        }
-        saveData();
-        loadData();
     }
 
     // Update is called once per frame
@@ -69,7 +62,5 @@ public class SaveLoadManager : MonoBehaviour
         BinaryFormatter bf = new BinaryFormatter();
         currentSaveData = (GameSaveData)bf.Deserialize(file);
         file.Close();
-
-        currentSaveData.restoreSavedData();
     }
 }
