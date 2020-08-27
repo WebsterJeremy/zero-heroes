@@ -15,18 +15,8 @@ public class SaveLoadManager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start(){
-
         //This sets the save location of the game's data to an external folder accessible on Windows and Android
         defaultSaveFileName = Application.persistentDataPath + "/save.dat";
-    }
-
-    // Update is called once per frame
-    void Update(){
-        currentSaveData.updateRegularSaveData();
-    }
-
-    public static void updateCheckpointData(){
-        currentSaveData.UpdateCheckpoint();
     }
 
     public static void saveData(){saveData(defaultSaveFileName);}
@@ -37,8 +27,9 @@ public class SaveLoadManager : MonoBehaviour
         string destination = fileName;
         FileStream file;
 
-        if (File.Exists(fileName)) file = File.OpenWrite(fileName);
-        else file = File.Create(fileName);
+        if (File.Exists(fileName)){
+            file = File.OpenWrite(fileName);
+        }else file = File.Create(fileName);
         
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, currentSaveData);
@@ -52,15 +43,16 @@ public class SaveLoadManager : MonoBehaviour
         Debug.Log("Loading Game Data");
         FileStream file;
 
-        if (File.Exists(fileName)) file = File.OpenRead(fileName);
-        else
-        {
+        if (File.Exists(fileName)){
+            file = File.OpenRead(fileName);
+            BinaryFormatter bf = new BinaryFormatter();
+            currentSaveData = (GameSaveData)bf.Deserialize(file);
+            file.Close();
+        }
+        else{
             Debug.LogError("File not found");
+            currentSaveData = new GameSaveData();
             return;
         }
-
-        BinaryFormatter bf = new BinaryFormatter();
-        currentSaveData = (GameSaveData)bf.Deserialize(file);
-        file.Close();
     }
 }
