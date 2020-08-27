@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: 8f54d6e68115e624abaf74f5ed15d6fa
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Acephimere
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 56d968205f32c934b83e1366ab090891, type: 3}
+  - {fileID: 12800000, guid: 7c951c3697b2edf45854e0afcf5886af, type: 3}
+  - {fileID: 12800000, guid: f2fc7546d52250f4fbe8d77a1cb1c485, type: 3}
+  - {fileID: 12800000, guid: 8e36015b309d98b4987a2a4cc5240c8c, type: 3}
+  - {fileID: 12800000, guid: ab0538ae4d37779488ecc70db564b944, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
