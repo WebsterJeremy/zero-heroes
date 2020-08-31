@@ -4,7 +4,7 @@
  * Created: 18/08/2020
  * 
  * Last Edited By: Nicholas Ruotsalainen RUOT0003
- * Last Updated:   1/09/2020
+ * Last Updated:   18/08/2020
  */
 
 using Assets.Scripts.ai.state;
@@ -62,18 +62,14 @@ namespace Assets.Scripts.ai
 
             //enter the new current state... and begin updating...
             if (currentState.EnterState()) {
-
                 coroutine = TickCurrentState();
                 GameController.Instance.StartCoroutine(coroutine);
             }
         }
 
         private IEnumerator TickCurrentState() {
-            Debug.Log(GameController.Instance.CurrentGameState);
-
             //this is the update method of the FSM.. where the state is ticked over.. (updated)
             while (currentState != null && CanUpdate) {
-
                 currentState.UpdateState();
 
                 yield return new WaitForEndOfFrame();//wait until the end of the frame so we dont overload...

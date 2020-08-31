@@ -8,7 +8,6 @@
  */
 
 
-using Assets.Scripts.Utility;
 using Assets.Scripts.world;
 
 namespace Assets.Scripts.ai.state

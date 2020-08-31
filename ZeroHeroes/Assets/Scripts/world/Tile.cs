@@ -1,6 +1,5 @@
 ﻿using Assets.Scripts.ai.path;
 using Assets.Scripts.Gameplay;
-using Assets.Scripts.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;

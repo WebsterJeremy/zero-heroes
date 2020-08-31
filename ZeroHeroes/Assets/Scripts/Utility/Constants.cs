@@ -14,17 +14,28 @@ namespace Assets
     public class Constants
     {
         public enum FACING { NORTH = 1, WEST = 2, SOUTH = 3, EAST = 4}
-        public enum ENTITY_TYPE { FRIENDLY, HOSTILE, PASSIVE }
         public static string MOVE_STATE = "MOVE_{0}";
         public static string IDLE_STATE = "IDLE_{0}";
         public static float ANIMATION_SPEED = 0.5f;
         public static float DEFAULT_WALK_SPEED = 5.0f;
+
+
+        public enum FSMActionState { NONE, ACTIVE, COMPLETED, TERMINATED }
 
         public static int MAX_STACK_SIZE = 10;
 
         public static string GenerateUniqueId() {
             return Guid.NewGuid().ToString();
         }
+
+        public class Actions
+        {
+            public static string PICKUP_ITEM = "Pickup {0}";
+            public static string PICKUP_ITEMS = "Pickup {0} x{1}";
+            public static string DROP_ITEM = "Drop {0}";
+            public static string DROP_ITEMS = "Drop {0} x{1}";
+        }
+
 
         public class ResourceNames
         {

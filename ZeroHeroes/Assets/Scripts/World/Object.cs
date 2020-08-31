@@ -28,7 +28,7 @@ namespace Assets.Scripts.world
         }
 
         public override GameObject Spawn() {
-            gameObject = GameObject.Instantiate(GameController.Instance.objectTemplate);
+            gameObject = GameObject.Instantiate(GameController.Instance.objectPrefabTemplate);
 
             //set sprite
             gameObject.GetComponent<SpriteRenderer>().sprite = ObjectData.sprite; //Definition.Sprite;
@@ -42,7 +42,7 @@ namespace Assets.Scripts.world
             //set other data
             gameObject.transform.position = position.ToVector();
             gameObject.name = id;
-            gameObject.transform.SetParent(GameController.Instance.objectContainer, false);
+            gameObject.transform.SetParent(GameController.Instance.ObjectContainer, false);
 
             return gameObject;
         }

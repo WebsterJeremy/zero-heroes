@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.ai;
+using Assets.Scripts.ai.state;
+using Assets.Scripts.Gameplay;
 using UnityEngine;
 
 namespace Assets.Scripts.world
@@ -9,6 +11,50 @@ namespace Assets.Scripts.world
         private Position position;
         private GameObject gameObject;
 
+        //an entity is a moving or living object... eg npc, etc... 
+        //this will utilize, pathfinding, but also utilize the FMS (finite state machine) system (which the player does not use)
+
+        //this is the finite state machine (brain) of an entity..
+        //it controls the states the ai is in and determines its behaviour based on the environment
+        protected FSM brain;
+
+        //this is the sight helper for the entity.
+        //it tells the brain what it can see, to help it to determine the next behaviour
+     //   protected EntitySightHelper sightHelper;
+
+        //this is the movement helper for the entity.
+        //it allows the entity to move
+        protected EntityMovementHelper movementHelper;
+        public Coroutine lastAction;
+
+
+        protected Inventory inventory;
+
+        public Inventory Inventory {
+            get { return inventory; }
+        }
+
+
+        public Entity(string _id, string _definitionId, Position _position) {
+            this.id = _id;
+            this.position = _position;
+           // this.sightHelper = new EntitySightHelper(this);
+            this.movementHelper = new EntityMovementHelper(this);
+
+            inventory = new Inventory();
+
+            this.brain = new FSM(this, new FSMStateIdle(this));
+            brain.OnInitialized();
+        }
+
+        public EntityMovementHelper MovementHelper {
+            get { return movementHelper; }
+        }
+
+
+        public FSM FSM {
+            get { return brain; }
+        }
 
         public string Id {
             get { return id; }
@@ -31,22 +77,7 @@ namespace Assets.Scripts.world
             }
         }
 
-        //this is the movement helper for the entity.
-        //it allows the entity to move
-        protected EntityMovementHelper movementHelper;
-        public Coroutine lastAction;
-
-
-
-        public Entity(string _id, Position _position){
-            this.id = _id;
-            this.movementHelper = new EntityMovementHelper(this);
-
-            // An entity could be considered anything not just something that moves, such as an Dropped Item or Objective Item on the floor or a Door
-            //todo initialize the fsm (brain) and add callbacks to the game controller
-        }
-
-
+/*
         public void MoveTo(Position _position) {
             StopLastAction();
             movementHelper.MoveTo(_position);
@@ -60,6 +91,6 @@ namespace Assets.Scripts.world
                 lastAction = null;
             }
         }
-
+*/
     }
 }

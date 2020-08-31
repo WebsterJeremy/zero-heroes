@@ -17,8 +17,11 @@ public class GameController : MonoBehaviour
 
     [Header("Containers")]
     public Transform gameplayContainer;
-    public Transform objectContainer;
-    public GameObject objectTemplate;
+    public Transform ObjectContainer;
+    public Transform ItemContainer;
+
+    public GameObject objectPrefabTemplate;
+    public GameObject itemPrefabTemplate;
 
     [Header("Player")]
     private Player player;
@@ -162,6 +165,7 @@ public class GameController : MonoBehaviour
 
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
+        GAME_STATE = GameState.PLAYING;
 
         pathRequestManager = new PathRequestManager(); //set up the pathfinding manager and pathfinder
         pathFinder = new PathFinder();
@@ -169,16 +173,36 @@ public class GameController : MonoBehaviour
 
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
 
-        world.GenerateWorld(collisionTilemap);
-
-        Position spawnPoint = new Position(15, 15);
-        player = new Player("1", spawnPoint);
+        GenerateTestWorldData();
 
         yield return new WaitForSeconds(0.3f);
 
-        GAME_STATE = GameState.PLAYING;
     }
 
+
+    private void GenerateTestWorldData() {
+        //generate world..
+        world.GenerateWorld(collisionTilemap);
+        
+
+        //spawn player
+        Position spawnPoint = new Position(15, 15);
+        player = new Player("1", spawnPoint);
+
+
+        //add items to inventory...
+        player.Entity.Inventory.Add("buckets_3", 1);
+        player.Entity.Inventory.Add("buckets_3", 1);
+        player.Entity.Inventory.Add("farming_fishing_74", 1);
+        player.Entity.Inventory.Add("farming_fishing_75", 3);
+        player.Entity.Inventory.Add("farming_fishing_76", 4);
+
+        //spawn items in world....
+        World.SpawnItem("farming_fishing_71", new Position(18, 18), 3);
+        World.SpawnItem("farming_fishing_72", new Position(17, 15), 1);
+        World.SpawnItem("farming_fishing_73", new Position(20, 20), 1);
+        World.SpawnItem("farming_fishing_60", new Position(14, 20), 1);
+    }
 
     #endregion
     #region Tasks

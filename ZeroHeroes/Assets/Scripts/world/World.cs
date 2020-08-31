@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Gameplay;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -73,15 +74,39 @@ namespace Assets.Scripts.world
         }
 
         public void InteractWithPosition(Vector3 mousePos, Position _position) {
-            UIController.Instance.ClearInteractionPanelItems(); //populate the interaction panel in ui
-            
+            //determine what options are available
+
+            Tile tile = GetTileFromPosition(_position);
+
+            if (tile == null) {
+                return;
+            }
+
+
+            List<CustomItem> itemsAtPosition = tile.GetChildItems;
+
+
+            //populate the interaction panel in ui
+            UIController.Instance.ClearInteractionPanelItems();
+
+
+            //add the callbacks
+            //todo walk should only be added when there is actually a tile detected above... but this is a test...
             UIController.Instance.AddInteractionPanelItem("Walk Here", () => GameController.Instance.Player.AttemptMoveTo(_position));
 
-            if (objects.ContainsKey(_position.ToString())) // Only works for immobile items
-            {
-                ObjectBase obj = objects[_position.ToString()];
-                UIController.Instance.AddInteractionPanelItem(obj.ObjectData.OnInteractionText(), () => obj.OnInteraction());
+
+            foreach (CustomItem i in itemsAtPosition) {
+                string actionString = "";
+
+                if (i.Amount > 1) {
+                    actionString = string.Format(Constants.Actions.PICKUP_ITEMS, i.LocalisedName, i.Amount);
+                } else {
+                    actionString = string.Format(Constants.Actions.PICKUP_ITEM, i.LocalisedName);
+                }
+
+                UIController.Instance.AddInteractionPanelItem(actionString, () => GameController.Instance.Player.AttemptPickupItem(i, _position));
             }
+
 
             UIController.Instance.AddInteractionPanelItem("Cancel", () => UIController.Instance.ShowHideInteractionPanel(false));
 
@@ -102,7 +127,7 @@ namespace Assets.Scripts.world
 
 
         public Entity SpawnPlayer(string _id, Position _position) {
-            Entity entity = new Entity(GenerateUniqueId(), _position);
+            Entity entity = new Entity(GenerateUniqueId(), "", _position);
             entity.GameObject = GameObject.Instantiate(GameController.Instance.playerPrefab);
             entity.UpdatePosition(_position, true);
             entity.GameObject.transform.SetParent(GameController.Instance.gameplayContainer, false);
@@ -189,6 +214,17 @@ namespace Assets.Scripts.world
             int distY = Mathf.Abs(positionA.Y - positionB.Y);
 
             return Mathf.RoundToInt(Mathf.Sqrt(distX * distX + distY * distY));
+        }
+
+
+        public CustomItem SpawnItem(string resourceName, Position position, int amount) {
+            Tile tile = GetTileFromPosition(position); 
+
+            if(tile == null) {
+                return null;
+            }
+
+            return tile.SpawnChildItem(resourceName, amount);
         }
     }
 
