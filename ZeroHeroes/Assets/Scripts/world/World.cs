@@ -1,9 +1,5 @@
-﻿using Assets.Scripts.Utility;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -14,6 +10,12 @@ namespace Assets.Scripts.world
         private Tilemap tilemap;
         private Dictionary<string, Tile> tiles = new Dictionary<string, Tile>();
         private Dictionary<string, Entity> entities = new Dictionary<string, Entity>();
+        private Dictionary<string, ObjectBase> objects = new Dictionary<string, ObjectBase>();
+
+        public int MaxSize { get { return Width * Height; } }
+        public Tilemap TileMap { get { return tilemap; } }
+        public int Width { get { return tilemap.size.x; } }
+        public int Height { get { return tilemap.size.y; } }
 
         public bool IsTileTraversable(Position _position) {
             Tile tile = GetTileFromPosition(_position);
@@ -57,7 +59,8 @@ namespace Assets.Scripts.world
                 }
             }*/
 
-            foreach (var pos in tilemap.cellBounds.allPositionsWithin) {
+            foreach (var pos in tilemap.cellBounds.allPositionsWithin) // This is unnecessary, you can just guess it's traverable unless decided
+            { 
                 Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
                 Vector3 place = tilemap.CellToWorld(localPlace);
 
@@ -70,49 +73,20 @@ namespace Assets.Scripts.world
         }
 
         public void InteractWithPosition(Vector3 mousePos, Position _position) {
-            //see below note why thesse is commented... 
-            /*Tile tile = GetTileFromPosition(_position);
-
-            if (tile == null) {
-                return;
-            }
-
-            List<Object> objectsAtPosition = tile.GetChildObjects;
-            List<Item> itemsAtPosition = tile.GetChildItems;
-            */
-
-
-
-            //populate the interaction panel in ui
-
-            UIController.Instance.ClearInteractionPanelItems();
-
-
-            //add the callbacks
-            //todo walk should only be added when there is actually a tile detected above... but this is a test...
+            UIController.Instance.ClearInteractionPanelItems(); //populate the interaction panel in ui
+            
             UIController.Instance.AddInteractionPanelItem("Walk Here", () => GameController.Instance.Player.AttemptMoveTo(_position));
 
-            /*todo this was from the code i made but Item was deleted for some reason so its not implemented here..
-             * it would work as adding the options for the items on that tile...
-            foreach (Item i in itemsAtPosition) {
-                string actionString = "";
-
-                if (i.Amount > 1) {
-                    actionString = string.Format(Constants.Actions.PICKUP_ITEMS, i.Definition.Name, i.Amount);
-                } else {
-                    actionString = string.Format(Constants.Actions.PICKUP_ITEM, i.Definition.Name);
-                }
-
-                UIController.Instance.AddInteractionPanelItem(actionString, () => GameController.instance.Player.AttemptPickupItem(i, _position));
-            }*/
+            if (objects.ContainsKey(_position.ToString())) // Only works for immobile items
+            {
+                ObjectBase obj = objects[_position.ToString()];
+                UIController.Instance.AddInteractionPanelItem(obj.ObjectData.OnInteractionText(), () => obj.OnInteraction());
+            }
 
             UIController.Instance.AddInteractionPanelItem("Cancel", () => UIController.Instance.ShowHideInteractionPanel(false));
 
-            //set the position
-            UIController.Instance.SetInteractionPanelPosition(mousePos);
-
-            //reveal the panel
-            UIController.Instance.ShowHideInteractionPanel(true);
+            UIController.Instance.SetInteractionPanelPosition(mousePos); //set the position
+            UIController.Instance.ShowHideInteractionPanel(true); //reveal the panel
         }
 
 
@@ -135,6 +109,31 @@ namespace Assets.Scripts.world
             entities.Add(entity.Id, entity);
             return entity;
         }
+
+        public Object SpawnObject(Position position, ObjectData data)
+        {
+            Object obj = new Object(GenerateUniqueId(), "none", position, data);
+            objects.Add(obj.Position.ToString(), obj);
+            return obj;
+        }
+
+        public void Remove(ObjectBase obj)
+        {
+            if (objects.ContainsKey(obj.Position.ToString()))
+            {
+                objects.Remove(obj.Position.ToString());
+            }
+        }
+
+        public void Remove(Entity entity)
+        {
+            if (entities.ContainsKey(entity.Id))
+            {
+                entities.Remove(entity.Id);
+            }
+        }
+
+
         public Tile GetTileFromId(string _id) {
             if (!tiles.ContainsKey(_id)) {
                 return null;
@@ -180,8 +179,6 @@ namespace Assets.Scripts.world
             return distX > distY ? 14 * distY * (distX - distY) : 14 * distX * (distY - distX);
         }
 
-
-
         public int GetDistanceBetweenTwoPositions(Position positionA, Position positionB) {
             /*           if (!IsTileValid(positionA) || !IsTileValid(positionB)) {
                            return 0;
@@ -192,31 +189,6 @@ namespace Assets.Scripts.world
             int distY = Mathf.Abs(positionA.Y - positionB.Y);
 
             return Mathf.RoundToInt(Mathf.Sqrt(distX * distX + distY * distY));
-        }
-
-
-        /// <summary>
-        /// max size of the game world 
-        /// </summary>
-        public int MaxSize {
-            get { return Width * Height; }
-        }
-
-        public Tilemap TileMap {
-            get { return tilemap; }
-        }
-
-        /// <summary>
-        /// the width of the world
-        /// </summary>
-        public int Width {
-            get { return tilemap.size.x; }
-        }
-        /// <summary>
-        /// the height of the world
-        /// </summary>
-        public int Height {
-            get { return tilemap.size.y; }
         }
     }
 

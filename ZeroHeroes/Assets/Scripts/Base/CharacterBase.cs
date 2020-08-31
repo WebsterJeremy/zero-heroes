@@ -4,14 +4,14 @@ using UnityEngine;
 
 #pragma warning disable 649
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class CharacterBase : MonoBehaviour
 {
     #region AccessVariables
 
 
-    [Header("Movement")]
-    [SerializeField] private float speed = 1f;
+    [Header("Settings")]
+    [SerializeField] private string displayName = "Character";
+    [SerializeField] private float speed = 3f;
 
 
     #endregion
@@ -21,8 +21,7 @@ public class CharacterBase : MonoBehaviour
     protected bool isMoving = false;
     protected Vector2 destination;
 
-    protected Animator animator;
-    protected Rigidbody2D rigidbody;
+ //   protected Animator animator;
 
 
     #endregion
@@ -31,8 +30,7 @@ public class CharacterBase : MonoBehaviour
 
     protected virtual void Start()
     {
-        animator = GetComponent<Animator>();
-        rigidbody = GetComponent<Rigidbody2D>();
+//        animator = GetComponent<Animator>();
     }
 
 

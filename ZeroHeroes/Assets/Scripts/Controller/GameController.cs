@@ -17,6 +17,8 @@ public class GameController : MonoBehaviour
 
     [Header("Containers")]
     public Transform gameplayContainer;
+    public Transform objectContainer;
+    public GameObject objectTemplate;
 
     [Header("Player")]
     private Player player;
@@ -29,6 +31,7 @@ public class GameController : MonoBehaviour
 
     private int money = 0;
     private Dictionary<string, string> stats = new Dictionary<string, string>();
+    private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     private Texture2D screenshot;
 
     private PathRequestManager pathRequestManager;
@@ -68,7 +71,6 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         UIController.Instance.GetHUD().DisplayMoney(money);
-        Debug.Log(money);
 
         //todo starting game here for a moment.. remove once menu UI is working
         StartGame();
@@ -135,6 +137,11 @@ public class GameController : MonoBehaviour
         get { return world; }
     }
 
+    public Dictionary<string,Task> GetTasks()
+    {
+        return tasks;
+    }
+
     #endregion
     #region Main
 
@@ -172,6 +179,40 @@ public class GameController : MonoBehaviour
         GAME_STATE = GameState.PLAYING;
     }
 
+
+    #endregion
+    #region Tasks
+
+    /*
+    Task[] tasks =
+    {
+        new Task(0,"npc_mayor",null,null,@"The litter on the land is <b>harmful</b> to local wildlife. 
+It also increases water and soil pollution and destroys animal habitats.
+Will you help clean it up?",null,null),
+        new Task(1,"npc_birdwatcher_0",null,null,@"Native birds have varying habitat needs. 
+Will you plant some tall and medium trees, and some shrubs to help the conservation of native bird life?",null,null),
+        new Task(2,"npc_gardner_0",null,null,@"Rainwater tanks can store water for many uses and reduces the need for infrastructure such as dams and desalination plants. 
+Could you install one for me?",null,null)
+    };*/
+
+    public void ReceiveTask(Task task)
+    {
+        if (HasTask(task.taskName)) return;
+
+        tasks.Add(task.taskName, task);
+        task.OnBeginTask();
+    }
+
+    public bool HasTask(string id)
+    {
+        return tasks.ContainsKey(id);
+    }
+
+    public void CompleteTask()
+    {
+
+    }
+
     #endregion
     #region Utility
 
@@ -187,49 +228,5 @@ public class GameController : MonoBehaviour
     }
 
 
-    #endregion
-
-    #region Testing
-    /*
-    private void TrackMouse()
-    {
-        if (tileMaps == null || tileMaps.Length == 0) return;
-        if (EventSystem.current.IsPointerOverGameObject()) return;
-
-        
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = -Camera.main.transform.position.z;
-        Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);
-        pos.x += 1.0f;
-        pos.y += 1.0f;
-
-        Vector3Int tilePos = tileMaps[0].WorldToCell(pos);
-
-        hoveredPos.x = tilePos.x;
-        hoveredPos.y = tilePos.y;
-
-        for (int i = 0;i < tileMaps.Length;i++)
-        {
-            hoveredTiles[i] = tileMaps[i].GetTile(tileMaps[i].WorldToCell(tilePos));
-        }
-
-        tileHoverSprite.transform.position = tilePos;
-
-        ShowDebugInfo();
-    }
-
-    private void ShowDebugInfo()
-    {
-        UIController.SetDebugStatistic("Mouse Pos XYZ", Input.mousePosition);
-
-        string tileNames = "";
-        for (int i = 0; i < hoveredTiles.Length; i++)
-        {
-            tileNames += "\t" + tileMaps[i].name + ": " + (hoveredTiles[i] != null ? hoveredTiles[i].name : "null") + "\n";
-        }
-
-        UIController.SetDebugStatistic("Hovered Tile XY", hoveredPos + "\n" + tileNames);
-    }
-     */
     #endregion
 }

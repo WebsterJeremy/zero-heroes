@@ -1,9 +1,4 @@
 ﻿using Assets.Scripts.ai;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.world
@@ -47,6 +42,7 @@ namespace Assets.Scripts.world
             this.id = _id;
             this.movementHelper = new EntityMovementHelper(this);
 
+            // An entity could be considered anything not just something that moves, such as an Dropped Item or Objective Item on the floor or a Door
             //todo initialize the fsm (brain) and add callbacks to the game controller
         }
 
