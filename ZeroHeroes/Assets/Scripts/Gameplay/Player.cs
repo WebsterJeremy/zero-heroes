@@ -25,6 +25,11 @@ namespace Assets.Scripts.world
             playerEntity.FSM.EnterState(new FSMStatePickupItem(playerEntity, i.Id, _pos));
         }
 
+        public void AttemptDropInventoryItem(string _inventoryItemId) {
+            //todo get item id...
+            playerEntity.FSM.EnterState(new FSMStateDropItem(playerEntity, _inventoryItemId));
+        }
+
         public Entity Entity {
             get { return playerEntity; }
         }

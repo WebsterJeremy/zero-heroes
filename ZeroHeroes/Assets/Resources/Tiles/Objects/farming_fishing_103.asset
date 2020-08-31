@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 090c98dcea79d9e43928b570d53e4dcb, type: 3}
   m_Name: farming_fishing_103
   m_EditorClassIdentifier: 
-  m_Sprite: {fileID: 8443693975416864595, guid: a081f653c6ca5a345901be8159acca57,
+  m_Sprite: {fileID: -2274827778193826321, guid: a081f653c6ca5a345901be8159acca57,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:

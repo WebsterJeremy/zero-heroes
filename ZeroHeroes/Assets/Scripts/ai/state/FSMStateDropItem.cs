@@ -1,7 +1,7 @@
-﻿/* FSMStatePickupItem.cs
+﻿/* FSMStateDropItem.cs
  * 
  * Author:  Nicholas Ruotsalainen RUOT0003
- * Created: 26/08/2020
+ * Created: 1/09/2020
  * 
  * Last Edited By: Nicholas Ruotsalainen RUOT0003
  * Last Updated:   31/08/2020
@@ -20,24 +20,20 @@ using UnityEngine;
 
 namespace Assets.Scripts.ai.state
 {
-    public class FSMStatePickupItem : FSMStateBase
+    public class FSMStateDropItem : FSMStateBase
     {
         private string itemId;
-        private Position itemPosition;
 
-        public FSMStatePickupItem(Entity _parent, string _itemId, Position _itemPosition) {
+        public FSMStateDropItem(Entity _parent, string _itemId) {
             this.parent = _parent;
             this.itemId = _itemId;
-            this.itemPosition = _itemPosition;
-
-            Debug.Log("parent: " + parent.Id + ", item id: " + itemId + ", itempos: " + itemPosition.ToString());
         }
 
         public override bool EnterState() {
             //entering state
-            Debug.Log("Entered Pickup Item State");
+            Debug.Log("Entered Drop Item State");
             if (base.EnterState()) {
-                if(parent == null || string.IsNullOrWhiteSpace(itemId) || itemPosition == null) {
+                if(parent == null || string.IsNullOrWhiteSpace(itemId)) {
                     //if either of these are null, return false, set as terminated, because it failed, 
                     //then return false.. as it wasnt able to enter state without this data.
                     actionState = Constants.FSMActionState.TERMINATED;
@@ -47,9 +43,6 @@ namespace Assets.Scripts.ai.state
             }
 
             enteredState = true;
-            //setup path
-            parent.MovementHelper.MoveTo(itemPosition);
-
             return enteredState;
         }
 
@@ -60,25 +53,28 @@ namespace Assets.Scripts.ai.state
         }
 
         public override void UpdateState() {
-            if (!parent.MovementHelper.IsMoving && actionState == Constants.FSMActionState.COMPLETED) {
+            if (actionState == Constants.FSMActionState.COMPLETED) {
                 ExitState();
                 return;
             }
 
-            if (parent.MovementHelper.GoalPosition != null && parent.MovementHelper.GoalPosition.Equals(parent.Position()) ) {
-                //entity is at goal position...  or entity is no longer moving..
-                //then exit the state.. completed!
+            //ensure that the entity has the item in their inventory..
+            InventoryItem ii = parent.Inventory.GetInventorytemFromId(itemId);
 
-                //detect if item still exists...
-                CustomItem i = GameController.Instance.World.GetTileFromPosition(itemPosition).GetChildItem(itemId);
-
-                if(i != null) {
-                    //pick it up..
-                    i.Pickup(parent);
-                }
-
+            if(ii == null) {
                 actionState = Constants.FSMActionState.COMPLETED;
+                return;
             }
+
+            //destroy it, 
+            parent.Inventory.Remove(itemId);
+
+            //then spawn in real world..
+            GameController.Instance.World.SpawnItem(ii.AssetName, parent.Position(), ii.Amount);
+
+            //return 
+            actionState = Constants.FSMActionState.COMPLETED;
+            return;
         }
     }
 }

@@ -169,15 +169,43 @@ public class GameController : MonoBehaviour
 
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
 
+        SetupTestWorld();
+
+        
+        yield return new WaitForSeconds(0.3f);
+
+    }
+
+    private void SetupTestWorld() {
+        //this is a test method.. later on we would either generate a new world.. with nothing..
+        //or load from data...
+        //but since were doing a techdemo tomorrow(1/09) lets just populate some data ;) ;) HACKTHEPLANET.
+
         world.GenerateWorld(collisionTilemap);
 
-        Position spawnPoint = new Position(15, 15);
+        Position spawnPoint = new Position(20, 20);
         player = new Player("1", spawnPoint);
+        //fill the player's inventory with a few items..
+        player.Entity.Inventory.Add("buckets_3", 2);
 
-        //todo this is a test to show you how items are spawned in the world... 
-        World.SpawnItem("buckets_3", new Position(17, 17), 1);//id buckets_3 is a bucket obj for example... (located:assets/resources/tiles/buckets_3.asset)
+        
+        player.Entity.Inventory.Add("farming_fishing_71", 1);
+        player.Entity.Inventory.Add("farming_fishing_73", 1);
+        player.Entity.Inventory.Add("farming_fishing_112", 1);
+        player.Entity.Inventory.Add("farming_fishing_112", 1);
+        player.Entity.Inventory.Add("farming_fishing_106", 2);
+        player.Entity.Inventory.Add("farming_fishing_105", 1);
 
-        yield return new WaitForSeconds(0.3f);
+        //fill teh world with a few items...
+
+        World.SpawnItem("farming_fishing_71", new Position(25, 17), 1);
+        World.SpawnItem("farming_fishing_72", new Position(22, 22), 3);
+        World.SpawnItem("farming_fishing_73", new Position(33, 25), 1);
+        World.SpawnItem("farming_fishing_0", new Position(33, 26), 1);
+
+        //todo this is a test to show you how items are spawned in the world...                                 
+        World.SpawnItem("buckets_3", new Position(17, 17), 1);//id buckets_3 is a bucket obj for example... (located:assets/resources/tiles/buckets_3.asset
+        //                                                                                                    //however these should be moved to a more appropriate location. discuss tomorrow (1/9)
 
     }
 

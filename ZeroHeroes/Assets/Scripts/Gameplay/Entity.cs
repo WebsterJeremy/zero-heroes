@@ -16,7 +16,6 @@ namespace Assets.Scripts.world
         protected Position position;
         protected GameObject gameObject;
 
-
         //an entity is a moving or living object... eg npc, etc... 
         //this will utilize, pathfinding, but also utilize the FMS (finite state machine) system (which the player does not use)
 

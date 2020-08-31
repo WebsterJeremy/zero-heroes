@@ -54,8 +54,8 @@ namespace Assets.Scripts.Gameplay
             }
 
             if (!_entity.Inventory.IsInventoryFull()) {
-                //todo add to inventory here...
-
+                //add to inventory here...
+                _entity.Inventory.Add(definition, amount);
                 //destroy world item..
                 Destroy();
             }
@@ -68,8 +68,7 @@ namespace Assets.Scripts.Gameplay
         protected void Spawn() {
             gameObject = GameObject.Instantiate(GameController.Instance.itemPrefabTemplate);
 
-            //set sprite
-            //todo set sprite!
+            //set sprite!
             //if we cant find the sprite resource, then BAIL!... not worth the time. sorry.( ͡° ͜ʖ ͡°) 
             MapTile mt = UnityEngine.Resources.Load<MapTile>(System.IO.Path.Combine("Tiles/Objects", definition));//todo.. it may not be located here!! we need a defined place to store !!!!ITEMS!!!
 
