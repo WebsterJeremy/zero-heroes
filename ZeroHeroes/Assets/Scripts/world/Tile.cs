@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.ai.path;
+using Assets.Scripts.Gameplay;
+using Assets.Scripts.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,8 @@ namespace Assets.Scripts.world
 {
     public class Tile : IHeapItem<Tile>
     {
+        private Dictionary<string, CustomItem> spawnedItems = new Dictionary<string, CustomItem>();
+
         private string id;
         private Position position;
         private int hCost_;
@@ -72,5 +76,47 @@ namespace Assets.Scripts.world
             return -compare;
         }
         #endregion
+
+
+        public CustomItem SpawnChildItem(string itemTypeId, int amount) {
+            CustomItem item = new CustomItem(Constants.GenerateUniqueId(), itemTypeId, id, amount);
+            spawnedItems.Add(item.Id, item);
+            return item;
+        }
+
+        public void DestroyChildItem(CustomItem _item) {
+            if (_item.GameObject != null) {
+                UnityEngine.GameObject.Destroy(_item.GameObject);
+            }
+
+            //remove from list
+            spawnedItems.Remove(_item.Id);
+        }
+        
+        public void DestroyChildItem(string _id) {
+            if (!spawnedItems.ContainsKey(_id)) {
+                return;
+            }
+
+            CustomItem _item = spawnedItems[_id];
+
+            if (_item.GameObject != null) {
+                UnityEngine.GameObject.Destroy(_item.GameObject);
+            }
+
+            //remove from list
+            spawnedItems.Remove(_item.Id);
+        }
+        public List<CustomItem> GetChildItems {
+            get { return spawnedItems.Values.ToList(); }
+        }
+
+        public CustomItem GetChildItem(string _id) {
+            if (!spawnedItems.ContainsKey(_id)) {
+                return null;
+            }
+
+            return spawnedItems[_id];
+        }
     }
 }

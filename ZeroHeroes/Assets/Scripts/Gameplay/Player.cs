@@ -1,4 +1,7 @@
 ﻿
+using Assets.Scripts.ai.state;
+using Assets.Scripts.Gameplay;
+
 namespace Assets.Scripts.world
 {
     public class Player
@@ -14,7 +17,12 @@ namespace Assets.Scripts.world
         /// Attempts to move the player's entity to the given position
         /// </summary>
         public void AttemptMoveTo(Position _position) {
-            playerEntity.MoveTo(_position);
+            playerEntity.FSM.EnterState(new FSMStateMoveToPosition(playerEntity, _position));
+        }
+
+        public void AttemptPickupItem(CustomItem i, Position _pos) {
+            //todo get item id...
+            playerEntity.FSM.EnterState(new FSMStatePickupItem(playerEntity, i.Id, _pos));
         }
 
         public Entity Entity {

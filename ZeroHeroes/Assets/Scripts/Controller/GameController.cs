@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.ai.path;
+using Assets.Scripts.Gameplay;
+using Assets.Scripts.Utility;
 using Assets.Scripts.world;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,13 +19,17 @@ public class GameController : MonoBehaviour
 
     [Header("Containers")]
     public Transform gameplayContainer;
+    public Transform ItemContainer;
 
     [Header("Player")]
     private Player player;
     public GameObject playerPrefab;
 
+    public GameObject itemPrefabTemplate;
+
 
     #endregion
+
     #region PrivateVariables
 
 
@@ -155,6 +161,7 @@ public class GameController : MonoBehaviour
 
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
+        GAME_STATE = GameState.PLAYING;
 
         pathRequestManager = new PathRequestManager(); //set up the pathfinding manager and pathfinder
         pathFinder = new PathFinder();
@@ -167,9 +174,11 @@ public class GameController : MonoBehaviour
         Position spawnPoint = new Position(15, 15);
         player = new Player("1", spawnPoint);
 
+        //todo this is a test to show you how items are spawned in the world... 
+        World.SpawnItem("buckets_3", new Position(17, 17), 1);//id buckets_3 is a bucket obj for example... (located:assets/resources/tiles/buckets_3.asset)
+
         yield return new WaitForSeconds(0.3f);
 
-        GAME_STATE = GameState.PLAYING;
     }
 
     #endregion

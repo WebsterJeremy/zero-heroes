@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Utility;
+﻿using Assets.Scripts.Gameplay;
+using Assets.Scripts.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,17 +71,46 @@ namespace Assets.Scripts.world
         }
 
         public void InteractWithPosition(Vector3 mousePos, Position _position) {
-            //see below note why thesse is commented... 
-            /*Tile tile = GetTileFromPosition(_position);
+            //determine what options are available
+
+            Tile tile = GetTileFromPosition(_position);
 
             if (tile == null) {
                 return;
             }
 
-            List<Object> objectsAtPosition = tile.GetChildObjects;
-            List<Item> itemsAtPosition = tile.GetChildItems;
-            */
+            List<CustomItem> itemsAtPosition = tile.GetChildItems;
 
+            //populate the interaction panel in ui
+            UIController.Instance.ClearInteractionPanelItems();
+
+            //add the callbacks
+            //todo walk should only be added when there is actually a tile detected above... but this is a test...
+            UIController.Instance.AddInteractionPanelItem("Walk Here", () => GameController.Instance.Player.AttemptMoveTo(_position));
+
+
+            foreach (CustomItem i in itemsAtPosition) {
+                string actionString = "";
+
+                if (i.Amount > 1) {
+                    actionString = string.Format(Constants.Actions.PICKUP_ITEMS, i.LocalisedName, i.Amount);
+                } else {
+                    actionString = string.Format(Constants.Actions.PICKUP_ITEM, i.LocalisedName);
+                }
+
+                UIController.Instance.AddInteractionPanelItem(actionString, () => GameController.Instance.Player.AttemptPickupItem(i, _position));
+            }
+
+            UIController.Instance.AddInteractionPanelItem("Cancel", () => UIController.Instance.ShowHideInteractionPanel(false));
+
+            //set the position
+            UIController.Instance.SetInteractionPanelPosition(mousePos);
+
+            //reveal the panel
+            UIController.Instance.ShowHideInteractionPanel(true);
+
+            /*/see below note why thesse is commented... 
+           
 
 
             //populate the interaction panel in ui
@@ -92,19 +122,7 @@ namespace Assets.Scripts.world
             //todo walk should only be added when there is actually a tile detected above... but this is a test...
             UIController.Instance.AddInteractionPanelItem("Walk Here", () => GameController.Instance.Player.AttemptMoveTo(_position));
 
-            /*todo this was from the code i made but Item was deleted for some reason so its not implemented here..
-             * it would work as adding the options for the items on that tile...
-            foreach (Item i in itemsAtPosition) {
-                string actionString = "";
-
-                if (i.Amount > 1) {
-                    actionString = string.Format(Constants.Actions.PICKUP_ITEMS, i.Definition.Name, i.Amount);
-                } else {
-                    actionString = string.Format(Constants.Actions.PICKUP_ITEM, i.Definition.Name);
-                }
-
-                UIController.Instance.AddInteractionPanelItem(actionString, () => GameController.instance.Player.AttemptPickupItem(i, _position));
-            }*/
+            
 
             UIController.Instance.AddInteractionPanelItem("Cancel", () => UIController.Instance.ShowHideInteractionPanel(false));
 
@@ -112,7 +130,13 @@ namespace Assets.Scripts.world
             UIController.Instance.SetInteractionPanelPosition(mousePos);
 
             //reveal the panel
-            UIController.Instance.ShowHideInteractionPanel(true);
+            UIController.Instance.ShowHideInteractionPanel(true);*/
+        }
+
+
+        public CustomItem SpawnItem(string itemIdToSpawn, Position position, int amount) {
+            Debug.Log("about to spawn item");
+            return GetTileFromPosition(position).SpawnChildItem(itemIdToSpawn, amount);
         }
 
 
