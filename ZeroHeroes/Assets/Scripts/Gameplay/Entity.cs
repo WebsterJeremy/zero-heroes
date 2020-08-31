@@ -1,39 +1,14 @@
 ﻿using Assets.Scripts.ai;
-using Assets.Scripts.ai.state;
-using Assets.Scripts.Gameplay;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.world
 {
     public class Entity
     {
-        protected string id;
-        protected Position position;
-        protected GameObject gameObject;
+        private string id;
+        private Position position;
+        private GameObject gameObject;
 
-        //an entity is a moving or living object... eg npc, etc... 
-        //this will utilize, pathfinding, but also utilize the FMS (finite state machine) system (which the player does not use)
-
-        //this is the finite state machine (brain) of an entity..
-        //it controls the states the ai is in and determines its behaviour based on the environment
-        protected FSM brain;
-
-        //this is the sight helper for the entity.
-        //it tells the brain what it can see, to help it to determine the next behaviour
-        // protected EntitySightHelper sightHelper;
-
-        //this is the movement helper for the entity.
-        //it allows the entity to move
-        protected EntityMovementHelper movementHelper;
-        public Coroutine lastAction;
-
-
-        protected Inventory inventory;
 
         public string Id {
             get { return id; }
@@ -56,33 +31,34 @@ namespace Assets.Scripts.world
             }
         }
 
+        //this is the movement helper for the entity.
+        //it allows the entity to move
+        protected EntityMovementHelper movementHelper;
+        public Coroutine lastAction;
+
+
+
         public Entity(string _id, Position _position){
             this.id = _id;
-
-
-            //set up inventory..
-            this.inventory = new Inventory();
-
-           //todo... this.sightHelper = new EntitySightHelper(this);
             this.movementHelper = new EntityMovementHelper(this);
-            
-            //initialize the fsm (brain) and add callbacks to the game controller
-            this.brain = new FSM(this, new FSMStateIdle(this));
-            brain.OnInitialized();
 
+            // An entity could be considered anything not just something that moves, such as an Dropped Item or Objective Item on the floor or a Door
+            //todo initialize the fsm (brain) and add callbacks to the game controller
         }
 
 
-        public Inventory Inventory {
-            get { return inventory; }
+        public void MoveTo(Position _position) {
+            StopLastAction();
+            movementHelper.MoveTo(_position);
         }
 
-        public EntityMovementHelper MovementHelper {
-            get { return movementHelper; }
-        }
 
-        public FSM FSM {
-            get { return brain; }
+        private void StopLastAction() {
+            Debug.Log("stopping last action!");
+            if (lastAction != null) {
+                GameController.Instance.StopChildCoroutine(lastAction);
+                lastAction = null;
+            }
         }
 
     }

@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPC : MonoBehaviour
+public class NPC : CharacterBase
 {
+
+
     // Start is called before the first frame update
     void Start()
     {

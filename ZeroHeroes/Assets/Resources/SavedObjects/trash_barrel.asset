@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6933d119529b7b4b936b2fbc6572a4d, type: 3}
+  m_Name: trash_barrel
+  m_EditorClassIdentifier: 
+  objectName: Barrel
+  sprite: {fileID: -8568042794190644651, guid: c1d3d458f5147004ab5083e2f5250314, type: 3}
+  color:
+    serializedVersion: 2
+    rgba: 4294967295
+  immobile: 1
+  objective: {fileID: 11400000, guid: bec4bb18815023848833bdf69b77fad6, type: 2}

@@ -20,6 +20,18 @@ namespace Assets.Scripts.world
             this.y = _y;
         }
 
+        public Position(float _x, float _y)
+        {
+            this.x = (int) _x;
+            this.y = (int) _y;
+        }
+
+        public Position(Vector3 _pos)
+        {
+            this.x = (int) _pos.x;
+            this.y = (int) _pos.y;
+        }
+
         public int X {
             get { return x; }
         }

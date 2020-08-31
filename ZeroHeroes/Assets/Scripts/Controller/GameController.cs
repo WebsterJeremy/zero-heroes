@@ -1,6 +1,4 @@
 ﻿using Assets.Scripts.ai.path;
-using Assets.Scripts.Gameplay;
-using Assets.Scripts.Utility;
 using Assets.Scripts.world;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,22 +17,21 @@ public class GameController : MonoBehaviour
 
     [Header("Containers")]
     public Transform gameplayContainer;
-    public Transform ItemContainer;
+    public Transform objectContainer;
+    public GameObject objectTemplate;
 
     [Header("Player")]
     private Player player;
     public GameObject playerPrefab;
 
-    public GameObject itemPrefabTemplate;
-
 
     #endregion
-
     #region PrivateVariables
 
 
     private int money = 0;
     private Dictionary<string, string> stats = new Dictionary<string, string>();
+    private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     private Texture2D screenshot;
 
     private PathRequestManager pathRequestManager;
@@ -74,7 +71,6 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         UIController.Instance.GetHUD().DisplayMoney(money);
-        Debug.Log(money);
 
         //todo starting game here for a moment.. remove once menu UI is working
         StartGame();
@@ -141,6 +137,11 @@ public class GameController : MonoBehaviour
         get { return world; }
     }
 
+    public Dictionary<string,Task> GetTasks()
+    {
+        return tasks;
+    }
+
     #endregion
     #region Main
 
@@ -161,7 +162,6 @@ public class GameController : MonoBehaviour
 
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
-        GAME_STATE = GameState.PLAYING;
 
         pathRequestManager = new PathRequestManager(); //set up the pathfinding manager and pathfinder
         pathFinder = new PathFinder();
@@ -169,43 +169,47 @@ public class GameController : MonoBehaviour
 
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
 
-        SetupTestWorld();
-
-        
-        yield return new WaitForSeconds(0.3f);
-
-    }
-
-    private void SetupTestWorld() {
-        //this is a test method.. later on we would either generate a new world.. with nothing..
-        //or load from data...
-        //but since were doing a techdemo tomorrow(1/09) lets just populate some data ;) ;) HACKTHEPLANET.
-
         world.GenerateWorld(collisionTilemap);
 
-        Position spawnPoint = new Position(20, 20);
+        Position spawnPoint = new Position(15, 15);
         player = new Player("1", spawnPoint);
-        //fill the player's inventory with a few items..
-        player.Entity.Inventory.Add("buckets_3", 2);
 
-        
-        player.Entity.Inventory.Add("farming_fishing_71", 1);
-        player.Entity.Inventory.Add("farming_fishing_73", 1);
-        player.Entity.Inventory.Add("farming_fishing_112", 1);
-        player.Entity.Inventory.Add("farming_fishing_112", 1);
-        player.Entity.Inventory.Add("farming_fishing_106", 2);
-        player.Entity.Inventory.Add("farming_fishing_105", 1);
+        yield return new WaitForSeconds(0.3f);
 
-        //fill teh world with a few items...
+        GAME_STATE = GameState.PLAYING;
+    }
 
-        World.SpawnItem("farming_fishing_71", new Position(25, 17), 1);
-        World.SpawnItem("farming_fishing_72", new Position(22, 22), 3);
-        World.SpawnItem("farming_fishing_73", new Position(33, 25), 1);
-        World.SpawnItem("farming_fishing_0", new Position(33, 26), 1);
 
-        //todo this is a test to show you how items are spawned in the world...                                 
-        World.SpawnItem("buckets_3", new Position(17, 17), 1);//id buckets_3 is a bucket obj for example... (located:assets/resources/tiles/buckets_3.asset
-        //                                                                                                    //however these should be moved to a more appropriate location. discuss tomorrow (1/9)
+    #endregion
+    #region Tasks
+
+    /*
+    Task[] tasks =
+    {
+        new Task(0,"npc_mayor",null,null,@"The litter on the land is <b>harmful</b> to local wildlife. 
+It also increases water and soil pollution and destroys animal habitats.
+Will you help clean it up?",null,null),
+        new Task(1,"npc_birdwatcher_0",null,null,@"Native birds have varying habitat needs. 
+Will you plant some tall and medium trees, and some shrubs to help the conservation of native bird life?",null,null),
+        new Task(2,"npc_gardner_0",null,null,@"Rainwater tanks can store water for many uses and reduces the need for infrastructure such as dams and desalination plants. 
+Could you install one for me?",null,null)
+    };*/
+
+    public void ReceiveTask(Task task)
+    {
+        if (HasTask(task.taskName)) return;
+
+        tasks.Add(task.taskName, task);
+        task.OnBeginTask();
+    }
+
+    public bool HasTask(string id)
+    {
+        return tasks.ContainsKey(id);
+    }
+
+    public void CompleteTask()
+    {
 
     }
 
@@ -224,49 +228,5 @@ public class GameController : MonoBehaviour
     }
 
 
-    #endregion
-
-    #region Testing
-    /*
-    private void TrackMouse()
-    {
-        if (tileMaps == null || tileMaps.Length == 0) return;
-        if (EventSystem.current.IsPointerOverGameObject()) return;
-
-        
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = -Camera.main.transform.position.z;
-        Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);
-        pos.x += 1.0f;
-        pos.y += 1.0f;
-
-        Vector3Int tilePos = tileMaps[0].WorldToCell(pos);
-
-        hoveredPos.x = tilePos.x;
-        hoveredPos.y = tilePos.y;
-
-        for (int i = 0;i < tileMaps.Length;i++)
-        {
-            hoveredTiles[i] = tileMaps[i].GetTile(tileMaps[i].WorldToCell(tilePos));
-        }
-
-        tileHoverSprite.transform.position = tilePos;
-
-        ShowDebugInfo();
-    }
-
-    private void ShowDebugInfo()
-    {
-        UIController.SetDebugStatistic("Mouse Pos XYZ", Input.mousePosition);
-
-        string tileNames = "";
-        for (int i = 0; i < hoveredTiles.Length; i++)
-        {
-            tileNames += "\t" + tileMaps[i].name + ": " + (hoveredTiles[i] != null ? hoveredTiles[i].name : "null") + "\n";
-        }
-
-        UIController.SetDebugStatistic("Hovered Tile XY", hoveredPos + "\n" + tileNames);
-    }
-     */
     #endregion
 }

@@ -70,7 +70,7 @@ public class HUD : MonoBehaviour
 
     public void DisplayMoney(int money)
     {
-        textMoney.text = money.ToString();
+        textMoney.text = "$" + money.ToString();
         rectMoney.sizeDelta = new Vector2(0 + (textMoney.text.Length * 40), rectMoney.sizeDelta.y);
     }
 
