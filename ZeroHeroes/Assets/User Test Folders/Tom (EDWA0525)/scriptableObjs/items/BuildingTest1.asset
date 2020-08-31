@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 717815fc93b653b4eba05c8d8b8e5de2, type: 3}
   m_Name: BuildingTest1
   m_EditorClassIdentifier: 
-  preFab: {fileID: 2220104791654011302, guid: e8b97946a8429bf4eb2a2160375aefb0, type: 3}
+  preFab: {fileID: 8298772368271429287, guid: 69fb647ce14d15241b4941c6bbe2d096, type: 3}
   type: 0
   desc: Building Test obj #1

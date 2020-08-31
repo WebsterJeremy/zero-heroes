@@ -17,6 +17,19 @@ public class playerInvTestScript : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            inventory.Save();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            inventory.Load();
+        }
+    }
+
     private void OnApplicationQuit()
     {
         inventory.Cont.Clear();

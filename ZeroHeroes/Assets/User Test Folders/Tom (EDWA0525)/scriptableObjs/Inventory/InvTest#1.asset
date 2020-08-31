@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fa684bf324ff774ea75fce61e5831f0, type: 3}
   m_Name: InvTest#1
   m_EditorClassIdentifier: 
+  savePath: /inventory.save
   Cont: []

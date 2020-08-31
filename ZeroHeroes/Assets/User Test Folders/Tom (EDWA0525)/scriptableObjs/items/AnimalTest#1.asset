@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d6791487e394c45a11d52bd2ec2d63, type: 3}
   m_Name: AnimalTest#1
   m_EditorClassIdentifier: 
-  preFab: {fileID: 0}
+  preFab: {fileID: 8298772368271429287, guid: e4c473acb4fb78f4cb0c2407750df30d, type: 3}
   type: 3
   desc: 
