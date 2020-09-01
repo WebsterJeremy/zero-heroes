@@ -1180,6 +1180,31 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4946904507103151856, guid: c6000cb4b881d924c955443898d5504a,
+        type: 3}
+      propertyPath: X_START
+      value: -840
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946904507103151856, guid: c6000cb4b881d924c955443898d5504a,
+        type: 3}
+      propertyPath: Y_START
+      value: 380
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946904507103151856, guid: c6000cb4b881d924c955443898d5504a,
+        type: 3}
+      propertyPath: COL_NUM
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946904507103151856, guid: c6000cb4b881d924c955443898d5504a,
+        type: 3}
+      propertyPath: X_SPACE_BETWEEN_ITEMS
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4946904507103151856, guid: c6000cb4b881d924c955443898d5504a,
+        type: 3}
+      propertyPath: Y_SPACE_BETWEEN_ITEMS
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6000cb4b881d924c955443898d5504a, type: 3}
 --- !u!224 &359168506 stripped
@@ -4129,6 +4154,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Interaction Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 7939737044473788675, guid: 2b8e9e1e38db42240b480c91f87201bb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7939737044473788684, guid: 2b8e9e1e38db42240b480c91f87201bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4197,12 +4227,12 @@ PrefabInstance:
     - target: {fileID: 7939737044473788684, guid: 2b8e9e1e38db42240b480c91f87201bb,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7939737044473788684, guid: 2b8e9e1e38db42240b480c91f87201bb,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7939737044473788684, guid: 2b8e9e1e38db42240b480c91f87201bb,
         type: 3}

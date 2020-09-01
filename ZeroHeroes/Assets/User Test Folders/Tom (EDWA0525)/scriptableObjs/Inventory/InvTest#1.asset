@@ -13,4 +13,49 @@ MonoBehaviour:
   m_Name: InvTest#1
   m_EditorClassIdentifier: 
   savePath: /inventory.save
-  Cont: []
+  Cont:
+  - ID: 2
+    item: {fileID: 11400000, guid: 34c3baedb91098844a1f611662b29845, type: 2}
+    val: 8
+  - ID: 1
+    item: {fileID: 11400000, guid: 9923ad5172cdb4548a51a8a1582754f6, type: 2}
+    val: 2
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11
+  - ID: 4
+    item: {fileID: 11400000, guid: 84321af2c7bbeb4488b390e05519235b, type: 2}
+    val: 11

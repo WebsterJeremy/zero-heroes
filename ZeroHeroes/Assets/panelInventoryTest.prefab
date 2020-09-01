@@ -71,6 +71,7 @@ GameObject:
   - component: {fileID: 1623431735591410725}
   - component: {fileID: 1623431735591410731}
   - component: {fileID: 1623431735591410730}
+  - component: {fileID: 4946904507103151856}
   m_Layer: 5
   m_Name: panelInventoryTest
   m_TagString: Untagged
@@ -136,3 +137,21 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4946904507103151856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623431735591410724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b24a246a844704f8f08c3a9ef69252, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inv: {fileID: 11400000, guid: 331734443c4b74546b836fcb5dc79b44, type: 2}
+  X_START: 0
+  Y_START: 0
+  X_SPACE_BETWEEN_ITEMS: 0
+  COL_NUM: 0
+  Y_SPACE_BETWEEN_ITEMS: 0
