@@ -25,6 +25,7 @@ namespace Assets.Scripts.ai.state
 
         public virtual bool EnterState() {
             actionState = Constants.FSMActionState.ACTIVE;
+            UIController.SetDebugStatistic("Player State", this.ToString()); // Debug
             return true;
         }
 

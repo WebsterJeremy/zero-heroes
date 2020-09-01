@@ -89,6 +89,11 @@ public class GameController : MonoBehaviour
     #endregion
     #region Getters & Setters
 
+    public static bool PLAYING()
+    {
+        return GameController.Instance.CurrentGameState == GameController.GameState.PLAYING;
+    }
+
     public int GetMoney() {
         return money;
     }

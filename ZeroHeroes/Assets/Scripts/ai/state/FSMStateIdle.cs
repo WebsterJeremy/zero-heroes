@@ -26,20 +26,20 @@ namespace Assets.Scripts.ai.state
         }
 
         public override bool EnterState() {
-            Debug.Log("Entered Idle State");
+//            Debug.Log("Entering Idle State");
             base.EnterState();
             enteredState = true;
             return enteredState;
         }
 
         public override bool ExitState() {
-            Debug.Log("Exited Idle State");
+//            Debug.Log("Exiting Idle State");
 
             return base.ExitState();
         }
 
         public override void UpdateState() {
-            Debug.Log("Updating Idle State");
+//            Debug.Log("Updating Idle State");
         }
     }
 }

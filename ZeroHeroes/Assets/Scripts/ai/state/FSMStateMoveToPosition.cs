@@ -29,7 +29,7 @@ namespace Assets.Scripts.ai.state
 
         public override bool EnterState() {
             //entering state
-            Debug.Log("Entered Move To Position State");
+//            Debug.Log("Entered Move To Position State");
             if (base.EnterState()) {
                 if(parent == null || targetPosition == null) {
                     //if either of these are null, return false, set as terminated, because it failed, 
@@ -48,13 +48,13 @@ namespace Assets.Scripts.ai.state
         }
 
         public override bool ExitState() {
-            Debug.Log("Exited Move To Position State");
+//            Debug.Log("Exited Move To Position State");
             parent.FSM.EnterState(new FSMStateIdle(parent));
             return base.ExitState();
         }
 
         public override void UpdateState() {
-            Debug.Log("Updating Move To Position State");
+//            Debug.Log("Updating Move To Position State");
 
             if ((parent.MovementHelper.GoalPosition != null && parent.MovementHelper.GoalPosition.Equals(parent.Position()))) {
                 //entity is at goal position...  or entity is no longer moving..

@@ -12,7 +12,7 @@ namespace Assets.Scripts.Gameplay
         public Dictionary<string, InventoryItem> items = new Dictionary<string, InventoryItem>();
         
         public void Add(string _assetName, int _amount) {
-            Debug.Log("adding item to inventory....");
+//            Debug.Log("adding item to inventory....");
             //right now ill just add each one as  a new item.. but see below todo comment...
 
             //if stackable...

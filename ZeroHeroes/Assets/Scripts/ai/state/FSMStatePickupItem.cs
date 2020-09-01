@@ -34,7 +34,7 @@ namespace Assets.Scripts.ai.state
 
         public override bool EnterState() {
             //entering state
-            Debug.Log("Entered Pickup Item State");
+//            Debug.Log("Entered Pickup Item State");
             if (base.EnterState()) {
                 if(parent == null || string.IsNullOrWhiteSpace(itemId) || itemPosition == null) {
                     //if either of these are null, return false, set as terminated, because it failed, 

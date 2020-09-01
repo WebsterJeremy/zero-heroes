@@ -59,59 +59,67 @@ namespace Assets.Scripts.world
                     tiles.Add(newTile.Id, newTile);
                 }
             }*/
-
-            foreach (var pos in tilemap.cellBounds.allPositionsWithin) // This is unnecessary, you can just guess it's traverable unless decided
+            foreach (var pos in tilemap.cellBounds.allPositionsWithin)
             { 
                 Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
                 Vector3 place = tilemap.CellToWorld(localPlace);
 
                 bool isTraversable = !tilemap.HasTile(localPlace);//if it has a tile, it is not traversable
 
-                Tile newTile = new Tile(GenerateUniqueId(), new Position(localPlace.x + 1, localPlace.y + 1), isTraversable);
+                Position tilePosition = new Position(localPlace.x + 1, localPlace.y + 1);
+                Tile newTile = new Tile(tilePosition.ToString(), tilePosition, isTraversable);
                 tiles.Add(newTile.Id, newTile);
             }
 
         }
 
         public void InteractWithPosition(Vector3 mousePos, Position _position) {
-            //determine what options are available
+            int interactionCount = 0;
 
             Tile tile = GetTileFromPosition(_position);
 
-            if (tile == null) {
-                return;
-            }
-
+            if (tile == null) return;
 
             List<CustomItem> itemsAtPosition = tile.GetChildItems;
 
-
             //populate the interaction panel in ui
             UIController.Instance.ClearInteractionPanelItems();
-
+            UIController.Instance.ShowHideInteractionPanel(false);
 
             //add the callbacks
-            //todo walk should only be added when there is actually a tile detected above... but this is a test...
-            UIController.Instance.AddInteractionPanelItem("Walk Here", () => GameController.Instance.Player.AttemptMoveTo(_position));
-
-
-            foreach (CustomItem i in itemsAtPosition) {
-                string actionString = "";
-
-                if (i.Amount > 1) {
-                    actionString = string.Format(Constants.Actions.PICKUP_ITEMS, i.LocalisedName, i.Amount);
-                } else {
-                    actionString = string.Format(Constants.Actions.PICKUP_ITEM, i.LocalisedName);
-                }
-
-                UIController.Instance.AddInteractionPanelItem(actionString, () => GameController.Instance.Player.AttemptPickupItem(i, _position));
+            if (tiles.ContainsKey(_position.ToString()) && tiles[_position.ToString()].IsTraversable)
+            {
+                UIController.Instance.AddInteractionPanelItem("Walk Here", () => GameController.Instance.Player.AttemptMoveTo(_position));
+                interactionCount++;
             }
 
+            if (itemsAtPosition.Count > 0)
+            {
+                foreach (CustomItem i in itemsAtPosition)
+                {
+                    string actionString = "";
 
-            UIController.Instance.AddInteractionPanelItem("Cancel", () => UIController.Instance.ShowHideInteractionPanel(false));
+                    if (i.Amount > 1)
+                    {
+                        actionString = string.Format(Constants.Actions.PICKUP_ITEMS, i.LocalisedName, i.Amount);
+                    }
+                    else
+                    {
+                        actionString = string.Format(Constants.Actions.PICKUP_ITEM, i.LocalisedName);
+                    }
 
-            UIController.Instance.SetInteractionPanelPosition(mousePos); //set the position
-            UIController.Instance.ShowHideInteractionPanel(true); //reveal the panel
+                    UIController.Instance.AddInteractionPanelItem(actionString, () => GameController.Instance.Player.AttemptPickupItem(i, _position));
+                }
+                interactionCount++;
+            }
+
+            if (interactionCount > 0) // Only show when interactions are available
+            {
+                UIController.Instance.AddInteractionPanelItem("Cancel", () => UIController.Instance.ShowHideInteractionPanel(false));
+
+                UIController.Instance.SetInteractionPanelPosition(mousePos); //set the position
+                UIController.Instance.ShowHideInteractionPanel(true); //reveal the panel
+            }
         }
 
 

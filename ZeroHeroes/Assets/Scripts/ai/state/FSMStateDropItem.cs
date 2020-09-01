@@ -30,7 +30,7 @@ namespace Assets.Scripts.ai.state
 
         public override bool EnterState() {
             //entering state
-            Debug.Log("Entered Drop Item State");
+//            Debug.Log("Entered Drop Item State");
             if (base.EnterState()) {
                 if(parent == null || string.IsNullOrWhiteSpace(itemId)) {
                     //if either of these are null, return false, set as terminated, because it failed, 
