@@ -61,8 +61,12 @@ public class InventoryScript : ScriptableObject, ISerializationCallbackReceiver
 
     public void OnAfterDeserialize()
     {
+        if (Cont == null || Cont.Count == 0 || database == null) return;
+
         for (int i = 0; i < Cont.Count; i++)
         {
+            if (Cont[i].item == null || database.GetObj == null || !database.GetObj.ContainsKey(Cont[i].ID)) continue; // Add more error checking!
+
             Cont[i].item = database.GetObj[Cont[i].ID];
         }
     }

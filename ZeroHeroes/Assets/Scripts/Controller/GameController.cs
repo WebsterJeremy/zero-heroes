@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 #pragma warning disable 649
 
@@ -26,6 +27,7 @@ public class GameController : MonoBehaviour
     [Header("Player")]
     private Player player;
     public GameObject playerPrefab;
+    public int currentZoneSceneID = 1;
 
 
     #endregion
@@ -69,14 +71,14 @@ public class GameController : MonoBehaviour
 
         money = GetStat("MONEY", 0);
 
-        EffectController.TweenFadeScene(1f, 0f, 2f, () => { }); // Fade in from White on start.
+        EffectController.TweenFadeScene(1f, 0f, 5f, () => { }); // Fade in from White on start.
 
         yield return new WaitForSeconds(0.3f);
 
-        UIController.Instance.GetHUD().DisplayMoney(money);
+//        UIController.Instance.GetHUD().DisplayMoney(money);
 
         //todo starting game here for a moment.. remove once menu UI is working
-        StartGame();
+//        StartGame();
     }
 
     private void OnApplicationQuit() { // Force save in SQL
@@ -153,24 +155,25 @@ public class GameController : MonoBehaviour
     #endregion
     #region Main
 
-    private void OnDrawGizmos() //this is just a test gizmos
-    { 
-
-        if (collisionTilemap != null) {
-            foreach (var pos in collisionTilemap.cellBounds.allPositionsWithin) {
-                Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-                Vector3 place = collisionTilemap.CellToWorld(localPlace);
-
-                if (collisionTilemap.HasTile(localPlace)) {
-                    Gizmos.DrawCube(new Vector3(localPlace.x + 1, localPlace.y + 1), new Vector3(1, 1, 1));
-                }
-            }
-        }
-    }
 
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
+        SceneManager.LoadScene(currentZoneSceneID, LoadSceneMode.Additive);
+
+        EffectController.TweenFadeScene(0f, 1f, 0.4f, () => { }); // Fade to loading screen
+
+        while (!SceneManager.GetSceneAt(currentZoneSceneID).isLoaded) // Force wait until it's loaded (Could add Loading screen if required)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { }); // Fade to playspace scene
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(currentZoneSceneID));
+
         GAME_STATE = GameState.PLAYING;
+
+        UIController.Instance.GetHUD().gameObject.SetActive(true);
 
         pathRequestManager = new PathRequestManager(); //set up the pathfinding manager and pathfinder
         pathFinder = new PathFinder();
@@ -188,7 +191,6 @@ public class GameController : MonoBehaviour
     private void GenerateTestWorldData() {
         //generate world..
         world.GenerateWorld(collisionTilemap);
-        
 
         //spawn player
         Position spawnPoint = new Position(15, 15);
@@ -254,6 +256,24 @@ Could you install one for me?",null,null)
     public void StopChildCoroutine(Coroutine coroutineMethod)
     {
         StopCoroutine(coroutineMethod);
+    }
+
+    private void OnDrawGizmos() //this is just a test gizmos
+    {
+
+        if (collisionTilemap != null)
+        {
+            foreach (var pos in collisionTilemap.cellBounds.allPositionsWithin)
+            {
+                Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
+                Vector3 place = collisionTilemap.CellToWorld(localPlace);
+
+                if (collisionTilemap.HasTile(localPlace))
+                {
+                    Gizmos.DrawCube(new Vector3(localPlace.x + 1, localPlace.y + 1), new Vector3(1, 1, 1));
+                }
+            }
+        }
     }
 
 
