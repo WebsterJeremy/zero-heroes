@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Mainmenu : MenuBase
+public class MainMenu : MenuBase
 {
     #region AccessVariables
 
@@ -42,15 +42,17 @@ public class Mainmenu : MenuBase
             backgrounds[i] = GameObject.Instantiate(imageBackground);
             backgrounds[i].name = "img_background_" + i;
             backgrounds[i].transform.SetParent(imageBackground.transform.parent);
-            backgrounds[i].GetComponent<RectTransform>().offsetMin = new Vector2(i * Screen.width, 0f);
-            backgrounds[i].GetComponent<RectTransform>().offsetMax = new Vector2(i * Screen.width, 0f);
+            backgrounds[i].GetComponent<RectTransform>().offsetMin = new Vector2(i * Screen.width-2, 0f);
+            backgrounds[i].GetComponent<RectTransform>().offsetMax = new Vector2(i * Screen.width-2, 0f);
 
             if (i % 2 != 0) backgrounds[i].transform.localRotation = Quaternion.Euler(0, 180, 0);
         }
     }
 
+
     #endregion
     #region Core
+
 
     protected override void AddButtonListeners()
     {
@@ -61,7 +63,12 @@ public class Mainmenu : MenuBase
             buttonPlay.interactable = false;
             Close();
         });
+        buttonOptions.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
 
+            OpenSettings();
+        });
         buttonExit.onClick.AddListener(() =>
         {
             SoundController.PlaySound("button");
@@ -79,18 +86,35 @@ public class Mainmenu : MenuBase
         });
     }
 
-    protected override void Open()
+    protected override IEnumerator _Open()
     {
-        rectMenu.gameObject.SetActive(true);
+        if (IsOpened()) yield break;
+
+        gameObject.SetActive(true);
     }
 
-    protected override void Close()
+    protected override IEnumerator _Close()
     {
-        EffectController.TweenFade(rectMenu.GetComponent<CanvasGroup>(), 1f, 0f, 3f, () => {
-            rectMenu.gameObject.SetActive(false);
+        if (!IsOpened()) yield break;
+
+        EffectController.TweenFade(GetComponent<CanvasGroup>(), 1f, 0f, 3f, () => {
+            gameObject.SetActive(false);
         });
 
         GameController.Instance.StartGame();
+    }
+
+    public void TransitionOut()
+    {
+        EffectController.TweenAnchor(rectMenu, new Vector2(-(Screen.width/2 + rectMenu.rect.width/2 + 40), 0), 1f, () => {
+            rectMenu.gameObject.SetActive(true);
+        });
+    }
+
+    public void TransitionIn()
+    {
+        rectMenu.gameObject.SetActive(true);
+        EffectController.TweenAnchor(rectMenu, new Vector2(0, 0), 1f, () => { });
     }
 
     private void Update()
@@ -113,14 +137,21 @@ public class Mainmenu : MenuBase
 
             if (offsetMin.x <= -Screen.width)
             {
-                backgrounds[i].GetComponent<RectTransform>().offsetMin = new Vector2(2 * Screen.width, 0f);
-                backgrounds[i].GetComponent<RectTransform>().offsetMax = new Vector2(2 * Screen.width, 0f);
+                backgrounds[i].GetComponent<RectTransform>().offsetMin = new Vector2(2 * Screen.width-2, 0f);
+                backgrounds[i].GetComponent<RectTransform>().offsetMax = new Vector2(2 * Screen.width-2, 0f);
 
                 backgrounds[i].transform.localRotation = Quaternion.Euler(0, backgrounds[i].transform.localRotation.eulerAngles.y == 180 ? 0 : 180, 0);
             }
         }
     }
 
+    private void OpenSettings()
+    {
+        TransitionOut();
 
-#endregion
+        UIController.Instance.GetSettingsMenu().Open();
+    }
+
+
+    #endregion
 }

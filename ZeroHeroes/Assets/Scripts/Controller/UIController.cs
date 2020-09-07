@@ -23,7 +23,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private HUD hud;
 
     [Header("Menus")]
-    [SerializeField] private Mainmenu mainmenu;
+    [SerializeField] private MainMenu mainMenu;
+    [SerializeField] private SettingsMenu settingsMenu;
 
 
     #endregion
@@ -33,19 +34,21 @@ public class UIController : MonoBehaviour
     private enum MenuState { NONE, MAINMENU, SETTINGS }
     private MenuState menuState = MenuState.NONE;
 
+    private List<MenuBase> menus = new List<MenuBase>();
+
     #endregion
     #region Initlization
 
     private void Awake() {
+        hud.gameObject.SetActive(false);
+
+        menus.Add(settingsMenu);
+
         CloseAllPanels();
+
+        menus.Add(mainMenu);
+        mainMenu.Open();
     }
-
-    public void CloseAllPanels() {
-        ShowHideInteractionPanel(false);
-        ShowHideInventoryPanel(false);
-    }
-
-
 
     private static UIController instance;
     public static UIController Instance // Assign Singlton
@@ -75,6 +78,21 @@ public class UIController : MonoBehaviour
         return hud;
     }
 
+    public MainMenu GetMainMenu()
+    {
+        return mainMenu;
+    }
+
+    public SettingsMenu GetSettingsMenu()
+    {
+        return settingsMenu;
+    }
+
+    public MenuBase[] GetMenus()
+    {
+        return menus.ToArray();
+    }
+
     public static void SetDebugStatistic(string statistic, string value)
     {
         UIController.Instance.GetHUD().SetDebugStatistic(statistic, value);
@@ -86,8 +104,26 @@ public class UIController : MonoBehaviour
 
 
     #endregion
+    #region Core
 
 
+    public void CloseAllPanels()
+    {
+        ShowHideInteractionPanel(false);
+        ShowHideInventoryPanel(false);
+
+        if (menus.Count > 0)
+        {
+            foreach (MenuBase menu in menus)
+            {
+                if (menu == null) continue;
+                menu.ForceClose();
+            }
+        }
+    }
+
+
+    #endregion
     #region Inventory Panel
 
     public void ChangeStateInventoryPanel() {
@@ -131,8 +167,7 @@ public class UIController : MonoBehaviour
 
 
     #endregion
-
-    #region interaction panel
+    #region Interaction Panel
     public void SetInteractionPanelPosition(Vector3 mousePos) {
         RectTransform rTransform = panelInteraction.GetComponent<RectTransform>();
 

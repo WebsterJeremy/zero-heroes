@@ -76,9 +76,6 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
 //        UIController.Instance.GetHUD().DisplayMoney(money);
-
-        //todo starting game here for a moment.. remove once menu UI is working
-//        StartGame();
     }
 
     private void OnApplicationQuit() { // Force save in SQL

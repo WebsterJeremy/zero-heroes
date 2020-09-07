@@ -8,7 +8,7 @@ abstract public class MenuBase : MonoBehaviour
 
 
     [Header("Display")]
-    [SerializeField] protected bool opened;
+    [SerializeField] protected bool opened = false;
 
     [Header("Containers")]
     [SerializeField] protected RectTransform rectMenu;
@@ -47,10 +47,29 @@ abstract public class MenuBase : MonoBehaviour
     #endregion
     #region Core
 
-
     protected virtual void AddButtonListeners() {}
-    protected abstract void Open();
-    protected abstract void Close();
+    protected abstract IEnumerator _Open();
+    protected abstract IEnumerator _Close();
+
+    public void Open()
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(_Open());
+        opened = true;
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(true);
+        StartCoroutine(_Close());
+        opened = false;
+    }
+
+    public void ForceClose()
+    {
+        opened = false;
+        rectMenu.gameObject.SetActive(false);
+    }
 
 
     #endregion
