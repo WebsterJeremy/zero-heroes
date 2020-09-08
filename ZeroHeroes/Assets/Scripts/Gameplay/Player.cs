@@ -11,6 +11,7 @@ namespace Assets.Scripts.world
 
         public Player(string _id, Position _position) {
             playerEntity = GameController.Instance.World.SpawnPlayer(_id, _position);
+            playerEntity.walkSpeed = 10f;
         }
 
         /// <summary>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
+using Assets.Scripts.ai.state;
 
 #pragma warning disable 649
 
@@ -72,6 +73,11 @@ public class GameController : MonoBehaviour
         money = GetStat("MONEY", 0);
 
         EffectController.TweenFadeScene(1f, 0f, 5f, () => { }); // Fade in from White on start.
+
+        for (int i = 0;i < SceneManager.sceneCount;i++) // Unload scene if opened while testing
+        {
+            if (SceneManager.GetSceneAt(i).buildIndex != 0) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(i).buildIndex);
+        }
 
         yield return new WaitForSeconds(0.3f);
 
@@ -159,14 +165,14 @@ public class GameController : MonoBehaviour
 
         EffectController.TweenFadeScene(0f, 1f, 0.4f, () => { }); // Fade to loading screen
 
-        while (!SceneManager.GetSceneAt(currentZoneSceneID).isLoaded) // Force wait until it's loaded (Could add Loading screen if required)
+        while (!SceneManager.GetSceneByBuildIndex(currentZoneSceneID).isLoaded) // Force wait until it's loaded (Could add Loading screen if required)
         {
             yield return new WaitForSeconds(0.1f);
         }
 
         EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { }); // Fade to playspace scene
 
-        SceneManager.SetActiveScene(SceneManager.GetSceneAt(currentZoneSceneID));
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(currentZoneSceneID));
 
         GAME_STATE = GameState.PLAYING;
 
@@ -190,7 +196,7 @@ public class GameController : MonoBehaviour
         world.GenerateWorld(collisionTilemap);
 
         //spawn player
-        Position spawnPoint = new Position(15, 15);
+        Position spawnPoint = new Position(GameObject.Find("SpawnPoint").transform.position); // new Position(15, 15);
         player = new Player("1", spawnPoint);
 
 
@@ -206,6 +212,48 @@ public class GameController : MonoBehaviour
         World.SpawnItem("farming_fishing_72", new Position(17, 15), 1);
         World.SpawnItem("farming_fishing_73", new Position(20, 20), 1);
         World.SpawnItem("farming_fishing_60", new Position(14, 20), 1);
+    }
+
+    public void EnterZone(Zone zone, string entryPoint) { StartCoroutine(_EnterZone(zone, entryPoint)); }
+    public void EnterZone(Zone zone) { StartCoroutine(_EnterZone(zone, "SpawnPoint")); }
+    public IEnumerator _EnterZone(Zone zone, string entryPoint)
+    {
+        SceneManager.LoadScene(zone.sceneId, LoadSceneMode.Additive);
+
+        EffectController.TweenFadeScene(0f, 1f, 0.4f, () => { });
+
+        while (!SceneManager.GetSceneByBuildIndex(zone.sceneId).isLoaded)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { });
+        
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(zone.sceneId));
+
+        SceneManager.UnloadSceneAsync(currentZoneSceneID); // Unload Old Scene/Zone
+
+        currentZoneSceneID = zone.sceneId;
+
+        yield return new WaitForSeconds(0.1f);
+
+        collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
+
+        world.GenerateWorld(collisionTilemap);
+
+        yield return new WaitForSeconds(0.3f);
+
+        Position entryPos = new Position(GameObject.Find(entryPoint).transform.position);
+        player.Entity.UpdatePosition(entryPos, true);
+        player.Entity.MovementHelper.StopFollowingCurrentPath();
+
+        yield return new WaitForSeconds(0.1f);
+
+        player.Entity.FSM.EnterState(new FSMStateIdle(player.Entity));
+
+        //        GenerateTestWorldData();
+
+        // After 5 minutes of old zone not being re-entered remove the scene (instead of keeping it unloaded)
     }
 
     #endregion

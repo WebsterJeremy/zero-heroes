@@ -65,9 +65,6 @@ namespace Assets.Scripts.ai
             }
         }
 
-        public static float DEFAULT_WALK_SPEED = 6.0f;//todo move this elsewhere.. its referenced below.
-
-
         IEnumerator FollowPath() {
             isMoving = true;
 
@@ -94,8 +91,7 @@ namespace Assets.Scripts.ai
 
                     do {
                         if (owner.GameObject != null) {
-                            //todo should walk speed be specified elsewhere? in each entity type definition data perhaps? (if each entity can move at different speeds)
-                            owner.GameObject.transform.position = Vector3.MoveTowards(owner.GameObject.transform.position, targetPositionInWorld, DEFAULT_WALK_SPEED * Time.deltaTime);
+                            owner.GameObject.transform.position = Vector3.MoveTowards(owner.GameObject.transform.position, targetPositionInWorld, owner.WalkSpeed * Time.deltaTime);
                             yield return new WaitForEndOfFrame();
 
                             if (owner.GameObject.transform.position.x.Equals(targetPositionInWorld.x) &&
@@ -115,7 +111,7 @@ namespace Assets.Scripts.ai
             }
         }
 
-        void StopFollowingCurrentPath() {
+        public void StopFollowingCurrentPath() {
             if (lastMoveRoutine != null) {
                 GameController.Instance.StopChildCoroutine(lastMoveRoutine);
             }

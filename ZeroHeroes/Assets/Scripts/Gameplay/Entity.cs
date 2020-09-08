@@ -10,6 +10,7 @@ namespace Assets.Scripts.world
         private string id;
         private Position position;
         private GameObject gameObject;
+        public float walkSpeed = 6f;
 
         //an entity is a moving or living object... eg npc, etc... 
         //this will utilize, pathfinding, but also utilize the FMS (finite state machine) system (which the player does not use)
@@ -32,6 +33,11 @@ namespace Assets.Scripts.world
 
         public Inventory Inventory {
             get { return inventory; }
+        }
+
+        public float WalkSpeed
+        {
+            get { return walkSpeed; }
         }
 
 

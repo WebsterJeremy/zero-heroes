@@ -59,6 +59,8 @@ namespace Assets.Scripts.world
                     tiles.Add(newTile.Id, newTile);
                 }
             }*/
+            tiles.Clear(); // Clear tiles for when re-generating collisions for new Scene/Zone
+
             foreach (var pos in tilemap.cellBounds.allPositionsWithin)
             { 
                 Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
