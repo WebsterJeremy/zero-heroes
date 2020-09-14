@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "new Default Obj", menuName = "Inventory System/ItemObjs/Default")]
 
-public class defaultObj : itemObjScript
+public class defaultObj : itemObjScriptTE
 {
     public void Awake()
     {

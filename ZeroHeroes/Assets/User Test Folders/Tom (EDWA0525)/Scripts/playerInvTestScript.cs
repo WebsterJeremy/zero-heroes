@@ -4,16 +4,19 @@ using UnityEngine;
 
 public class playerInvTestScript : MonoBehaviour
 {
-    public InventoryScript inventory;
+    public InventoryScriptTE inventory;
 
     public void OnTriggerEnter(Collider other)
     {
-        var item = other.GetComponent<Item>();
+        var item1 = other.GetComponent<GroundItem>();
 
-        if (item)
+        if (item1)
         {
-            inventory.AddItem(item.item, 1);
+            invItemTE _item = new invItemTE(item1.item);
+            Debug.Log(_item.Id);
+            inventory.AddItem(_item, 1);
             Destroy(other.gameObject);
+
         }
     }
 
@@ -32,7 +35,7 @@ public class playerInvTestScript : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        inventory.Cont.Clear();
+        inventory.Cont.Items = new InvSlotTE[16];
     }
 
 }

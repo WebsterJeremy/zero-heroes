@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "new Building Obj", menuName = "Inventory System/ItemObjs/Building")]
 
-public class buildingObj : itemObjScript
+public class buildingObj : itemObjScriptTE
 {
     // Start is called before the first frame update
     public void Awake()

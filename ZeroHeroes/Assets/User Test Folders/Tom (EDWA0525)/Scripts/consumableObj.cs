@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu(fileName = "new Consumable Obj", menuName = "Inventory System/ItemObjs/Consumable")]
 
-public class consumableObj : itemObjScript
+public class consumableObj : itemObjScriptTE
 {
     public void Awake()
     {

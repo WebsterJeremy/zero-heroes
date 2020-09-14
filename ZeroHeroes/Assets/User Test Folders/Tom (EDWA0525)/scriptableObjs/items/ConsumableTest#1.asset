@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cb46e170f2b3f64da133b1dea3d8373, type: 3}
   m_Name: ConsumableTest#1
   m_EditorClassIdentifier: 
-  preFab: {fileID: 8298772368271429287, guid: e6bbb7bd030863149be1c0d6a852a1dc, type: 3}
+  Id: 3
+  uiDisp: {fileID: 0}
   type: 2
   desc: adawdadw

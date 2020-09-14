@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96073c53768a13f4f9a600c57b00c1eb, type: 3}
   m_Name: EnvironmentTest#1
   m_EditorClassIdentifier: 
-  preFab: {fileID: 8298772368271429287, guid: cd45934300eec52419be96230ae1d9d0, type: 3}
+  Id: 4
+  uiDisp: {fileID: 0}
   type: 1
   desc: ajkwhfdaldkajwk
   natureVal: 10
