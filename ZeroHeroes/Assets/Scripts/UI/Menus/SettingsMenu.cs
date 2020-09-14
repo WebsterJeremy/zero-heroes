@@ -22,6 +22,9 @@ public class SettingsMenu : MenuBase
     #region PrivateVariables
 
 
+    private MenuBase backMenu;
+
+
     #endregion
     #region Initlization
 
@@ -47,22 +50,27 @@ public class SettingsMenu : MenuBase
         });
     }
 
+    public void OpenFrom(MenuBase menu)
+    {
+        backMenu = menu;
+        base.Open();
+    }
+
     protected override IEnumerator _Open()
     {
         if (IsOpened()) yield break;
 
         rectMenu.gameObject.SetActive(true);
-        EffectController.TweenAnchor(rectMenu, new Vector2(0, 0), 1f, () => { });
+        EffectController.TweenAnchor(rectMenu, new Vector2(0, 0), 1f, false, () => { });
     }
 
     protected override IEnumerator _Close()
     {
         if (!IsOpened()) yield break;
 
-        UIController.Instance.GetMainMenu().TransitionIn();
+        backMenu.TransitionIn();
 
-        EffectController.TweenAnchor(rectMenu, new Vector2((Screen.width / 2 + rectMenu.rect.width / 2 + 80), 0), 1f, () => {
-        });
+        EffectController.TweenAnchor(rectMenu, new Vector2((Screen.width / 2 + rectMenu.rect.width / 2 + 80), 0), 1f, false, () => {});
 
         yield return new WaitForSeconds(0.3f);
 

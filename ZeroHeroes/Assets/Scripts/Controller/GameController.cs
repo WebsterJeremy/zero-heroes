@@ -84,10 +84,8 @@ public class GameController : MonoBehaviour
 //        UIController.Instance.GetHUD().DisplayMoney(money);
     }
 
-    private void OnApplicationQuit() { // Force save in SQL
-        foreach (string key in stats.Keys) {
-            PlayerPrefs.SetString(key, stats[key]);
-        }
+    private void OnApplicationQuit() {
+        SaveGame();
     }
 
 
@@ -191,6 +189,44 @@ public class GameController : MonoBehaviour
     }
 
 
+    public void PauseGame() { StartCoroutine(_PauseGame()); }
+    IEnumerator _PauseGame()
+    {
+        yield return null;
+
+        GAME_STATE = GameState.PAUSED;
+
+        Time.timeScale = 0f;
+    }
+
+    public void UnpauseGame() { StartCoroutine(_UnpauseGame()); }
+    IEnumerator _UnpauseGame()
+    {
+        yield return null;
+
+        GAME_STATE = GameState.PLAYING;
+
+        Time.timeScale = 1f;
+    }
+
+    public void StopGame() // Open Mainmenu / Unload Zones / Save Progress
+    {
+        UIController.Instance.CloseAllPanels(UIController.Instance.GetMainMenu());
+        UIController.Instance.GetMainMenu().Open();
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
+
+        SaveGame();
+
+        for (int i = 0;i < SceneManager.sceneCount;i++)
+        {
+            if (SceneManager.GetSceneAt(i).buildIndex != 0) SceneManager.UnloadSceneAsync(i);
+        }
+
+        GAME_STATE = GameState.PAUSED;
+        Time.timeScale = 1f;
+    }
+
     private void GenerateTestWorldData() {
         //generate world..
         world.GenerateWorld(collisionTilemap);
@@ -256,6 +292,16 @@ public class GameController : MonoBehaviour
         // After 5 minutes of old zone not being re-entered remove the scene (instead of keeping it unloaded)
     }
 
+    public void SaveGame()
+    {
+        Debug.Log("Saving the game");
+
+        foreach (string key in stats.Keys)
+        {
+            PlayerPrefs.SetString(key, stats[key]);
+        }
+    }
+
     #endregion
     #region Tasks
 
@@ -303,9 +349,8 @@ Could you install one for me?",null,null)
         StopCoroutine(coroutineMethod);
     }
 
-    private void OnDrawGizmos() //this is just a test gizmos
+    private void OnDrawGizmos() // Draw Debug Colliders in scene view
     {
-
         if (collisionTilemap != null)
         {
             foreach (var pos in collisionTilemap.cellBounds.allPositionsWithin)

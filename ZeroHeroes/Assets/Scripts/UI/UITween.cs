@@ -80,17 +80,17 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (enablePressScale) EffectController.TweenScale(rect, new Vector3(1.1f, 1.1f, 1.1f), pressedDuration, () => {});
+        if (enablePressScale) EffectController.TweenScale(rect, new Vector3(1.1f, 1.1f, 1.1f), pressedDuration, false, () => {});
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (enablePressScale) EffectController.TweenScale(rect, new Vector3(1f, 1f, 1f), pressedDuration, () => {});
+        if (enablePressScale) EffectController.TweenScale(rect, new Vector3(1f, 1f, 1f), pressedDuration, false, () => {});
     }
 
     void Hover()
     {
-        rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, Mathf.Lerp(rect.anchoredPosition.y, hoverGoal, Time.deltaTime * hoverSpeed));
+        rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, Mathf.Lerp(rect.anchoredPosition.y, hoverGoal, Time.unscaledDeltaTime * hoverSpeed));
 
         if (Mathf.Abs(hoverGoal - rect.anchoredPosition.y) < 10f)
         {
@@ -124,7 +124,7 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     void Animate()
     {
-        int index = (int)(Time.time * animateFPS);
+        int index = (int)(Time.unscaledDeltaTime * animateFPS);
         index = index % animateFrames.Length; image.sprite = animateFrames[index];
     }
 
@@ -149,13 +149,13 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         shakeLast = 0f;
 
-        EffectController.TweenRotation(transform, Quaternion.Euler(shakeBetweenX.x, shakeBetweenY.x, shakeBetweenZ.x), (shakeSpeed-0.2f) / 2, () =>
+        EffectController.TweenRotation(transform, Quaternion.Euler(shakeBetweenX.x, shakeBetweenY.x, shakeBetweenZ.x), (shakeSpeed-0.2f) / 2, false, () =>
         {
-            EffectController.TweenRotation(transform, Quaternion.Euler(shakeBetweenX.y, shakeBetweenY.y, shakeBetweenZ.y), (shakeSpeed-0.2f) / 2, () =>
+            EffectController.TweenRotation(transform, Quaternion.Euler(shakeBetweenX.y, shakeBetweenY.y, shakeBetweenZ.y), (shakeSpeed-0.2f) / 2, false, () =>
             {
-                EffectController.TweenRotation(transform, Quaternion.Euler(0, 0, -5f), 0.1f, () =>
+                EffectController.TweenRotation(transform, Quaternion.Euler(0, 0, -5f), 0.1f, false, () =>
                 {
-                    EffectController.TweenRotation(transform, Quaternion.Euler(0, 0, 0), 0.1f, () =>
+                    EffectController.TweenRotation(transform, Quaternion.Euler(0, 0, 0), 0.1f, false, () =>
                     {
 
                     });
@@ -175,6 +175,6 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (enableFade) Fade();
         if (enableShake && shakeLast >= shakeSpeed + shakeWait) Shake();
 
-        shakeLast += Time.deltaTime;
+        shakeLast += Time.unscaledDeltaTime;
     }
 }

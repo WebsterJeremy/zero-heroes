@@ -85,7 +85,7 @@ public class MainMenu : MenuBase
                 
         });
     }
-
+    
     protected override IEnumerator _Open()
     {
         if (IsOpened()) yield break;
@@ -97,24 +97,23 @@ public class MainMenu : MenuBase
     {
         if (!IsOpened()) yield break;
 
-        EffectController.TweenFade(GetComponent<CanvasGroup>(), 1f, 0f, 3f, () => {
-            gameObject.SetActive(false);
-        });
+        gameObject.SetActive(false);
 
         GameController.Instance.StartGame();
+        buttonPlay.interactable = true;
     }
 
-    public void TransitionOut()
+    public override void TransitionOut()
     {
-        EffectController.TweenAnchor(rectMenu, new Vector2(-(Screen.width/2 + rectMenu.rect.width/2 + 40), 0), 1f, () => {
+        EffectController.TweenAnchor(rectMenu, new Vector2(-(Screen.width/2 + rectMenu.rect.width/2 + 40), 0), 1f, false, () => {
             rectMenu.gameObject.SetActive(true);
         });
     }
 
-    public void TransitionIn()
+    public override void TransitionIn()
     {
         rectMenu.gameObject.SetActive(true);
-        EffectController.TweenAnchor(rectMenu, new Vector2(0, 0), 1f, () => { });
+        EffectController.TweenAnchor(rectMenu, new Vector2(0, 0), 1f, false, () => { });
     }
 
     private void Update()
@@ -149,7 +148,7 @@ public class MainMenu : MenuBase
     {
         TransitionOut();
 
-        UIController.Instance.GetSettingsMenu().Open();
+        UIController.Instance.GetSettingsMenu().OpenFrom(this);
     }
 
 

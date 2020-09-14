@@ -72,11 +72,13 @@ public class ShopManager : MenuBase {
         });
     }
 
-    protected override void Open() {
-        rectMenu.gameObject.SetActive(true);
+    protected override IEnumerator _Open() {
+        yield return null;
     }
 
-    protected override void Close() {
+    protected override IEnumerator _Close() {
+        yield return null;
+
         /*
         EffectController.TweenFade(rectMenu.GetComponent<CanvasGroup>(), 1f, 0f, 3f, () => {
             rectMenu.gameObject.SetActive(false);

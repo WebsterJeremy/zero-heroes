@@ -50,6 +50,8 @@ abstract public class MenuBase : MonoBehaviour
     protected virtual void AddButtonListeners() {}
     protected abstract IEnumerator _Open();
     protected abstract IEnumerator _Close();
+    public virtual void TransitionIn() {}
+    public virtual void TransitionOut() {}
 
     public void Open()
     {

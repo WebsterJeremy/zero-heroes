@@ -10,7 +10,11 @@ public class PauseMenu : MenuBase
 
 
     [Header("Buttons")]
-    [SerializeField] private Button buttonClose;
+    [SerializeField] private Button buttonMusic;
+    [SerializeField] private Button buttonSounds;
+    [SerializeField] private Button buttonResume;
+    [SerializeField] private Button buttonSettings;
+    [SerializeField] private Button buttonExit;
 
 
     #endregion
@@ -33,12 +37,37 @@ public class PauseMenu : MenuBase
 
     protected override void AddButtonListeners()
     {
-        buttonClose.onClick.AddListener(() =>
+        buttonMusic.onClick.AddListener(() =>
         {
             SoundController.PlaySound("button");
 
-            buttonClose.interactable = false;
+            SoundController.SetMusicMuted(!SoundController.MUTED_MUSIC);
+        });
+        buttonSounds.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            SoundController.SetSoundsMuted(!SoundController.MUTED_SOUNDS);
+        });
+        buttonResume.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            buttonResume.interactable = false;
             Close();
+        });
+        buttonSettings.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            TransitionOut();
+            UIController.Instance.GetSettingsMenu().OpenFrom(this);
+        });
+        buttonExit.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            GameController.Instance.StopGame();
         });
     }
 
@@ -46,16 +75,34 @@ public class PauseMenu : MenuBase
     {
         if (IsOpened()) yield break;
 
-        rectMenu.gameObject.SetActive(true);
+        GameController.Instance.PauseGame();
+        UIController.Instance.EnableBlur();
     }
 
     protected override IEnumerator _Close()
     {
         if (!IsOpened()) yield break;
 
-        rectMenu.gameObject.SetActive(false);
+        gameObject.SetActive(false);
+
+        UIController.Instance.DisableBlur();
+        GameController.Instance.UnpauseGame();
+
+        buttonResume.interactable = true;
     }
 
+    public override void TransitionOut()
+    {
+        EffectController.TweenAnchor(rectMenu, new Vector2(-(Screen.width / 2 + rectMenu.rect.width / 2 + 40), 0), 1f, false, () => {
+            rectMenu.gameObject.SetActive(true);
+        });
+    }
+
+    public override void TransitionIn()
+    {
+        rectMenu.gameObject.SetActive(true);
+        EffectController.TweenAnchor(rectMenu, new Vector2(0, 0), 1f, false, () => { });
+    }
 
     #endregion
 }

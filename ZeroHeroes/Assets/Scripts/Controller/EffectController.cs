@@ -84,8 +84,9 @@ public class EffectController : MonoBehaviour
     #region Tween
 
 
-    public static void TweenScale(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenScale(rect, endValue, duration, callback)); }
-    private static IEnumerator _TweenScale( Transform rect, Vector3 endValue, float duration, System.Action callback)
+    public static void TweenScale(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenScale(rect, endValue, duration, true, callback)); }
+    public static void TweenScale(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenScale(rect, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenScale( Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -95,14 +96,15 @@ public class EffectController : MonoBehaviour
             rect.localScale = Vector3.Lerp(rect.localScale, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
     }
 
-    public static void TweenPosition(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenPosition(rect, endValue, duration, callback)); }
-    private static IEnumerator _TweenPosition(Transform rect, Vector3 endValue, float duration, System.Action callback)
+    public static void TweenPosition(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenPosition(rect, endValue, duration, true, callback)); }
+    public static void TweenPosition(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenPosition(rect, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenPosition(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -112,14 +114,15 @@ public class EffectController : MonoBehaviour
             rect.localPosition = Vector3.Lerp(rect.localPosition, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
     }
 
-    public static void TweenPositionWorld(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenPositionWorld(rect, endValue, duration, callback)); }
-    private static IEnumerator _TweenPositionWorld(Transform rect, Vector3 endValue, float duration, System.Action callback)
+    public static void TweenPositionWorld(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenPositionWorld(rect, endValue, duration, true, callback)); }
+    public static void TweenPositionWorld(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenPositionWorld(rect, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenPositionWorld(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -129,14 +132,15 @@ public class EffectController : MonoBehaviour
             rect.position = Vector3.Lerp(rect.position, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
     }
 
-    public static void TweenRotation(Transform rect, Quaternion endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenRotation(rect, endValue, duration, callback)); }
-    private static IEnumerator _TweenRotation(Transform rect, Quaternion endValue, float duration, System.Action callback)
+    public static void TweenRotation(Transform rect, Quaternion endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenRotation(rect, endValue, duration, true, callback)); }
+    public static void TweenRotation(Transform rect, Quaternion endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenRotation(rect, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenRotation(Transform rect, Quaternion endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -146,7 +150,7 @@ public class EffectController : MonoBehaviour
             rect.localRotation = Quaternion.Lerp(rect.localRotation, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
@@ -156,8 +160,9 @@ public class EffectController : MonoBehaviour
     //////////////
 
 
-    public static void TweenAnchor(RectTransform rect, Vector2 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenAnchor(rect, endValue, duration, callback)); }
-    private static IEnumerator _TweenAnchor(RectTransform rect, Vector2 endValue, float duration, System.Action callback)
+    public static void TweenAnchor(RectTransform rect, Vector2 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenAnchor(rect, endValue, duration, true, callback)); }
+    public static void TweenAnchor(RectTransform rect, Vector2 endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenAnchor(rect, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenAnchor(RectTransform rect, Vector2 endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -167,14 +172,15 @@ public class EffectController : MonoBehaviour
             rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
     }
 
-    public static void TweenScaleBack(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenScaleBack(rect, endValue, duration, callback)); }
-    private static IEnumerator _TweenScaleBack(Transform rect, Vector3 endValue, float duration, System.Action callback)
+    public static void TweenScaleBack(Transform rect, Vector3 endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenScaleBack(rect, endValue, duration, true, callback)); }
+    public static void TweenScaleBack(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenScaleBack(rect, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenScaleBack(Transform rect, Vector3 endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
         Vector3 startValue = rect.localScale;
@@ -186,7 +192,7 @@ public class EffectController : MonoBehaviour
             rect.localScale = Vector3.Lerp(rect.localScale, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         animTime = 0f;
@@ -197,14 +203,15 @@ public class EffectController : MonoBehaviour
             rect.localScale = Vector3.Lerp(rect.localScale, startValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
     }
 
-    public static void TweenRotateAround(Transform rect, Vector3 point, Vector3 axis, float angle, float duration, System.Action callback) { Instance.StartCoroutine(_TweenRotateAround(rect,point,axis,angle,duration,callback)); }
-    private static IEnumerator _TweenRotateAround(Transform rect, Vector3 point, Vector3 axis, float angle, float duration, System.Action callback)
+    public static void TweenRotateAround(Transform rect, Vector3 point, Vector3 axis, float angle, float duration, System.Action callback) { Instance.StartCoroutine(_TweenRotateAround(rect,point,axis,angle,duration,true,callback)); }
+    public static void TweenRotateAround(Transform rect, Vector3 point, Vector3 axis, float angle, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenRotateAround(rect,point,axis,angle,duration,timescaled, callback)); }
+    private static IEnumerator _TweenRotateAround(Transform rect, Vector3 point, Vector3 axis, float angle, float duration, bool timescaled, System.Action callback)
     {
         float step = 0;
         float rate = 1.0f / duration;
@@ -213,7 +220,7 @@ public class EffectController : MonoBehaviour
 
         while (step < 1f)
         {
-            step += Time.deltaTime * rate;
+            step += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime) * rate;
             smoothStep = Mathf.SmoothStep(0, 1, step);
 
             if (rect == null) yield return null;
@@ -233,8 +240,9 @@ public class EffectController : MonoBehaviour
     #region Fade
 
 
-    public static void TweenFade(Image img, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFade(img, startValue, endValue, duration, callback)); }
-    private static IEnumerator _TweenFade(Image img, float startValue, float endValue, float duration, System.Action callback)
+    public static void TweenFade(Image img, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFade(img, startValue, endValue, duration, true, callback)); }
+    public static void TweenFade(Image img, float startValue, float endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenFade(img, startValue, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenFade(Image img, float startValue, float endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -245,14 +253,15 @@ public class EffectController : MonoBehaviour
             img.color = new Color(1, 1, 1, Mathf.Lerp(img.color.a, endValue, animTime / duration));
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         callback();
     }
 
-    public static void TweenFadeScene(float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeScene(startValue, endValue, duration, callback)); }
-    private static IEnumerator _TweenFadeScene(float startValue, float endValue, float duration, System.Action callback)
+    public static void TweenFadeScene(float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeScene(startValue, endValue, duration, false, callback)); }
+    public static void TweenFadeScene(float startValue, float endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenFadeScene(startValue, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenFadeScene(float startValue, float endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
         Image fadeImage = Instance.fadeImage;
@@ -269,7 +278,7 @@ public class EffectController : MonoBehaviour
             fadeImage.color = new Color(1, 1, 1, Mathf.Lerp(fadeImage.color.a, endValue, animTime / duration));
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
         if (endValue < 0.1f)
@@ -280,8 +289,9 @@ public class EffectController : MonoBehaviour
         callback();
     }
 
-    public static void TweenFade(Material material, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeMat(material, startValue, endValue, duration, callback)); }
-    private static IEnumerator _TweenFadeMat(Material material, float startValue, float endValue, float duration, System.Action callback)
+    public static void TweenFade(Material material, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeMat(material, startValue, endValue, duration, true, callback)); }
+    public static void TweenFade(Material material, float startValue, float endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenFadeMat(material, startValue, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenFadeMat(Material material, float startValue, float endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -292,13 +302,14 @@ public class EffectController : MonoBehaviour
             material.color = new Color(material.color.r, material.color.g, material.color.b, Mathf.Lerp(material.color.a, endValue, animTime / duration));
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
         callback();
     }
 
-    public static void TweenFade(SpriteRenderer spriteRenderer, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeSprite(spriteRenderer, startValue, endValue, duration, callback)); }
-    private static IEnumerator _TweenFadeSprite(SpriteRenderer spriteRenderer, float startValue, float endValue, float duration, System.Action callback)
+    public static void TweenFade(SpriteRenderer spriteRenderer, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeSprite(spriteRenderer, startValue, endValue, duration, true, callback)); }
+    public static void TweenFade(SpriteRenderer spriteRenderer, float startValue, float endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenFadeSprite(spriteRenderer, startValue, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenFadeSprite(SpriteRenderer spriteRenderer, float startValue, float endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -309,13 +320,14 @@ public class EffectController : MonoBehaviour
             spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, Mathf.Lerp(spriteRenderer.color.a, endValue, animTime / duration));
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
         callback();
     }
 
-    public static void TweenFade(TMPro.TextMeshProUGUI text, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeText(text, startValue, endValue, duration, callback)); }
-    private static IEnumerator _TweenFadeText(TMPro.TextMeshProUGUI text, float startValue, float endValue, float duration, System.Action callback)
+    public static void TweenFade(TMPro.TextMeshProUGUI text, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeText(text, startValue, endValue, duration, false, callback)); }
+    public static void TweenFade(TMPro.TextMeshProUGUI text, float startValue, float endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenFadeText(text, startValue, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenFadeText(TMPro.TextMeshProUGUI text, float startValue, float endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -326,13 +338,14 @@ public class EffectController : MonoBehaviour
             text.alpha = Mathf.Lerp(text.alpha, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
         callback();
     }
 
-    public static void TweenFade(CanvasGroup canvas, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeCanvas(canvas, startValue, endValue, duration, callback)); }
-    private static IEnumerator _TweenFadeCanvas(CanvasGroup canvas, float startValue, float endValue, float duration, System.Action callback)
+    public static void TweenFade(CanvasGroup canvas, float startValue, float endValue, float duration, System.Action callback) { Instance.StartCoroutine(_TweenFadeCanvas(canvas, startValue, endValue, duration, false, callback)); }
+    public static void TweenFade(CanvasGroup canvas, float startValue, float endValue, float duration, bool timescaled, System.Action callback) { Instance.StartCoroutine(_TweenFadeCanvas(canvas, startValue, endValue, duration, timescaled, callback)); }
+    private static IEnumerator _TweenFadeCanvas(CanvasGroup canvas, float startValue, float endValue, float duration, bool timescaled, System.Action callback)
     {
         float animTime = 0f;
 
@@ -343,7 +356,7 @@ public class EffectController : MonoBehaviour
             canvas.alpha = Mathf.Lerp(canvas.alpha, endValue, animTime / duration);
 
             yield return new WaitForEndOfFrame();
-            animTime += Time.deltaTime;
+            animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
         callback();
     }

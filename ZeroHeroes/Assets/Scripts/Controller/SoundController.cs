@@ -9,7 +9,8 @@ public class SoundController : MonoBehaviour
 {
     #region AccessVariables
 
-    public static bool MUTED = false;
+    public static bool MUTED_SOUNDS = false;
+    public static bool MUTED_MUSIC = false;
 
     [Serializable]
     public class Sound
@@ -76,11 +77,21 @@ public class SoundController : MonoBehaviour
     #region Main
 
 
-    public static void SetMuted(bool value)
+    public static void Mute(bool value)
     {
-        MUTED = value;
+        SetSoundsMuted(value);
+        SetMusicMuted(value);
+    }
 
+    public static void SetSoundsMuted(bool value)
+    {
+        MUTED_SOUNDS = value;
         Instance.audioSource.mute = value;
+    }
+
+    public static void SetMusicMuted(bool value)
+    {
+        MUTED_MUSIC = value;
         Instance.musicSource.mute = value;
     }
 
@@ -97,11 +108,23 @@ public class SoundController : MonoBehaviour
     {
         Sound sound = GetSound(key);
 
-        if (sound != null && !MUTED)
+        if (sound != null && !MUTED_SOUNDS)
         {
             Instance.audioSource.volume = sound.volume;
             Instance.audioSource.pitch = sound.pitch;
             Instance.audioSource.PlayOneShot(sound.audioClip);
+        }
+    }
+
+    public static void PlayMusic(string key)
+    {
+        Sound sound = GetSound(key);
+
+        if (sound != null && !MUTED_MUSIC)
+        {
+            Instance.musicSource.volume = sound.volume;
+            Instance.musicSource.pitch = sound.pitch;
+            Instance.musicSource.PlayOneShot(sound.audioClip);
         }
     }
 
