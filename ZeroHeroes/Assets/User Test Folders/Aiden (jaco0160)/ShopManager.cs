@@ -41,7 +41,18 @@ public class ShopManager : MenuBase {
         textName.text = _name;
         imagePortrait = _portrait;
 
+        //Button[] itemButtons = new Button[_items.Length];
+
         for (int i = 0; i < _items.Length; i++) {
+            /*
+            itemButtons[i] = new Button();
+
+            itemButtons[i].transform.SetParent(ScrollPanel.transform, false);
+            itemButtons[i].transform.localScale = Vector3.one;
+
+            ThisButton.GetComponentInChildren(Text).text = "testing";
+            */
+            
             GameObject newItem = Instantiate(ListItemPrefab) as GameObject;
             ShopListItemController controller = (ShopListItemController) newItem.GetComponent(typeof(ShopListItemController));
 
@@ -51,6 +62,12 @@ public class ShopManager : MenuBase {
 
             newItem.transform.SetParent(ScrollPanel.transform,false);
             newItem.transform.localScale = Vector3.one;
+
+            Vector3 pos = newItem.transform.position;
+            pos.y += i * 100;
+            newItem.transform.position = pos;
+            
+            
         }
         
     }

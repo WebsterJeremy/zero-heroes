@@ -2268,7 +2268,7 @@ MonoBehaviour:
   buttonBack: {fileID: 1294863342}
   imagePortrait: {fileID: 1986281982}
   textName: {fileID: 1353012007}
-  ScrollPanel: {fileID: 879323427}
+  ScrollPanel: {fileID: 1635057079}
   ListItemPrefab: {fileID: 304986477108986789, guid: b9dd235450e21a342ad993410beefd8a,
     type: 3}
   defaultImage: {fileID: 6824754654505398047, guid: 69e380b491f32894498ca648081cd053,
