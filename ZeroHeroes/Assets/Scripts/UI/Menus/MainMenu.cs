@@ -73,16 +73,13 @@ public class MainMenu : MenuBase
         {
             SoundController.PlaySound("button");
 
-            if (!Application.isEditor)
-            {
-                Application.Quit();
-            }
-            else
-            {
-                Debug.Log("Quitting Game");
-                EditorApplication.ExecuteMenuItem("Edit/Play");
-            }
-                
+#if UNITY_EDITOR
+            Debug.Log("Quitting Game");
+
+            EditorApplication.ExecuteMenuItem("Edit/Play");
+#else
+            Application.Quit();
+#endif
         });
     }
     

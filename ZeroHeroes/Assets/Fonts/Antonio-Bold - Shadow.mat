@@ -71,7 +71,7 @@ Material:
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
     - _ScaleRatioB: 0.63225
-    - _ScaleRatioC: 0.4092233
+    - _ScaleRatioC: 0.3445504
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -85,8 +85,8 @@ Material:
     - _TextureHeight: 1024
     - _TextureWidth: 1024
     - _UnderlayDilate: 0.67
-    - _UnderlayOffsetX: 0.37
-    - _UnderlayOffsetY: -0.27
+    - _UnderlayOffsetX: 0.66
+    - _UnderlayOffsetY: -0.58
     - _UnderlaySoftness: 0.505
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
@@ -102,5 +102,5 @@ Material:
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.79607844}
+    - _UnderlayColor: {r: 0, g: 0, b: 0, a: 0.40392157}
   m_BuildTextureStacks: []

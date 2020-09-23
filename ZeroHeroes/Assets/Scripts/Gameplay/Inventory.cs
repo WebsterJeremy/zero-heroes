@@ -32,7 +32,7 @@ namespace Assets.Scripts.Gameplay
 
 
             //todo ill optimize this another day. it currently iterates every item... not worth it.
-            UIController.Instance.UpdateInventory(items.Values.ToList());
+//            UIController.Instance.UpdateInventory(items.Values.ToList());
         }
 
         public void Remove(string _id) {
@@ -43,7 +43,7 @@ namespace Assets.Scripts.Gameplay
             items.Remove(_id);
 
             //todo ill optimize this another day. it currently iterates every item... not worth it.
-            UIController.Instance.UpdateInventory(items.Values.ToList());
+//            UIController.Instance.UpdateInventory(items.Values.ToList());
         }
 
         public bool IsInventoryFull() {

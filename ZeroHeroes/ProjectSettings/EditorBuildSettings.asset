@@ -9,9 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Utility/Controllers.unity
     guid: 47c13772253ffda4bba511029e7b5f0c
   - enabled: 1
-    path: Assets/Scenes/Outdoors/Plot.unity
-    guid: c946033d4f8ba72469fece182ff8aa95
-  - enabled: 1
-    path: Assets/Scenes/Outdoors/Livid Lake.unity
-    guid: 179edf60a46d2674caa738d37dcda428
+    path: Assets/Scenes/Zones/Plot.unity
+    guid: c595b0132e76fd34796769fd474f6c86
   m_configObjects: {}

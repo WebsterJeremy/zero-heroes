@@ -15,9 +15,7 @@ public class UIController : MonoBehaviour
 
     public Canvas canvas;
     public GameObject panelInteraction;
-    public GameObject panelInventory;
     public GameObject interactionItemPrefab;
-    public GameObject inventoryItemPrefab;
 
     [Header("UI")]
     [SerializeField] private HUD hud;
@@ -127,7 +125,6 @@ public class UIController : MonoBehaviour
     public void CloseAllPanels(MenuBase except)
     {
         ShowHideInteractionPanel(false);
-        ShowHideInventoryPanel(false);
 
         if (menus.Count > 0)
         {
@@ -198,49 +195,6 @@ public class UIController : MonoBehaviour
 
         if (hudBlur != null) hudBlur.SetActive(false);
     }
-
-
-    #endregion
-    #region Inventory Panel
-
-    public void ChangeStateInventoryPanel() {
-        panelInventory.SetActive(!panelInventory.activeSelf);
-    }
-    public void ShowHideInventoryPanel(bool _state) {
-        panelInventory.SetActive(_state);
-    }
-
-    public void UpdateInventory(List<InventoryItem> _items) {
-        //called in inventory when an item is added or removed...
-        //remove all inventory items...
-        RemoveAllInventoryUIItems();
-        //readd them.. now with updated value...
-        foreach(InventoryItem ii in _items) {
-            //todo add..
-            AddInventoryPanelItem(ii);
-        }
-    }
-
-    public void RemoveAllInventoryUIItems() {
-        foreach (Transform child in panelInventory.transform.Find("Content").transform) {
-            Destroy(child.gameObject);
-        }
-    }
-
-    public void AddInventoryPanelItem(InventoryItem _item) {
-        //spawn item
-        GameObject item = Instantiate(inventoryItemPrefab);
-        item.transform.SetParent(panelInventory.transform.Find("Content").transform, false);
-
-        //set text
-        item.transform.Find("Amount").GetComponent<Text>().text = _item.Amount.ToString();//this is the amount
-        item.transform.Find("Image").GetComponent<Image>().sprite = _item.Sprite();//this is the amount
-
-        //set callback
-        //todo set to actually show an inventory context menu.. from there choose to drop, action, examine, etc....
-        item.GetComponent<Button>().onClick.AddListener(() => { GameController.Instance.Player.AttemptDropInventoryItem(_item.Id); });
-    }
-
 
 
     #endregion

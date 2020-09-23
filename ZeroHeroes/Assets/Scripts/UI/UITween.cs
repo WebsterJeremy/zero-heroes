@@ -43,6 +43,11 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] private float fadeSpeed = 0.4f;
     [SerializeField] private Vector2 fadeBetween = new Vector2(0.2f, 0.8f);
 
+    [Header("Follow World")]
+    [SerializeField] private bool enableFolowWorld = false;
+    [SerializeField] private Transform followTransform;
+    [SerializeField] private Vector3 followVector;
+
     private RectTransform rect;
     private Button btn;
     private Vector2 initPos;
@@ -164,6 +169,18 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         });
     }
 
+    void FollowWorld()
+    {
+        if (followVector != null)
+        {
+            rect.position = Camera.main.WorldToScreenPoint(followVector);
+        }
+        else if (followTransform != null)
+        {
+            rect.position = Camera.main.WorldToScreenPoint(followTransform.position);
+        }
+    }
+
     void Update()
     {
         if (btn != null && !btn.interactable) return;
@@ -174,6 +191,7 @@ public class UITween : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (enableAnimate) Animate();
         if (enableFade) Fade();
         if (enableShake && shakeLast >= shakeSpeed + shakeWait) Shake();
+        if (enableFolowWorld) FollowWorld();
 
         shakeLast += Time.unscaledDeltaTime;
     }

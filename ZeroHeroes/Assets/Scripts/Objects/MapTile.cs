@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
+#if UNITY_EDITOR
 using UnityEditor.Tilemaps;
+#endif
 
 [CreateAssetMenu(fileName = "New Map Tile", menuName = "Tiles/MapTile")]
 public class MapTile : Tile
 {
+#if UNITY_EDITOR
     [CreateTileFromPalette]
+#endif
     public static TileBase CreateMapTile(Sprite sprite)
     {
         var mapTile = ScriptableObject.CreateInstance<MapTile>();
