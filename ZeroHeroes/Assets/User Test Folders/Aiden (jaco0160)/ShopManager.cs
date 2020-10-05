@@ -13,6 +13,7 @@ public class ShopManager : MenuBase {
     public Button buttonBack;
     public Image imagePortrait;
     public Text textName;
+    public Text itemDescription;
     public GameObject ScrollPanel;
 
     public GameObject ListItemPrefab;
@@ -20,15 +21,17 @@ public class ShopManager : MenuBase {
     public Image defaultImage;
     
     private string[] itemDescriptions;
-    
+
+    private int selectedItem = -1;
+
     protected override void Start() {
         base.Start();
 
         ShopItem[] items = {
             new ShopItem(defaultImage, "Item 1", 20, "Item 1 has a description like this"),
             new ShopItem(defaultImage, "Item 2", 50, "Item 2 has a different description"),
-            new ShopItem(defaultImage, "Item 3", 50, "Item 2 has a different description"),
-            new ShopItem(defaultImage, "Item 4", 50, "Item 2 has a different description")
+            new ShopItem(defaultImage, "Item 3", 60, "Item 3 has a different description"),
+            new ShopItem(defaultImage, "Item 4", 500, "Item 4 has a different description")
         };
 
         itemDescriptions = new string[items.Length];
@@ -43,6 +46,8 @@ public class ShopManager : MenuBase {
 
         //Button[] itemButtons = new Button[_items.Length];
 
+        
+
         for (int i = 0; i < _items.Length; i++) {
             /*
             itemButtons[i] = new Button();
@@ -56,22 +61,29 @@ public class ShopManager : MenuBase {
             GameObject newItem = Instantiate(ListItemPrefab) as GameObject;
             ShopListItemController controller = (ShopListItemController) newItem.GetComponent(typeof(ShopListItemController));
 
-            controller.image = _items[i].image;
-            controller.itemName.text = _items[i].itemName+" $"+_items[i].cost;
+            //controller.image = _items[i].image;
+            controller.button.GetComponentInChildren<Text>().text = _items[i].itemName+" $"+_items[i].cost;
             itemDescriptions[i] = _items[i].description;
 
             newItem.transform.SetParent(ScrollPanel.transform,false);
-            newItem.transform.localScale = Vector3.one;
 
-            Vector3 pos = newItem.transform.position;
-            pos.y += i * 100;
-            newItem.transform.position = pos;
-            
-            
+            float itemHeight = 50;
+
+            int index = i;
+            controller.button.onClick.AddListener(() => {
+                setSelectedItem(index);
+            });
+
+            newItem.transform.position += new Vector3(0, (-i * itemHeight), 0);
         }
         
     }
 
+    private void setSelectedItem(int index) {
+        //Debug.Log("selected: " + index);
+        selectedItem = index;
+        itemDescription.text = itemDescriptions[index];
+    }
 
     protected override void AddButtonListeners() {
         buttonBuy.onClick.AddListener(() => {

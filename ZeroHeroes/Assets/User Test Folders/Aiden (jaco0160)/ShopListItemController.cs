@@ -6,6 +6,5 @@ using UnityEngine.UI;
 public class ShopListItemController : MonoBehaviour
 {
 
-    public Image image;
-    public Text itemName;
+    public Button button;
 }
