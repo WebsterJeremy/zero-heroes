@@ -89,9 +89,9 @@ public class ShopManager : MenuBase {
         buttonBuy.onClick.AddListener(() => {
             SoundController.PlaySound("button");
 
-            //buttonPlay.interactable = false;
-            
-            //Run Button Code
+            //check if player has enough money
+                //subtract money
+                //add item to inventory
         });
 
         buttonBack.onClick.AddListener(() => {
