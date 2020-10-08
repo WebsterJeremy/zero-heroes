@@ -25,6 +25,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private MainMenu mainMenu;
     [SerializeField] private SettingsMenu settingsMenu;
     [SerializeField] private PauseMenu pauseMenu;
+    [SerializeField] private InventoryMenu inventoryMenu;
+    [SerializeField] private TasklogMenu tasklogMenu;
 
     [Header("Blur")]
     [SerializeField] Color blurColor = new Color(0.7f, 0.7f, 0.7f, 1f);
@@ -51,6 +53,8 @@ public class UIController : MonoBehaviour
 
         menus.Add(settingsMenu);
         menus.Add(pauseMenu);
+        menus.Add(inventoryMenu);
+        menus.Add(tasklogMenu);
 
         CloseAllPanels();
 
@@ -101,6 +105,16 @@ public class UIController : MonoBehaviour
     public PauseMenu GetPauseMenu()
     {
         return pauseMenu;
+    }
+
+    public InventoryMenu GetInventoryMenu()
+    {
+        return inventoryMenu;
+    }
+
+    public TasklogMenu GetTasklogMenu()
+    {
+        return tasklogMenu;
     }
 
     public MenuBase[] GetMenus()
