@@ -18,11 +18,11 @@ public class InventoryScriptTE : ScriptableObject
 
     private void OnEnable()
     {
-#if UNITY_EDITOR
+/*#if UNITY_EDITOR
         database = (ItemsDatabaseTE)AssetDatabase.LoadAssetAtPath("Assets/User Test Folders/Tom (EDWA0525)/scriptableObjs/Resources/Database.asset", typeof(ItemsDatabaseTE));
 #else
         database = Resources.Load<ItemsDatabase>("Database");
-#endif
+#endif*/
     }
 
     public void AddItem(invItemTE _item, int _amount)
@@ -73,20 +73,17 @@ public class InventoryScriptTE : ScriptableObject
         }
     }
 
+    [ContextMenu("Save")]
     public void Save()
     {
-        //string saveData = JsonUtility.ToJson(this, true);
-        //BinaryFormatter bf = new BinaryFormatter();
-        //FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
-        //bf.Serialize(file, saveData);
-        //file.Close();
-
         IFormatter formatter = new BinaryFormatter();
         Stream stream = new FileStream(string.Concat(Application.persistentDataPath, savePath), FileMode.Create, FileAccess.Write);
         formatter.Serialize(stream, Cont);
         stream.Close();
     }
 
+
+    [ContextMenu("Load")]
     public void Load()
     {
         if(File.Exists(string.Concat(Application.persistentDataPath, savePath))){
@@ -105,6 +102,7 @@ public class InventoryScriptTE : ScriptableObject
         }
     }
 
+    [ContextMenu("Clear")]
     public void Clear()
     {
         Cont = new InventoryTE();

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BuildingTest1
   m_EditorClassIdentifier: 
   Id: 2
-  uiDisp: {fileID: 0}
+  uiDisp: {fileID: 21300000, guid: 67302e35d2362724dbe0288329cb30c5, type: 3}
   type: 0
   desc: Building Test obj #1

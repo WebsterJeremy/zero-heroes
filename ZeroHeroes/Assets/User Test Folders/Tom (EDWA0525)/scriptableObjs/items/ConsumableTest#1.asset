@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ConsumableTest#1
   m_EditorClassIdentifier: 
   Id: 3
-  uiDisp: {fileID: 0}
+  uiDisp: {fileID: 5690709240604040706, guid: a081f653c6ca5a345901be8159acca57, type: 3}
   type: 2
   desc: adawdadw

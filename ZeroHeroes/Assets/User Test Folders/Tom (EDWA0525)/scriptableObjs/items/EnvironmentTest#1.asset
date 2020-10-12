@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnvironmentTest#1
   m_EditorClassIdentifier: 
   Id: 4
-  uiDisp: {fileID: 0}
+  uiDisp: {fileID: 6984442412936397737, guid: 84ce3c50af9e4ff4a99f894b38c525bd, type: 3}
   type: 1
   desc: ajkwhfdaldkajwk
   natureVal: 10

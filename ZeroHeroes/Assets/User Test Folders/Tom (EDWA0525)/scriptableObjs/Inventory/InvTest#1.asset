@@ -13,4 +13,86 @@ MonoBehaviour:
   m_Name: InvTest#1
   m_EditorClassIdentifier: 
   savePath: /inventory.save
-  Cont: []
+  database: {fileID: 11400000, guid: d902223e2f21b304394b32c89716b9e5, type: 2}
+  Cont:
+    Items:
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0
+    - ID: -1
+      item:
+        Name: 
+        Id: 0
+      amount: 0

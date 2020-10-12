@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07d6791487e394c45a11d52bd2ec2d63, type: 3}
   m_Name: AnimalTest#1
   m_EditorClassIdentifier: 
-  Id: 1
-  uiDisp: {fileID: -2708172229339265155, guid: 631ae20553b8659498327415104ca2ce, type: 3}
+  Id: 0
+  uiDisp: {fileID: 4788091082069709734, guid: 631ae20553b8659498327415104ca2ce, type: 3}
+  worldObj: {fileID: 1801062667018285922, guid: 8094833f7faeb4a459efa3fcf5dee2b7,
+    type: 3}
   type: 3
-  desc: 
+  desc: descccccc

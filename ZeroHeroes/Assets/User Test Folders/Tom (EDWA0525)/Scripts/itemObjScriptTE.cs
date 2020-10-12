@@ -15,6 +15,7 @@ public abstract class itemObjScriptTE : ScriptableObject
 {
     public int Id;
     public Sprite uiDisp;
+    public GameObject worldObj;
     public itemType type;
     [TextArea(20, 20)]
     public string desc;
