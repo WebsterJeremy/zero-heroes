@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System;
-using Assets.Scripts.Gameplay;
 
 #pragma warning disable 649
 
@@ -27,6 +26,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private PauseMenu pauseMenu;
     [SerializeField] private InventoryMenu inventoryMenu;
     [SerializeField] private TasklogMenu tasklogMenu;
+    [SerializeField] private BuildMenu buildMenu;
 
     [Header("Blur")]
     [SerializeField] Color blurColor = new Color(0.7f, 0.7f, 0.7f, 1f);
@@ -55,6 +55,7 @@ public class UIController : MonoBehaviour
         menus.Add(pauseMenu);
         menus.Add(inventoryMenu);
         menus.Add(tasklogMenu);
+        menus.Add(buildMenu);
 
         CloseAllPanels();
 
@@ -115,6 +116,11 @@ public class UIController : MonoBehaviour
     public TasklogMenu GetTasklogMenu()
     {
         return tasklogMenu;
+    }
+
+    public BuildMenu GetBuildMenu()
+    {
+        return buildMenu;
     }
 
     public MenuBase[] GetMenus()
@@ -187,7 +193,7 @@ public class UIController : MonoBehaviour
 
         foreach (MenuBase menu in menus)
         {
-            if (menu.IsOpened() && menu.GetType() != typeof(PauseMenu)) opened = true;
+            if (menu.IsOpened() && menu.GetType() != typeof(PauseMenu) && menu.GetType() != typeof(BuildMenu)) opened = true;
         }
 
         if (opened) yield break; // Check if any other menu's are using the blur background still

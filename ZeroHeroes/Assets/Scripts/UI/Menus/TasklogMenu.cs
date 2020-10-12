@@ -43,9 +43,11 @@ public class TasklogMenu : MenuBase
 
     protected override IEnumerator _Open()
     {
+        Debug.Log(IsOpened());
         if (IsOpened()) yield break;
 
         rectMenu.gameObject.SetActive(true);
+        UIController.Instance.EnableBlur();
     }
 
     protected override IEnumerator _Close()

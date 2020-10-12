@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.world;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,8 +18,6 @@ public class InputController : MonoBehaviour
 
     }
 
-    Position lastPosition;
-
    private void HandleWorldTouch() {
         //ignore touch handle if interacted with ui
         if (EventSystem.current.IsPointerOverGameObject()) {
@@ -31,6 +28,8 @@ public class InputController : MonoBehaviour
         mousePos.z = Camera.main.nearClipPlane;
 
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
+
+        /*
         lastPosition = new Position(Mathf.RoundToInt(worldPosition.x), Mathf.RoundToInt(worldPosition.y));
 
         MoveTileHover(lastPosition);
@@ -40,11 +39,14 @@ public class InputController : MonoBehaviour
             
             GameController.Instance.World.InteractWithPosition(mousePos, lastPosition);
         }
+        */
     }
 
     public GameObject tileHover;
 
+    /*
     private void MoveTileHover(Position _position) {
         tileHover.transform.position = _position.ToVector();
     }
+    */
 }

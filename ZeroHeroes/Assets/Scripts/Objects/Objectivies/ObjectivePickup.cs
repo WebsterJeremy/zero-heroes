@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Assets.Scripts.world;
 
 [CreateAssetMenu(fileName = "New Pickup Objective", menuName = "Tasks/Objectives/Pickup")]
 public class ObjectivePickup : Objective
 {
-    public ObjectData objectData;
+//    public ObjectData objectData;
     public Vector2[] positions;
 
     public override void OnBeginTask()
@@ -15,7 +14,7 @@ public class ObjectivePickup : Objective
 
         foreach (Vector2 pos in positions)
         {
-            GameController.Instance.World.SpawnObject(new Position(pos.x, pos.y), objectData);
+//            GameController.Instance.World.SpawnObject(new Position(pos.x, pos.y), objectData);
         }
     }
 

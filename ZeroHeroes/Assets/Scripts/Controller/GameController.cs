@@ -1,11 +1,8 @@
-﻿using Assets.Scripts.ai.path;
-using Assets.Scripts.world;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
-using Assets.Scripts.ai.state;
 
 #pragma warning disable 649
 
@@ -18,9 +15,8 @@ public class GameController : MonoBehaviour
 
 
     [Header("Containers")]
-    public Transform gameplayContainer;
-    public Transform ObjectContainer;
-    public Transform ItemContainer;
+    public Transform entitiesContainer;
+    public Transform buildingsContainer;
 
     public GameObject objectPrefabTemplate;
     public GameObject itemPrefabTemplate;
@@ -40,9 +36,11 @@ public class GameController : MonoBehaviour
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     private Texture2D screenshot;
 
-    private PathRequestManager pathRequestManager;
-    private PathFinder pathFinder;
-    private World world;
+    private List<Entity> entities = new List<Entity>();
+    private List<Building> buildings = new List<Building>();
+
+    private Inventory inventory = new Inventory();
+
     private Tilemap collisionTilemap;
 
 
@@ -69,6 +67,8 @@ public class GameController : MonoBehaviour
         Input.simulateMouseWithTouches = true;
 
         yield return new WaitForFixedUpdate();
+
+        inventory.Load();
 
         money = GetStat("MONEY", 0);
 
@@ -127,30 +127,29 @@ public class GameController : MonoBehaviour
         get { return GAME_STATE; }
     }
 
-
     public Player Player
     {
         get { return player; }
     }
 
-    public PathRequestManager PathRequestManager
-    {
-        get { return pathRequestManager; }
-    }
-
-    public PathFinder PathFinder
-    {
-        get { return pathFinder; }
-    }
-
-    public World World
-    {
-        get { return world; }
-    }
-
     public Dictionary<string,Task> GetTasks()
     {
         return tasks;
+    }
+
+    public void AddEntity(Entity entity)
+    {
+        entities.Add(entity);
+    }
+
+    public void AddBuilding(Building building)
+    {
+        buildings.Add(building);
+    }
+
+    public Inventory GetInventory()
+    {
+        return inventory;
     }
 
     #endregion
@@ -176,13 +175,12 @@ public class GameController : MonoBehaviour
 
         UIController.Instance.GetHUD().gameObject.SetActive(true);
 
-        pathRequestManager = new PathRequestManager(); //set up the pathfinding manager and pathfinder
-        pathFinder = new PathFinder();
-        world = new World();
-
+        /*
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
+        */
 
         GenerateTestWorldData();
+        
 
         yield return new WaitForSeconds(0.3f);
 
@@ -227,7 +225,13 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    
     private void GenerateTestWorldData() {
+
+        player = new Player();
+        player.Spawn(GameObject.Find("SpawnPoint").transform.position);
+        
+        /*
         //generate world..
         world.GenerateWorld(collisionTilemap);
 
@@ -248,7 +252,9 @@ public class GameController : MonoBehaviour
         World.SpawnItem("farming_fishing_72", new Position(17, 15), 1);
         World.SpawnItem("farming_fishing_73", new Position(20, 20), 1);
         World.SpawnItem("farming_fishing_60", new Position(14, 20), 1);
+        */
     }
+
 
     public void EnterZone(Zone zone, string entryPoint) { StartCoroutine(_EnterZone(zone, entryPoint)); }
     public void EnterZone(Zone zone) { StartCoroutine(_EnterZone(zone, "SpawnPoint")); }
@@ -275,10 +281,11 @@ public class GameController : MonoBehaviour
 
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
 
-        world.GenerateWorld(collisionTilemap);
+//        world.GenerateWorld(collisionTilemap);
 
         yield return new WaitForSeconds(0.3f);
 
+        /*
         Position entryPos = new Position(GameObject.Find(entryPoint).transform.position);
         player.Entity.UpdatePosition(entryPos, true);
         player.Entity.MovementHelper.StopFollowingCurrentPath();
@@ -286,6 +293,7 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         player.Entity.FSM.EnterState(new FSMStateIdle(player.Entity));
+        */
 
         //        GenerateTestWorldData();
 
@@ -349,6 +357,7 @@ Could you install one for me?",null,null)
         StopCoroutine(coroutineMethod);
     }
 
+    /*
     private void OnDrawGizmos() // Draw Debug Colliders in scene view
     {
         if (collisionTilemap != null)
@@ -365,6 +374,7 @@ Could you install one for me?",null,null)
             }
         }
     }
+    */
 
 
     #endregion

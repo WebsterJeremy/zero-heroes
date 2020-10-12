@@ -65,12 +65,16 @@ abstract public class MenuBase : MonoBehaviour
         gameObject.SetActive(true);
         StartCoroutine(_Close());
         opened = false;
+
+        if (this.GetType() != typeof(SettingsMenu) && this.GetType() != typeof(BuildMenu)) UIController.Instance.DisableBlur();
     }
 
     public void ForceClose()
     {
         opened = false;
         rectMenu.gameObject.SetActive(false);
+
+        if (this.GetType() != typeof(SettingsMenu) && this.GetType() != typeof(BuildMenu)) UIController.Instance.DisableBlur();
     }
 
 

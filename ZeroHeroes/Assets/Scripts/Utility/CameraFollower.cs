@@ -50,11 +50,12 @@ public class CameraFollower : MonoBehaviour
                 camOffset.m_Offset += (dir/2);
             }
 
-            followTarget = GameController.Instance.Player.Entity.GameObject.transform;
+            followTarget = GameController.Instance.Player.transform;
 
             vcam.LookAt = followTarget;
             vcam.Follow = followTarget;
         }
+
     }
 
     private float InputPinch()
