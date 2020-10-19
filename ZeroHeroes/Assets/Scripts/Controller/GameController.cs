@@ -12,18 +12,13 @@ public class GameController : MonoBehaviour
 
     public enum GameState { PAUSED, PLAYING };
     public static GameState GAME_STATE = GameState.PAUSED;
+    public static int WIN_CONDITION = 500;
 
 
     [Header("Containers")]
     public Transform entitiesContainer;
-    public Transform buildingsContainer;
-
-    public GameObject objectPrefabTemplate;
-    public GameObject itemPrefabTemplate;
 
     [Header("Player")]
-    private Player player;
-    public GameObject playerPrefab;
     public int currentZoneSceneID = 1;
 
 
@@ -31,12 +26,10 @@ public class GameController : MonoBehaviour
     #region PrivateVariables
 
 
-    private int money = 0;
     private Dictionary<string, string> stats = new Dictionary<string, string>();
     private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
     private Texture2D screenshot;
 
-    private List<Entity> entities = new List<Entity>();
     private List<Building> buildings = new List<Building>();
 
     private Inventory inventory = new Inventory();
@@ -68,8 +61,6 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForFixedUpdate();
 
-        money = GetStat("MONEY", 0);
-
         EffectController.TweenFadeScene(1f, 0f, 5f, () => { }); // Fade in from White on start.
 
         for (int i = 0;i < SceneManager.sceneCount;i++) // Unload scene if opened while testing
@@ -80,46 +71,20 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
 
         SaveLoadManager.loadData();
-
-        //        UIController.Instance.GetHUD().DisplayMoney(money);
     }
 
     private void OnApplicationQuit() {
-        SaveGame();
+        SaveLoadManager.saveData();
     }
 
 
     #endregion
     #region Getters & Setters
 
+
     public static bool PLAYING()
     {
         return GameController.Instance.CurrentGameState == GameController.GameState.PLAYING;
-    }
-
-    public int GetMoney() {
-        return money;
-    }
-
-    public void SetMoney(int amount) {
-        UIController.Instance.GetHUD().ChangeMoney(this.money, amount, 5f); // Update's the money UI element
-        this.money = amount;
-        SetStat("MONEY", this.money.ToString());
-    }
-
-    public string GetStat(string key, string _default) {
-        if (!stats.ContainsKey(key))
-            SetStat(key, PlayerPrefs.GetString(key, _default));
-
-        return stats.ContainsKey(key) ? stats[key] : _default;
-    }
-    public int GetStat(string key, int _default) { return int.Parse(GetStat(key, _default.ToString())); }
-
-    public void SetStat(string key, string stat) {
-        if (!stats.ContainsKey(key))
-            stats.Add(key, stat);
-
-        stats[key] = stat;
     }
 
     public GameState CurrentGameState
@@ -127,19 +92,63 @@ public class GameController : MonoBehaviour
         get { return GAME_STATE; }
     }
 
-    public Player Player
-    {
-        get { return player; }
-    }
-
-    public Dictionary<string,Task> GetTasks()
+    public Dictionary<string, Task> GetTasks()
     {
         return tasks;
     }
 
-    public void AddEntity(Entity entity)
+    public void SetTasks(Dictionary<string, Task> tasks)
     {
-        entities.Add(entity);
+        this.tasks = tasks;
+    }
+
+    public string GetStat(string key, string _default)
+    {
+        key = key.ToLower();
+
+        return stats.ContainsKey(key) ? stats[key] : _default;
+    }
+    public int GetStat(string key, int _default) { return int.Parse(GetStat(key, _default.ToString())); }
+
+    public void SetStat(string key, string stat)
+    {
+        key = key.ToLower();
+
+        if (!stats.ContainsKey(key))
+            stats.Add(key, stat);
+
+        stats[key] = stat;
+    }
+    public void SetStat(string key, int stat) { SetStat(key, stat.ToString()); }
+
+    public Dictionary<string, string> GetStats()
+    {
+        return stats;
+    }
+
+    public void SetStats(Dictionary<string, string> stats)
+    {
+        this.stats = stats;
+    }
+
+    public int GetMoney() {
+        return GetStat("Money", 0);
+    }
+
+    public void SetMoney(int money) {
+        SetStat("Money", money);
+        UIController.Instance.GetHUD().ChangeMoney();
+    }
+
+    public int GetPoints()
+    {
+        return GetStat("Points", 0);
+    }
+
+    public void SetPoints(int points)
+    {
+        SetStat("Points", points);
+        UIController.Instance.GetHUD().ChangePoints();
     }
 
     public void AddBuilding(Building building)
@@ -147,14 +156,19 @@ public class GameController : MonoBehaviour
         buildings.Add(building);
     }
 
+    public List<Building> GetBuildings()
+    {
+        return buildings;
+    }
+
     public Inventory GetInventory()
     {
         return inventory;
     }
 
+
     #endregion
     #region Main
-
 
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
@@ -178,14 +192,7 @@ public class GameController : MonoBehaviour
         /*
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
         */
-
-        GenerateTestWorldData();
-        
-
-        yield return new WaitForSeconds(0.3f);
-
     }
-
 
     public void PauseGame() { StartCoroutine(_PauseGame()); }
     IEnumerator _PauseGame()
@@ -207,14 +214,14 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    public void StopGame() // Open Mainmenu / Unload Zones / Save Progress
+    public void StopGame()
     {
         UIController.Instance.CloseAllPanels(UIController.Instance.GetMainMenu());
         UIController.Instance.GetMainMenu().Open();
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
 
-        SaveGame();
+        SaveLoadManager.saveData();
 
         for (int i = 0;i < SceneManager.sceneCount;i++)
         {
@@ -224,92 +231,39 @@ public class GameController : MonoBehaviour
         GAME_STATE = GameState.PAUSED;
         Time.timeScale = 1f;
     }
-    
-    private void GenerateTestWorldData() {
-        player = SpawnEntity(playerPrefab, GameObject.Find("SpawnPoint").transform.position).GetComponent<Player>();
-    }
 
-    public GameObject SpawnEntity(GameObject prefab, Vector3 spawnPoint)
+    public Building SpawnBuilding(string building_id, Vector3 position)
     {
-        GameObject obj = GameObject.Instantiate(prefab);
-        obj.transform.position = spawnPoint;
+        BuildingAttributes data = Building.FindBuildingAttributes(building_id);
+
+        if (data == null) return null;
+
+        GameObject obj = GameObject.Instantiate(data.GetPrefab());
         obj.transform.SetParent(GameController.Instance.entitiesContainer, false);
+        obj.transform.position = position;
 
-        GameController.Instance.AddEntity(obj.GetComponent<Entity>());
-        return obj;
+        Building building = obj.GetComponent<Building>();
+        buildings.Add(building);
+
+        return building;
     }
 
-    public void EnterZone(Zone zone, string entryPoint) { StartCoroutine(_EnterZone(zone, entryPoint)); }
-    public void EnterZone(Zone zone) { StartCoroutine(_EnterZone(zone, "SpawnPoint")); }
-    public IEnumerator _EnterZone(Zone zone, string entryPoint)
+    public void LoadBuildings(List<BuildingSave> buildingsSave)
     {
-        SceneManager.LoadScene(zone.sceneId, LoadSceneMode.Additive);
+        if (buildingsSave == null || buildingsSave.Count < 1) return;
 
-        EffectController.TweenFadeScene(0f, 1f, 0.4f, () => { });
-
-        while (!SceneManager.GetSceneByBuildIndex(zone.sceneId).isLoaded)
+        foreach (BuildingSave buildingSave in buildingsSave)
         {
-            yield return new WaitForSeconds(0.1f);
+            Building building = SpawnBuilding(buildingSave.id, new Vector2(buildingSave.positionX, buildingSave.positionY));
+            building.SetProducedItems(buildingSave.producedItems);
+            building.SetLastProduceTime(buildingSave.lastProduceTime);
+            building.SetRestocked(buildingSave.restocked);
+            building.SetLastRestockTime(buildingSave.lastRestockTime);
         }
-
-        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { });
-        
-        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(zone.sceneId));
-
-        SceneManager.UnloadSceneAsync(currentZoneSceneID); // Unload Old Scene/Zone
-
-        currentZoneSceneID = zone.sceneId;
-
-        yield return new WaitForSeconds(0.1f);
-
-        collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
-
-//        world.GenerateWorld(collisionTilemap);
-
-        yield return new WaitForSeconds(0.3f);
-
-        /*
-        Position entryPos = new Position(GameObject.Find(entryPoint).transform.position);
-        player.Entity.UpdatePosition(entryPos, true);
-        player.Entity.MovementHelper.StopFollowingCurrentPath();
-
-        yield return new WaitForSeconds(0.1f);
-
-        player.Entity.FSM.EnterState(new FSMStateIdle(player.Entity));
-        */
-
-        //        GenerateTestWorldData();
-
-        // After 5 minutes of old zone not being re-entered remove the scene (instead of keeping it unloaded)
-    }
-
-    public void SaveGame()
-    {
-        Debug.Log("Saving the game");
-
-
-        foreach (string key in stats.Keys)
-        {
-            PlayerPrefs.SetString(key, stats[key]);
-        }
-
-        SaveLoadManager.saveData();
     }
 
     #endregion
     #region Tasks
-
-    /*
-    Task[] tasks =
-    {
-        new Task(0,"npc_mayor",null,null,@"The litter on the land is <b>harmful</b> to local wildlife. 
-It also increases water and soil pollution and destroys animal habitats.
-Will you help clean it up?",null,null),
-        new Task(1,"npc_birdwatcher_0",null,null,@"Native birds have varying habitat needs. 
-Will you plant some tall and medium trees, and some shrubs to help the conservation of native bird life?",null,null),
-        new Task(2,"npc_gardner_0",null,null,@"Rainwater tanks can store water for many uses and reduces the need for infrastructure such as dams and desalination plants. 
-Could you install one for me?",null,null)
-    };*/
 
     public void ReceiveTask(Task task)
     {
@@ -330,38 +284,35 @@ Could you install one for me?",null,null)
     }
 
     #endregion
-    #region Utility
+    #region Zones
 
-
-    public Coroutine StartChildCoroutine(IEnumerator coroutineMethod)
+    public void EnterZone(Zone zone, string entryPoint) { StartCoroutine(_EnterZone(zone, entryPoint)); }
+    public void EnterZone(Zone zone) { StartCoroutine(_EnterZone(zone, "SpawnPoint")); }
+    public IEnumerator _EnterZone(Zone zone, string entryPoint)
     {
-        return StartCoroutine(coroutineMethod);
-    }
+        SceneManager.LoadScene(zone.sceneId, LoadSceneMode.Additive);
 
-    public void StopChildCoroutine(Coroutine coroutineMethod)
-    {
-        StopCoroutine(coroutineMethod);
-    }
+        EffectController.TweenFadeScene(0f, 1f, 0.4f, () => { });
 
-    /*
-    private void OnDrawGizmos() // Draw Debug Colliders in scene view
-    {
-        if (collisionTilemap != null)
+        while (!SceneManager.GetSceneByBuildIndex(zone.sceneId).isLoaded)
         {
-            foreach (var pos in collisionTilemap.cellBounds.allPositionsWithin)
-            {
-                Vector3Int localPlace = new Vector3Int(pos.x, pos.y, pos.z);
-                Vector3 place = collisionTilemap.CellToWorld(localPlace);
-
-                if (collisionTilemap.HasTile(localPlace))
-                {
-                    Gizmos.DrawCube(new Vector3(localPlace.x + 1, localPlace.y + 1), new Vector3(1, 1, 1));
-                }
-            }
+            yield return new WaitForSeconds(0.1f);
         }
-    }
-    */
 
+        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { });
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(zone.sceneId));
+
+        SceneManager.UnloadSceneAsync(currentZoneSceneID); // Unload Old Scene/Zone
+
+        currentZoneSceneID = zone.sceneId;
+
+        yield return new WaitForSeconds(0.1f);
+
+        collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
+
+        //        world.GenerateWorld(collisionTilemap);
+    }
 
     #endregion
 }

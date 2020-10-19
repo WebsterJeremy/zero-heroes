@@ -23,7 +23,6 @@ public class SaveLoadManager : MonoBehaviour
 
     public static void saveData(string fileName){
         //Save currentSaveData to a file
-        Debug.Log("Saving Game Data");
         string destination = fileName;
         FileStream file;
 
@@ -41,7 +40,6 @@ public class SaveLoadManager : MonoBehaviour
 
     public static void loadData(string fileName){
         //Load currentSaveData from a file
-        Debug.Log("Loading Game Data");
         FileStream file;
 
         if (File.Exists(fileName)){

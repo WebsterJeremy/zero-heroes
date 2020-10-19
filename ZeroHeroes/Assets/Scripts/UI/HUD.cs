@@ -14,17 +14,20 @@ public class HUD : MonoBehaviour
 
     [Header("Text")]
     [SerializeField] private TextMeshProUGUI textMoney;
+    [SerializeField] private TextMeshProUGUI textPoints;
     [SerializeField] private TextMeshProUGUI textDebugStatistics;
 
     [Header("Containers")]
     [SerializeField] private RectTransform rectMoney;
+    [SerializeField] private RectTransform rectPoints;
 
     #endregion
     #region PrivateVariables
 
 
     private static Dictionary<string, string> debugStatistics = new Dictionary<string, string>();
-
+    private float oldMoney = 0;
+    private float oldPoints = 0;
 
     #endregion
     #region Initlization
@@ -52,11 +55,13 @@ public class HUD : MonoBehaviour
         });
     }
 
-    public void ChangeMoney(int startValue, int endValue, float duration) { StartCoroutine(_ChangeMoney(startValue, endValue, duration)); }
-    IEnumerator _ChangeMoney(int startValue, int endValue, float duration)
+    public void ChangeMoney() { StartCoroutine(_ChangeMoney()); }
+    IEnumerator _ChangeMoney()
     {
         float animTime = 0f;
-        float money = startValue;
+        float money = oldMoney;
+        float endValue = GameController.Instance.GetStat("Money", 0);
+        float duration = 0.5f;
 
         while (animTime < duration)
         {
@@ -72,6 +77,30 @@ public class HUD : MonoBehaviour
     {
         textMoney.text = "$" + money.ToString();
         rectMoney.sizeDelta = new Vector2(0 + (textMoney.text.Length * 40), rectMoney.sizeDelta.y);
+    }
+
+    public void ChangePoints() { StartCoroutine(_ChangePoints()); }
+    IEnumerator _ChangePoints()
+    {
+        float animTime = 0f;
+        float points = oldPoints;
+        float endValue = GameController.Instance.GetStat("Points", 0);
+        float duration = 0.5f;
+
+        while (animTime < duration)
+        {
+            points = Mathf.Lerp(points, endValue, animTime / duration);
+            DisplayPoints((int)points);
+
+            yield return new WaitForEndOfFrame();
+            animTime += Time.deltaTime;
+        }
+    }
+
+    public void DisplayPoints(int points)
+    {
+        textPoints.text = "$" + points.ToString();
+        rectPoints.sizeDelta = new Vector2(0 + (textPoints.text.Length * 40), rectPoints.sizeDelta.y);
     }
 
 

@@ -6,7 +6,7 @@ public class Entity : MonoBehaviour
 {
     #region AccessVariables
 
-    public static EntityAttributes[] entityAttributesList;
+    [System.NonSerialized] public static EntityAttributes[] entityAttributesList;
 
     [Header("Entity")]
     [SerializeField] protected string id;
@@ -89,16 +89,22 @@ public class Entity : MonoBehaviour
         return GetEntityAttributes().GetID();
     }
 
+    public Vector2 GetPosition()
+    {
+        return position;
+    }
+
+    public void SetPosition(Vector2 position)
+    {
+        this.position = position;
+    }
+
     #endregion
     #region Core
 
-    public virtual void Spawn(Vector3 spawnPoint)
+    public virtual void CopyTo(Entity ent)
     {
-        obj = GameObject.Instantiate(GetPrefab());
-        obj.transform.position = spawnPoint;
-        obj.transform.SetParent(GameController.Instance.entitiesContainer, false);
-
-        GameController.Instance.AddEntity(this);
+        ent.SetPosition(position);
     }
 
     #endregion

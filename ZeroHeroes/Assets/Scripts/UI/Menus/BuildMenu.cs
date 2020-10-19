@@ -62,12 +62,8 @@ public class BuildMenu : MenuBase
 
     public void Build(string buildingId)
     {
-        BuildingAttributes buildingAttributes = Building.FindBuildingAttributes(buildingId);
-
-        if (buildingAttributes != null && buildingAttributes.GetPrefab() != null)
-        {
-            GameController.Instance.SpawnEntity(buildingAttributes.GetPrefab(), new Vector3(0, 5, 0));
-        }
+        GameController.Instance.SpawnBuilding(buildingId, new Vector2(0, 5));
+        Debug.Log("Built it!");
     }
 
 

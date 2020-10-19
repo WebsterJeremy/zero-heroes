@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: house_tier1
   position: {x: 0, y: 0}
+  producedItems: 0
+  lastRestockTime: 0
 --- !u!212 &5825593425463040499
 SpriteRenderer:
   m_ObjectHideFlags: 0

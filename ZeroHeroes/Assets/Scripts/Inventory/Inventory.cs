@@ -81,7 +81,9 @@ public class Inventory : MonoBehaviour
     {
         List<Item> sameItem = FindItem(item.GetID());
 
-        if (items.Count > 0 && sameItem.Count < 1) // Doesn't already have the item
+        if (items == null) items = new Dictionary<int, Item>();
+
+        if (sameItem.Count < 1) // Doesn't already have the item
         {
             if (items.Count < slots)
             {
@@ -244,7 +246,9 @@ public class Inventory : MonoBehaviour
     public Item[] GetItems()
     {
         List<Item> temp = new List<Item>();
-        
+
+        if (items == null || items.Count < 1) return temp.ToArray();
+
         foreach (Item i in items.Values)
         {
             if (i != null) temp.Add(i);

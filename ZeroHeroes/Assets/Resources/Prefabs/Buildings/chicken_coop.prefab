@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: chicken_coop
   position: {x: 0, y: 0}
+  producedItems: 0
+  lastRestockTime: 0
 --- !u!212 &8162582637761495051
 SpriteRenderer:
   m_ObjectHideFlags: 0

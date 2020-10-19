@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(CinemachineVirtualCamera))]
 public class CameraFollower : MonoBehaviour
@@ -26,7 +27,9 @@ public class CameraFollower : MonoBehaviour
 
     void Update()
     {
-        if(GameController.Instance.Player != null && GameController.PLAYING()) {
+        if(GameController.PLAYING()) {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
             if (Input.GetMouseButtonDown(0))
             {
                 touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -50,7 +53,7 @@ public class CameraFollower : MonoBehaviour
                 camOffset.m_Offset += (dir/2);
             }
 
-            followTarget = GameController.Instance.Player.transform;
+//            followTarget = GameController.Instance.Player.transform;
 
             vcam.LookAt = followTarget;
             vcam.Follow = followTarget;
