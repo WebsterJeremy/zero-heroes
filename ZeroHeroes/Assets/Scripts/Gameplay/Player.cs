@@ -6,15 +6,8 @@ public class Player : Entity
 {
     #region AccessVariables
 
-
-    [Header("Entity")]
-    public GameObject obj;
-
-
     #endregion
     #region PrivateVariables
-
-
 
     #endregion
     #region Initlization
@@ -39,9 +32,9 @@ public class Player : Entity
 
     protected override void Start()
     {
-        base.Start();
+        this.id = "player";
 
-        title = "Player";
+        base.Start();
     }
 
     #endregion
@@ -49,8 +42,6 @@ public class Player : Entity
 
     public override void Spawn(Vector3 spawnPoint)
     {
-        prefab = GameController.Instance.playerPrefab;
-
         base.Spawn(spawnPoint);
     }
 

@@ -15,6 +15,7 @@ public class ItemAttributes : ScriptableObject
     [SerializeField] private float buyPrice = 10;
     [TextArea(20, 20)]
     [SerializeField] private string description = "None";
+    [SerializeField] private int maxQuantity = 50;
 
 
     #endregion
@@ -59,12 +60,14 @@ public class ItemAttributes : ScriptableObject
         return description;
     }
 
+    public int GetMaxQuantity()
+    {
+        return maxQuantity;
+    }
+
     public string GetID()
     {
-        string id = name.ToLower();
-        id.Replace(" ", "_");
-
-        return id;
+        return GetTitle().ToLower().Replace(" ", "_");
     }
 
     #endregion

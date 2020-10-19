@@ -15,6 +15,14 @@ public class InventoryMenu : MenuBase
     [Header("Content")]
     [SerializeField] private RectTransform rectInventory;
     [SerializeField] private GameObject prefabUIItem;
+    [SerializeField] private InvSlotElement[] slotElements;
+
+    [Header("Item Details")]
+    [SerializeField] private TextMeshProUGUI txtTitle;
+    [SerializeField] private TextMeshProUGUI txtAmount;
+    [SerializeField] private TextMeshProUGUI txtDescription;
+    [SerializeField] private TextMeshProUGUI txtPrice;
+    [SerializeField] private Image imgIcon;
 
 
     #endregion
@@ -22,7 +30,7 @@ public class InventoryMenu : MenuBase
 
     private List<GameObject> itemElements = new List<GameObject>();
 
-    private Item selectedItem;
+    private InvItemElement selectedItem;
 
 
     #endregion
@@ -34,6 +42,25 @@ public class InventoryMenu : MenuBase
         base.Start();
     }
 
+
+    #endregion
+    #region Getters and Setters
+
+    public InvItemElement GetSelectedItem()
+    {
+        return selectedItem;
+    }
+
+    public void SetSelectedItem(InvItemElement selection)
+    {
+        if (selectedItem != null)
+        {
+            selectedItem.slotElement.GetComponent<Image>().color = new Color32(207, 206, 167, 255);
+        }
+
+        selectedItem = selection;
+        UpdateItemDetails();
+    }
 
     #endregion
     #region Core
@@ -68,46 +95,40 @@ public class InventoryMenu : MenuBase
 
     private void Populate()
     {
-        /*
-         * Population Process
-         * 1. See if we have either more slots or more items
-         * 2. Use a for loop with the highest number
-         * 3. If the item count is higher, when no more slots avaiable add another slot
-         *    If the slot count is higher, when no more items destroy or set to inactive the slots
-         *  -- Make sure the same item is selected in the details panel when menu is re-opened or default to first (also same scroll ??)
-         */
-
-
         Item[] items = GameController.Instance.GetInventory().GetItems();
+
+        if (itemElements != null && itemElements.Count > 0)
+        {
+            for (int i = 0; i < itemElements.Count; i++)
+            {
+                Destroy(itemElements[i]);
+            }
+
+            itemElements.Clear();
+        }
 
         if (items != null && items.Length > 0)
         {
-            int toLoop = items.Length > itemElements.Count ? items.Length : itemElements.Count;
-
-            for (int i = 0;i < toLoop;i++)
+            for (int i = 0;i < items.Length;i++)
             {
-                if (i >= items.Length)
+                InvSlotElement slotElement = slotElements[items[i].GetSlot()];
+
+                GameObject itemElement = Instantiate(prefabUIItem);
+                itemElement.transform.SetParent(slotElement.transform, false);
+
+                itemElement.GetComponent<InvItemElement>().item = items[i];
+                itemElement.GetComponent<InvItemElement>().slotElement = slotElement;
+                slotElement.itemElement = itemElement.GetComponent<InvItemElement>();
+
+                itemElement.GetComponentInChildren<TextMeshProUGUI>().text = "x" + items[i].GetQuantity().ToString();
+                itemElement.GetComponentsInChildren<Image>()[2].sprite = items[i].GetIcon();
+
+                itemElements.Add(itemElement);
+
+                if (selectedItem == null)
                 {
-                    itemElements[i].SetActive(false);
-                }
-                else if (i >= itemElements.Count)
-                {
-                    // Create new item element
-
-                    GameObject element = Instantiate(prefabUIItem);
-                    element.transform.SetParent(rectInventory);
-
-                    element.GetComponentInChildren<TextMeshProUGUI>().text = "x"+ items[i].GetAmount().ToString();
-                    element.GetComponentsInChildren<Image>()[2].sprite = items[i].GetIcon();
-
-                    itemElements.Add(element);
-                }
-                else
-                {
-                    // Replace old item element icon/amount
-
-                    itemElements[i].GetComponentInChildren<TextMeshProUGUI>().text = "x"+ items[i].GetAmount().ToString();
-                    itemElements[i].GetComponentsInChildren<Image>()[2].sprite = items[i].GetIcon();
+                    selectedItem = itemElement.GetComponent<InvItemElement>();
+                    UpdateItemDetails();
                 }
             }
         }
@@ -120,11 +141,23 @@ public class InventoryMenu : MenuBase
         Populate();
     }
 
-    public void GiveNewItem(string item_id)
+    public void UpdateItemDetails()
     {
-        GameController.Instance.GetInventory().GiveItem(item_id, 5);
+        if (selectedItem == null) return;
+
+        txtTitle.text = selectedItem.item.GetTitle();
+        txtAmount.text = "x"+ selectedItem.item.GetQuantity().ToString();
+        txtDescription.text = selectedItem.item.GetDescription();
+        txtPrice.text = "Sell for $"+ selectedItem.item.GetSellPrice();
+        imgIcon.sprite = selectedItem.item.GetIcon();
+
+        selectedItem.slotElement.GetComponent<Image>().color = new Color32(167, 166, 127, 255);
     }
 
+    public void GiveNewItem(string item_id)
+    {
+        GameController.Instance.GetInventory().GiveItem(item_id, 5, -1);
+    }
 
     #endregion
 }

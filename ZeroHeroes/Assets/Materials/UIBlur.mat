@@ -29,7 +29,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BumpAmt: 10
-    - _Size: 1.3249849e-35
+    - _Size: 3
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.7176471, g: 0.7176471, b: 0.7176471, a: 0.7176471}
   m_BuildTextureStacks: []

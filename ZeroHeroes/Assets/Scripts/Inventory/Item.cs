@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Item
 {
     #region AccessVariables
@@ -10,13 +11,14 @@ public class Item
 
     [Header("Item")]
     [SerializeField] private string id;
-    [SerializeField] private int amount;
+    [SerializeField] private int quantity;
+    [SerializeField] private int slot;
 
 
     #endregion
     #region PrivateVariables
 
-    private ItemAttributes itemAttributes;
+    [System.NonSerialized] private ItemAttributes itemAttributes;
 
     #endregion
     #region Initlization
@@ -38,66 +40,88 @@ public class Item
 
         foreach (ItemAttributes attr in itemAttributesList)
         {
-            if (attr.GetID() == item_id) return attr;
+            if (attr.GetID().Equals(item_id)) return attr;
         }
 
         return null;
     }
 
-    public Item(string item_id, int amount)
+    public Item(string item_id, int quantity)
     {
         this.id = item_id;
         itemAttributes = FindItemAttributes(id);
-        this.amount = amount;
+        this.quantity = quantity;
     }
 
 
     #endregion
     #region Getters and Setters
 
+    private ItemAttributes GetItemAttributes()
+    {
+        if (itemAttributes == null) itemAttributes = FindItemAttributes(id);
+
+        return itemAttributes;
+    }
+
     public string GetTitle()
     {
-        return itemAttributes.GetTitle();
+        return GetItemAttributes().GetTitle();
     }
 
     public Sprite GetIcon()
     {
-        return itemAttributes.GetIcon();
+        return GetItemAttributes().GetIcon();
     }
 
     public float GetSellPrice()
     {
-        return itemAttributes.GetSellPrice();
+        return GetItemAttributes().GetSellPrice();
     }
 
     public float GetBuyPrice()
     {
-        return itemAttributes.GetBuyPrice();
+        return GetItemAttributes().GetBuyPrice();
     }
 
     public string GetDescription()
     {
-        return itemAttributes.GetDescription();
+        return GetItemAttributes().GetDescription();
     }
 
     public string GetID()
     {
-        return itemAttributes.GetID();
+        return GetItemAttributes().GetID();
     }
 
-    public int GetAmount()
+    public int GetQuantityMax()
     {
-        return amount;
+        return GetItemAttributes().GetMaxQuantity();
     }
 
-    public void SetAmount(int amount)
+    public int GetQuantity()
     {
-        this.amount = amount;
+        return quantity;
     }
 
-    public void GiveAmount(int amount)
+    public void SetQuantity(int quantity)
     {
-        this.amount += amount;
+        this.quantity = quantity;
+    }
+
+    public void GiveQuantity(int quantity)
+    {
+        this.quantity += quantity;
+    }
+
+    public int GetSlot()
+    {
+        return slot;
+    }
+
+    public void SetSlot(int slot)
+    {
+        this.slot = slot;
     }
 
     #endregion

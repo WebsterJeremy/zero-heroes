@@ -47,7 +47,6 @@ public class BuildMenu : MenuBase
 
     protected override IEnumerator _Open()
     {
-        Debug.Log(IsOpened());
         if (IsOpened()) yield break;
 
         rectMenu.gameObject.SetActive(true);
@@ -63,7 +62,12 @@ public class BuildMenu : MenuBase
 
     public void Build(string buildingId)
     {
-        Debug.Log("Building "+ buildingId);
+        BuildingAttributes buildingAttributes = Building.FindBuildingAttributes(buildingId);
+
+        if (buildingAttributes != null && buildingAttributes.GetPrefab() != null)
+        {
+            GameController.Instance.SpawnEntity(buildingAttributes.GetPrefab(), new Vector3(0, 5, 0));
+        }
     }
 
 

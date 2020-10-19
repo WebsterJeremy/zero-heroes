@@ -8,14 +8,14 @@ public class Inventory : MonoBehaviour
 
 
     [Header("Inventory")]
-    [SerializeField] private int slots = 40;
+    [SerializeField] private int slots = 25;
     [SerializeField] private string savePath = "/inventory_save";
 
 
     #endregion
     #region PrivateVariables
 
-    private Dictionary<string, Item> items = new Dictionary<string, Item>();
+    private Dictionary<int, Item> items = new Dictionary<int, Item>();
 
     #endregion
     #region Initlization
@@ -48,53 +48,147 @@ public class Inventory : MonoBehaviour
     #endregion
     #region Getters and Setters
 
-    public Item GetItem(string id)
+    public Item GetItem(int slot)
     {
-        return items.ContainsKey(id) ? items[id] : null;
+        return items.ContainsKey(slot) ? items[slot] : null;
     }
 
-    public bool GiveItem(Item item, int amount)
+    public List<Item> FindItem(string id)
     {
-        if (!items.ContainsKey(item.GetID()))
+        List<Item> found = new List<Item>();
+
+        if (items == null || items.Count < 1) return found;
+
+        foreach (Item itemFound in items.Values)
+        {
+            if (itemFound != null && itemFound.GetID().Equals(id)) found.Add(itemFound);
+        }
+
+        return found;
+    }
+
+    public int FindEmptySlot()
+    {
+        for (int i = 0;i < slots;i++)
+        {
+            if (GetItem(i) == null) return i;
+        }
+
+        return -1;
+    }
+
+    public bool GiveItem(Item item, int quantity, int slot)
+    {
+        List<Item> sameItem = FindItem(item.GetID());
+
+        if (items.Count > 0 && sameItem.Count < 1) // Doesn't already have the item
         {
             if (items.Count < slots)
             {
-                item.SetAmount(amount);
-                items.Add(item.GetID(), item);
+                item.SetQuantity(quantity);
+
+                if (slot == -1) slot = FindEmptySlot();
+
+                items[slot] = item;
+                item.SetSlot(slot);
 
                 UIController.Instance.GetInventoryMenu().UpdateDisplay();
 
                 return true;
             }
         }
-        else
+        else // Has the item
         {
-            items[item.GetID()].GiveAmount(amount);
+            int quantityLeft = quantity;
 
-            UIController.Instance.GetInventoryMenu().UpdateDisplay();
+            foreach (Item foundItem in sameItem)
+            {
+                if (foundItem.GetQuantity() < foundItem.GetQuantityMax())
+                {
+                    if (foundItem.GetQuantity() + quantityLeft <= foundItem.GetQuantityMax())
+                    {
+                        foundItem.GiveQuantity(quantityLeft);
 
-            return true;
+                        UIController.Instance.GetInventoryMenu().UpdateDisplay();
+
+                        return true;
+                    }
+                    else
+                    {
+                        foundItem.SetQuantity(foundItem.GetQuantityMax());
+                        quantityLeft -= foundItem.GetQuantityMax();
+                    }
+                }
+            }
+
+            if (quantityLeft > 0)
+            {
+                item.SetQuantity(quantityLeft);
+
+                slot = FindEmptySlot();
+
+                items[slot] = item;
+                item.SetSlot(slot);
+
+                UIController.Instance.GetInventoryMenu().UpdateDisplay();
+
+                return true;
+            }
         }
 
         return false; // Return false if item couldn't be added because not enough slots left (Inventory Full)
     }
 
-    public bool GiveItem(string item_id, int amount)
+    public bool GiveItem(string item_id, int quantity, int slot)
     {
-        if (!items.ContainsKey(item_id))
+        return GiveItem(new Item(item_id, 0), quantity, slot);
+    }
+
+    public bool MoveItem(int oldSlot, int newSlot)
+    {
+        if (GetItem(oldSlot) != null)
         {
-            if (items.Count < slots)
+            if (GetItem(newSlot) == null)
             {
-                items.Add(item_id, new Item(item_id, amount));
+                items.Add(newSlot, items[oldSlot]);
+                items.Remove(oldSlot);
+
+                GetItem(newSlot).SetSlot(newSlot);
 
                 UIController.Instance.GetInventoryMenu().UpdateDisplay();
 
                 return true;
             }
+            else // Item already in slot, so swap or merge instead
+            {
+                if (GetItem(oldSlot).GetID().Equals(GetItem(newSlot).GetID()))
+                {
+                    return MergeItem(oldSlot, newSlot);
+                }
+                else
+                {
+                    return SwapItem(oldSlot, newSlot);
+                }
+            }
         }
-        else
+
+        return false;
+    }
+
+    public bool SwapItem(int oldSlot, int newSlot)
+    {
+        if (GetItem(oldSlot) != null && GetItem(newSlot) != null)
         {
-            items[item_id].GiveAmount(amount);
+            Item tempItem = GetItem(newSlot);
+            items.Remove(newSlot);
+
+            items.Add(newSlot, GetItem(oldSlot));
+            items.Remove(oldSlot);
+
+            items.Add(oldSlot, tempItem);
+
+            GetItem(newSlot).SetSlot(newSlot);
+            GetItem(oldSlot).SetSlot(oldSlot);
 
             UIController.Instance.GetInventoryMenu().UpdateDisplay();
 
@@ -104,37 +198,76 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public bool TakeItem(string id)
+    public bool MergeItem(int oldSlot, int newSlot)
     {
+
+        return false;
+    }
+
+    public int TakeItem(int slot, int quantity)
+    {
+        if (GetItem(slot) != null)
+        {
+            if (quantity <= items[slot].GetQuantity())
+            {
+                items[slot].SetQuantity(items[slot].GetQuantity() - quantity);
+
+                if (items[slot].GetQuantity() <= 0)
+                {
+                    items[slot] = null;
+                }
+
+                UIController.Instance.GetInventoryMenu().UpdateDisplay();
+
+                return 0;
+            }
+            else
+            {
+                items[slot] = null;
+
+                UIController.Instance.GetInventoryMenu().UpdateDisplay();
+
+                return quantity - items[slot].GetQuantity();
+            }
+        }
+
+        return -1;
+    }
+
+    public bool TakeItem(string id, int quantity)
+    {
+        
+
         return false;
     }
 
     public Item[] GetItems()
     {
-        if (items.Count <= 0) return null;
+        List<Item> temp = new List<Item>();
+        
+        foreach (Item i in items.Values)
+        {
+            if (i != null) temp.Add(i);
+        }
 
-        Item[] copy = new Item[items.Count];
-        items.Values.CopyTo(copy, 0);
-
-        return copy;
+        return temp.ToArray();
     }
+
+    public Dictionary<int, Item> GetItemsForSave()
+    {
+        return items;
+    }
+
+    public void SetItemsFromSave(Dictionary<int, Item> savedItems)
+    {
+        items = savedItems;
+
+        UIController.Instance.GetInventoryMenu().UpdateDisplay();
+    }
+
     #endregion
     #region Core
 
-
-    public bool Load()
-    {
-        Debug.Log("Loaded Inventory");
-
-        return false;
-    }
-
-    public bool Save()
-    {
-        Debug.Log("Saved Inventory");
-
-        return false;
-    }
 
     #endregion
 }

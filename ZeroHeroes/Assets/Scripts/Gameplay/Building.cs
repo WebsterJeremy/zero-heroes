@@ -2,18 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Building : Entity
 {
     #region AccessVariables
 
+    public static BuildingAttributes[] buildingAttributesList;
 
     [Header("Entity")]
-    public GameObject obj;
+    [System.NonSerialized] public GameObject obj;
+    [SerializeField] private int producedItems = 0;
+    [SerializeField] private float lastRestockTime = 0; // When Time.time is greater then ( lastRestockTime + GetRestockTime() ), then restock [GetRestockTime() is an attribute of the building]
 
 
     #endregion
     #region PrivateVariables
 
+
+    [System.NonSerialized] private BuildingAttributes buildingAttributes;
 
 
     #endregion
@@ -22,20 +28,76 @@ public class Building : Entity
     protected override void Start()
     {
         base.Start();
+    }
 
-        title = "Building";
+    public static void LoadBuildingAttributes()
+    {
+        buildingAttributesList = Resources.LoadAll<BuildingAttributes>("Entities/Buildings/");
+    }
+
+    public static BuildingAttributes FindBuildingAttributes(string entity_id)
+    {
+        if (buildingAttributesList == null) LoadBuildingAttributes();
+
+        foreach (BuildingAttributes attr in buildingAttributesList)
+        {
+            if (attr.GetID().Equals(entity_id)) return attr;
+        }
+
+        return null;
+    }
+
+    #endregion
+    #region Getters and Setters
+
+    protected BuildingAttributes GetBuildingAttributes()
+    {
+        if (buildingAttributes == null) buildingAttributes = FindBuildingAttributes(GetID());
+
+        return buildingAttributes;
+    }
+
+    public float GetProduceTime()
+    {
+        return GetBuildingAttributes().GetProduceTime();
+    }
+
+    public Vector2 GetProduceQuantity()
+    {
+        return GetBuildingAttributes().GetProduceQuantity();
+    }
+
+    public float GetRestockTime()
+    {
+        return GetBuildingAttributes().GetRestockTime();
+    }
+
+    public float GetRestockPrice()
+    {
+        return GetBuildingAttributes().GetRestockPrice();
+    }
+
+    public string GetProducedItem()
+    {
+        return GetBuildingAttributes().GetProducedItem();
     }
 
     #endregion
     #region Core
 
-    public override void Spawn(Vector3 spawnPoint)
+    private void OnMouseDown()
     {
-        obj = GameObject.Instantiate(prefab);
-        obj.transform.position = spawnPoint;
-        obj.transform.SetParent(GameController.Instance.buildingsContainer, false);
+        if (producedItems > 0)
+        {
+            Debug.Log("No produced items opening menu for " + GetTitle());
+        }
+        else
+        {
+            GameController.Instance.GetInventory().GiveItem(GetProducedItem(), 10, -1); // Slot of -1, means it will find a new empty slot in the inventory instead
 
-        GameController.Instance.AddBuilding(this);
+            Debug.Log("Giving player stocked items!");
+            producedItems = 0; // Remove old stock
+        }
     }
 
     #endregion

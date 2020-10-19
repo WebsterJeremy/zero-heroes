@@ -32,6 +32,7 @@ public class SaveLoadManager : MonoBehaviour
         }else file = File.Create(fileName);
         
         BinaryFormatter bf = new BinaryFormatter();
+        currentSaveData.QuickSave();
         bf.Serialize(file, currentSaveData);
         file.Close();
     }
@@ -47,11 +48,13 @@ public class SaveLoadManager : MonoBehaviour
             file = File.OpenRead(fileName);
             BinaryFormatter bf = new BinaryFormatter();
             currentSaveData = (GameSaveData)bf.Deserialize(file);
+            currentSaveData.QuickLoad();
             file.Close();
         }
         else{
-            Debug.LogError("File not found");
+            Debug.LogWarning("File not found");
             currentSaveData = new GameSaveData();
+            currentSaveData.QuickLoad();
             return;
         }
     }

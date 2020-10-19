@@ -68,8 +68,6 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForFixedUpdate();
 
-        inventory.Load();
-
         money = GetStat("MONEY", 0);
 
         EffectController.TweenFadeScene(1f, 0f, 5f, () => { }); // Fade in from White on start.
@@ -81,7 +79,9 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-//        UIController.Instance.GetHUD().DisplayMoney(money);
+        SaveLoadManager.loadData();
+
+        //        UIController.Instance.GetHUD().DisplayMoney(money);
     }
 
     private void OnApplicationQuit() {
@@ -224,37 +224,20 @@ public class GameController : MonoBehaviour
         GAME_STATE = GameState.PAUSED;
         Time.timeScale = 1f;
     }
-
     
     private void GenerateTestWorldData() {
-
-        player = new Player();
-        player.Spawn(GameObject.Find("SpawnPoint").transform.position);
-        
-        /*
-        //generate world..
-        world.GenerateWorld(collisionTilemap);
-
-        //spawn player
-        Position spawnPoint = new Position(GameObject.Find("SpawnPoint").transform.position); // new Position(15, 15);
-        player = new Player("1", spawnPoint);
-
-
-        //add items to inventory...
-        player.Entity.Inventory.Add("buckets_3", 1);
-        player.Entity.Inventory.Add("buckets_3", 1);
-        player.Entity.Inventory.Add("farming_fishing_74", 1);
-        player.Entity.Inventory.Add("farming_fishing_75", 3);
-        player.Entity.Inventory.Add("farming_fishing_76", 4);
-
-        //spawn items in world....
-        World.SpawnItem("farming_fishing_71", new Position(18, 18), 3);
-        World.SpawnItem("farming_fishing_72", new Position(17, 15), 1);
-        World.SpawnItem("farming_fishing_73", new Position(20, 20), 1);
-        World.SpawnItem("farming_fishing_60", new Position(14, 20), 1);
-        */
+        player = SpawnEntity(playerPrefab, GameObject.Find("SpawnPoint").transform.position).GetComponent<Player>();
     }
 
+    public GameObject SpawnEntity(GameObject prefab, Vector3 spawnPoint)
+    {
+        GameObject obj = GameObject.Instantiate(prefab);
+        obj.transform.position = spawnPoint;
+        obj.transform.SetParent(GameController.Instance.entitiesContainer, false);
+
+        GameController.Instance.AddEntity(obj.GetComponent<Entity>());
+        return obj;
+    }
 
     public void EnterZone(Zone zone, string entryPoint) { StartCoroutine(_EnterZone(zone, entryPoint)); }
     public void EnterZone(Zone zone) { StartCoroutine(_EnterZone(zone, "SpawnPoint")); }
@@ -304,10 +287,13 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Saving the game");
 
+
         foreach (string key in stats.Keys)
         {
             PlayerPrefs.SetString(key, stats[key]);
         }
+
+        SaveLoadManager.saveData();
     }
 
     #endregion
