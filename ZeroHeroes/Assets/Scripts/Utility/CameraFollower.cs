@@ -50,7 +50,7 @@ public class CameraFollower : MonoBehaviour
             else if (Input.GetMouseButton(0))
             {
                 Vector3 dir = touchStart - Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                camOffset.m_Offset += (dir/2);
+                camOffset.m_Offset += (dir/12);
             }
 
 //            followTarget = GameController.Instance.Player.transform;

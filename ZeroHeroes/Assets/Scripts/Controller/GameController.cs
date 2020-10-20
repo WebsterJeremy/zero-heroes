@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
+using System;
 
 #pragma warning disable 649
 
@@ -36,6 +37,7 @@ public class GameController : MonoBehaviour
 
     private Tilemap collisionTilemap;
 
+    private DateTime saveTime;
 
     #endregion
     #region Initlization
@@ -70,7 +72,6 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        SaveLoadManager.loadData();
     }
 
     private void OnApplicationQuit() {
@@ -166,6 +167,21 @@ public class GameController : MonoBehaviour
         return inventory;
     }
 
+    public void SetSaveTime(DateTime time)
+    {
+        saveTime = time;
+    }
+
+    public DateTime GetSaveTime()
+    {
+        return saveTime;
+    }
+
+    public int GetTimeSinceSave()
+    {
+        return ((int)(DateTime.UtcNow - saveTime).TotalSeconds);
+    }
+
 
     #endregion
     #region Main
@@ -181,9 +197,20 @@ public class GameController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { }); // Fade to playspace scene
+        saveTime = DateTime.UtcNow; // If new save, since 0 by default would mean a long time
+
+        yield return new WaitForSeconds(0.1f);
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(currentZoneSceneID));
+
+        if (SaveLoadManager.loadData()) // If new Game without any save data
+        {
+            GenerateNewWorld();
+        }
+
+        yield return new WaitForSeconds(0.1f);
+
+        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { }); // Fade to playspace scene
 
         GAME_STATE = GameState.PLAYING;
 
@@ -192,6 +219,7 @@ public class GameController : MonoBehaviour
         /*
         collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
         */
+
     }
 
     public void PauseGame() { StartCoroutine(_PauseGame()); }
@@ -252,14 +280,51 @@ public class GameController : MonoBehaviour
     {
         if (buildingsSave == null || buildingsSave.Count < 1) return;
 
+        Debug.Log("Time elapsed since last save " + GetTimeSinceSave() + " seconds");
+
         foreach (BuildingSave buildingSave in buildingsSave)
         {
             Building building = SpawnBuilding(buildingSave.id, new Vector2(buildingSave.positionX, buildingSave.positionY));
             building.SetProducedItems(buildingSave.producedItems);
-            building.SetLastProduceTime(buildingSave.lastProduceTime);
+            building.SetLastProduceTime(buildingSave.lastProduceTime); // Check with the GetSaveTime() for currect
             building.SetRestocked(buildingSave.restocked);
             building.SetLastRestockTime(buildingSave.lastRestockTime);
+            building.CalculateIdledProduces(GetTimeSinceSave());
         }
+    }
+
+    public void GenerateNewWorld() // World is -21, 19 to 21, -19
+    {
+        SpawnBuilding("tree_1", new Vector2(-2,-2));
+        SpawnBuilding("tree_1", new Vector2(-10,2));
+        SpawnBuilding("tree_1", new Vector2(-17,3));
+        SpawnBuilding("tree_1", new Vector2(-18,9));
+        SpawnBuilding("tree_1", new Vector2(-9,13));
+        SpawnBuilding("tree_1", new Vector2(1,14));
+        SpawnBuilding("tree_1", new Vector2(8,13));
+        SpawnBuilding("tree_1", new Vector2(8,0));
+        SpawnBuilding("tree_1", new Vector2(11,4));
+        SpawnBuilding("tree_1", new Vector2(-18,-7));
+        SpawnBuilding("tree_1", new Vector2(-18,-18));
+        SpawnBuilding("tree_1", new Vector2(-13,-20));
+        SpawnBuilding("tree_1", new Vector2(-12,-6));
+        SpawnBuilding("tree_1", new Vector2(-8,-8));
+        SpawnBuilding("tree_1", new Vector2(-4,-11));
+        SpawnBuilding("tree_1", new Vector2(-6,-17));
+        SpawnBuilding("tree_1", new Vector2(-1,-19));
+        SpawnBuilding("tree_1", new Vector2(-1,-10));
+        SpawnBuilding("tree_1", new Vector2(4,-2));
+        SpawnBuilding("tree_1", new Vector2(7,-6));
+        SpawnBuilding("tree_1", new Vector2(13,-6));
+        SpawnBuilding("tree_1", new Vector2(17,0));
+        SpawnBuilding("tree_1", new Vector2(6,-14));
+        SpawnBuilding("tree_1", new Vector2(13,-17));
+        SpawnBuilding("tree_1", new Vector2(15,-10));
+
+        SpawnBuilding("rock_1", new Vector2(-11,15));
+        SpawnBuilding("rock_1", new Vector2(-7,4));
+        SpawnBuilding("rock_1", new Vector2(-12,-14));
+        SpawnBuilding("rock_1", new Vector2(14,10));
     }
 
     #endregion

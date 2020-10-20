@@ -19,8 +19,11 @@ MonoBehaviour:
   prefab: {fileID: 8162582637761495044, guid: 0de8fbbbcd516a543b3fe79e2551e5cb, type: 3}
   sellPrice: 10
   buyPrice: 10
+  produces: 1
   produceTime: 120
   produceQuantity: {x: 20, y: 30}
   restockTime: 300
   restockPrice: 300
-  producedItem: lettus
+  producedItem: lettuce
+  ecoFriendly: 0
+  ecoFriendlyPoints: {x: 1, y: 3}

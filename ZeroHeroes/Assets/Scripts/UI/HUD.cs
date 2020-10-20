@@ -20,6 +20,10 @@ public class HUD : MonoBehaviour
     [Header("Containers")]
     [SerializeField] private RectTransform rectMoney;
     [SerializeField] private RectTransform rectPoints;
+    [SerializeField] private RectTransform notifyContainer;
+
+    [Header("Utility")]
+    [SerializeField] private GameObject notifyPrefab;
 
     #endregion
     #region PrivateVariables
@@ -28,6 +32,7 @@ public class HUD : MonoBehaviour
     private static Dictionary<string, string> debugStatistics = new Dictionary<string, string>();
     private float oldMoney = 0;
     private float oldPoints = 0;
+    private List<Notify> notifyList = new List<Notify>();
 
     #endregion
     #region Initlization
@@ -103,6 +108,24 @@ public class HUD : MonoBehaviour
         rectPoints.sizeDelta = new Vector2(0 + (textPoints.text.Length * 40), rectPoints.sizeDelta.y);
     }
 
+    public Notify CreateNotify(string label, int quantity, Sprite icon, Transform follow, Vector3 offset)
+    {
+        GameObject obj = Instantiate(notifyPrefab);
+        obj.transform.SetParent(notifyContainer);
+
+        Notify notify = obj.GetComponent<Notify>();
+        notify.Setup(label, quantity, icon, follow, offset);
+
+        notifyList.Add(notify);
+
+        return notify;
+    }
+
+    public void RemoveNotify(Notify notify)
+    {
+        notifyList.Remove(notify);
+        Destroy(notify.gameObject);
+    }
 
     #endregion
     #region Debug

@@ -11,6 +11,7 @@ public class BuildingAttributes : EntityAttributes
     [Header("Building")]
     [SerializeField] private float sellPrice = 10; // Price to sell [In Money]
     [SerializeField] private float buyPrice = 10; // Price to buy [In Money]
+    [SerializeField] private bool produces = false; // Does this item produce items
     [SerializeField] private float produceTime = 120; // How often does it produce items [In Seconds]
     [SerializeField] private Vector2 produceQuantity = new Vector2(20,30); // How many items does it produce each time [Random between Min,Max]
     [SerializeField] private float restockTime = 300; // How often does the player need to restock [In Minutes]
@@ -49,6 +50,11 @@ public class BuildingAttributes : EntityAttributes
     public float GetProduceTime()
     {
         return produceTime;
+    }
+
+    public bool GetProduces()
+    {
+        return produces;
     }
 
     public Vector2 GetProduceQuantity()

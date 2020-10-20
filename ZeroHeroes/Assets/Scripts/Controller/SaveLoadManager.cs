@@ -36,13 +36,13 @@ public class SaveLoadManager : MonoBehaviour
         file.Close();
     }
 
-    public static void loadData() { loadData(defaultSaveFileName); }
+    public static bool loadData() { return loadData(defaultSaveFileName); }
 
-    public static void loadData(string fileName){
+    public static bool loadData(string fileName){
         //Load currentSaveData from a file
         FileStream file;
 
-        if (File.Exists(fileName)){
+        if (File.Exists(fileName)) {
             file = File.OpenRead(fileName);
             BinaryFormatter bf = new BinaryFormatter();
             currentSaveData = (GameSaveData)bf.Deserialize(file);
@@ -53,7 +53,9 @@ public class SaveLoadManager : MonoBehaviour
             Debug.LogWarning("File not found");
             currentSaveData = new GameSaveData();
             currentSaveData.QuickLoad();
-            return;
+            return true;
         }
+
+        return false;
     }
 }

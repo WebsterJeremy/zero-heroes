@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 //This class will contain the game's save data
 //When the game is saved, an instance of this class will be written to the user's device
@@ -10,6 +11,7 @@ public class GameSaveData {
 
     //Add any data to be saved here (make sure its public and not static)
 
+    public DateTime saveTime;
     public Dictionary<string, string> stats;
     public Dictionary<string, Task> tasks;
     public Dictionary<int, Item> inventory;
@@ -25,6 +27,7 @@ public class GameSaveData {
 
     public void QuickSave()
     {
+        saveTime = DateTime.UtcNow;
         stats = GameController.Instance.GetStats();
         tasks = GameController.Instance.GetTasks();
         inventory = GameController.Instance.GetInventory().GetItemsForSave();
@@ -33,6 +36,7 @@ public class GameSaveData {
 
     public void QuickLoad()
     {
+        GameController.Instance.SetSaveTime(saveTime);
         GameController.Instance.SetStats(stats);
         GameController.Instance.SetTasks(tasks);
         GameController.Instance.GetInventory().SetItemsFromSave(inventory);

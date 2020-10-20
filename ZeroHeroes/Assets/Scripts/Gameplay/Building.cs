@@ -20,6 +20,7 @@ public class Building : Entity
 
 
     [System.NonSerialized] private BuildingAttributes buildingAttributes;
+    [System.NonSerialized] private Notify notify;
 
 
     #endregion
@@ -28,8 +29,6 @@ public class Building : Entity
     protected override void Start()
     {
         base.Start();
-
-        Debug.Log("Buidling Start : "+ this);
     }
 
     public static void LoadBuildingAttributes()
@@ -57,6 +56,11 @@ public class Building : Entity
         if (buildingAttributes == null) buildingAttributes = FindBuildingAttributes(GetID());
 
         return buildingAttributes;
+    }
+
+    public bool GetProduces()
+    {
+        return GetBuildingAttributes().GetProduces();
     }
 
     public float GetProduceTime()
@@ -103,6 +107,34 @@ public class Building : Entity
     public void SetProducedItems(int producedItems)
     {
         this.producedItems = producedItems;
+
+        if (producedItems > 0)
+        {
+            if (notify == null)
+            {
+                Sprite icon = GetIcon();
+                if (GetProducedItem() != null && !GetProducedItem().Equals(string.Empty))
+                {
+                    ItemAttributes attr = Item.FindItemAttributes(GetProducedItem());
+                    if (attr != null)
+                    {
+                        icon = attr.GetIcon();
+                    }
+                }
+
+                notify = UIController.Instance.GetHUD().CreateNotify(GetTitle(), this.producedItems, icon, transform, new Vector3(GetSize().x / 2, GetSize().y, 0));
+            }
+
+            notify.SetQuantity(this.producedItems);
+        }
+        else
+        {
+            if (notify != null)
+            {
+                UIController.Instance.GetHUD().RemoveNotify(notify);
+                notify = null;
+            }
+        }
     }
 
     public float GetLastProduceTime()
@@ -148,24 +180,48 @@ public class Building : Entity
 
     private void OnMouseDown()
     {
-        if (producedItems > 0)
+        if (GetProduces())
         {
-            Debug.Log("No produced items opening menu for " + GetTitle());
+            if (producedItems < 1 || GetProducedItem() == null || GetProducedItem().Equals(string.Empty))
+            {
+                Debug.Log("No produced items opening menu for " + GetTitle() +" : Next produce in "+ (lastProduceTime - Time.time) + " seconds");
+            }
+            else
+            {
+                GameController.Instance.GetInventory().GiveItem(GetProducedItem(), producedItems, -1); // Slot of -1, means it will find a new empty slot in the inventory instead
+
+                if (GetEcoFriendly())
+                {
+                    GameController.Instance.SetPoints(GameController.Instance.GetPoints() + Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
+                }
+
+                // How many seconds have pasted / GetProduceTime()
+
+                Debug.Log("Giving player stocked items!");
+                SetProducedItems(0);
+            }
         }
         else
         {
-            GameController.Instance.GetInventory().GiveItem(GetProducedItem(), 10, -1); // Slot of -1, means it will find a new empty slot in the inventory instead
-
-            if (GetEcoFriendly())
-            {
-                GameController.Instance.SetPoints(GameController.Instance.GetPoints() + Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
-            }
-
-            // How many seconds have pasted / GetProduceTime()
-
-            Debug.Log("Giving player stocked items!");
-            producedItems = 0; // Remove old stock
+            Debug.Log("Opening menu!");
         }
+    }
+
+    private void Update()
+    {
+        if (GetProduces() && lastProduceTime < Time.time)
+        {
+            SetProducedItems((int) Random.Range(GetProduceQuantity().x, GetProduceQuantity().y));
+
+            lastProduceTime = Time.time + GetProduceTime();
+        }
+    }
+
+    public void CalculateIdledProduces(int secondsSinceSave)
+    {
+        if (!GetProduces()) return;
+
+        // Debug.Log("Time elapsed since last save " + secondsSinceSave + " seconds");
     }
 
     #endregion
