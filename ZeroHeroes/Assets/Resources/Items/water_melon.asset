@@ -16,4 +16,7 @@ MonoBehaviour:
   icon: {fileID: -6317535601210733144, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: 'Most commonly red with green skin, watery and sweet solid content.
+
+'
+  maxQuantity: 50

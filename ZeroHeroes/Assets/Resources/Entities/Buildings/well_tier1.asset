@@ -19,3 +19,11 @@ MonoBehaviour:
   prefab: {fileID: 8162582637761495044, guid: 9129c6be4484d534098c3632027a605b, type: 3}
   sellPrice: 10
   buyPrice: 10
+  produces: 1
+  produceTime: 120
+  produceQuantity: {x: 20, y: 30}
+  restockTime: 300
+  restockPrice: 300
+  producedItem: water_bucket
+  ecoFriendly: 0
+  ecoFriendlyPoints: {x: 1, y: 3}

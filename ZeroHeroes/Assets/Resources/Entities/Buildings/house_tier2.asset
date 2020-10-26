@@ -19,3 +19,11 @@ MonoBehaviour:
   prefab: {fileID: 3543830391116994655, guid: 665b8ef2122d95f49b65addc57b358d4, type: 3}
   sellPrice: 10
   buyPrice: 10
+  produces: 0
+  produceTime: 0
+  produceQuantity: {x: 0, y: 0}
+  restockTime: 0
+  restockPrice: 0
+  producedItem: 
+  ecoFriendly: 0
+  ecoFriendlyPoints: {x: 1, y: 3}

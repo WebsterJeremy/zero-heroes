@@ -24,6 +24,6 @@ MonoBehaviour:
   produceQuantity: {x: 20, y: 30}
   restockTime: 300
   restockPrice: 300
-  producedItem: egg_plant
+  producedItem: eggs
   ecoFriendly: 0
   ecoFriendlyPoints: {x: 1, y: 3}

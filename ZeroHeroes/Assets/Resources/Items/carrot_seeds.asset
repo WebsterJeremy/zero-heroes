@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d9eeffebdc841b49a135f70e10467f0, type: 3}
+  m_Name: carrot_seeds
+  m_EditorClassIdentifier: 
+  title: Carrot Seeds
+  icon: {fileID: -3915631379582085759, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
+  sellPrice: 10
+  buyPrice: 10
+  description: The carrot is a root vegetable, usually orange in color, though purple,
+    black, red, white, and yellow cultivars exist.
+  maxQuantity: 50

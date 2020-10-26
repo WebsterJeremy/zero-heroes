@@ -16,4 +16,6 @@ MonoBehaviour:
   icon: {fileID: 6985768079284845852, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: The carrot is a root vegetable, usually orange in color, though purple,
+    black, red, white, and yellow cultivars exist.
+  maxQuantity: 50

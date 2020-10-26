@@ -16,5 +16,6 @@ MonoBehaviour:
   icon: {fileID: -8692225582653371369, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: Most commonly leafy green. Typically used as the foundation for creating
+    salads in food preparation.
   maxQuantity: 50

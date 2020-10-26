@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a85642e818227540a9ebebea0c218e6, type: 3}
+  m_Name: orange_tree
+  m_EditorClassIdentifier: 
+  title: Orange Tree
+  icon: {fileID: 5747409682677840818, guid: 362e6f7458543794f9d9f1dc69dc1ece, type: 3}
+  description: None
+  size: {x: 3, y: 4}
+  prefab: {fileID: 8162582637761495044, guid: a61c72cf0ec4c13459bad36ba5054333, type: 3}
+  sellPrice: 10
+  buyPrice: 10
+  produces: 1
+  produceTime: 120
+  produceQuantity: {x: 20, y: 30}
+  restockTime: 0
+  restockPrice: 0
+  producedItem: orange
+  ecoFriendly: 1
+  ecoFriendlyPoints: {x: 1, y: 3}
