@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System; //to access DateTime
+
 
 public class Building : Entity
 {
@@ -13,13 +15,15 @@ public class Building : Entity
     [SerializeField] private float lastProduceTime = 0;
     [SerializeField] private bool restocked = true;
     [SerializeField] private float lastRestockTime = 0; // When Time.time is greater then ( lastRestockTime + GetRestockTime() ), then restock [GetRestockTime() is an attribute of the building]
-
+    private float realTime; //placeholder so that timespan can be changed 
+    [SerializeField]DateTime oldDate; //start time away interval0
+    DateTime currentDate;  //
 
     #endregion
     #region PrivateVariables
 
 
-    [System.NonSerialized] private BuildingAttributes buildingAttributes;
+[System.NonSerialized] private BuildingAttributes buildingAttributes;
     [System.NonSerialized] private Notify notify;
 
 
@@ -192,7 +196,7 @@ public class Building : Entity
 
                 if (GetEcoFriendly())
                 {
-                    GameController.Instance.SetPoints(GameController.Instance.GetPoints() + Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
+                    GameController.Instance.SetPoints(GameController.Instance.GetPoints() + UnityEngine.Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
                 }
 
                 // How many seconds have pasted / GetProduceTime()
@@ -211,10 +215,29 @@ public class Building : Entity
     {
         if (GetProduces() && lastProduceTime < Time.time)
         {
-            SetProducedItems((int) Random.Range(GetProduceQuantity().x, GetProduceQuantity().y));
+            SetProducedItems((int) UnityEngine.Random.Range(GetProduceQuantity().x, GetProduceQuantity().y));
 
-            lastProduceTime = Time.time + GetProduceTime();
+            lastProduceTime = Time.time + GetProduceTime() + realTime;
         }
+    }
+
+    void OnApplicationQuit()
+    {
+        //setting the time when leaving the game
+        oldDate = System.DateTime.Now;
+
+    }
+
+    void awake()
+    {
+        //setting current time
+        currentDate = System.DateTime.Now;
+
+        //calculation for the time that game has be off for
+        TimeSpan elapsedTime = currentDate.Subtract(oldDate);
+
+        //converting to float
+        realTime = (float)elapsedTime.TotalMinutes;
     }
 
     public void CalculateIdledProduces(int secondsSinceSave)
