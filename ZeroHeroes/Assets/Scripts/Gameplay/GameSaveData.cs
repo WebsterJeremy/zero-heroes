@@ -19,10 +19,7 @@ public class GameSaveData {
 
     //Initialise any game data here
     void Start(){
-        stats = new Dictionary<string, string>();
-        tasks = new Dictionary<string, Task>();
-        inventory = new Dictionary<int, Item>();
-        buildings = new List<BuildingSave>();
+
     }
 
     public void QuickSave()
@@ -36,11 +33,59 @@ public class GameSaveData {
 
     public void QuickLoad()
     {
+        if (stats == null) NewSave();
+
         GameController.Instance.SetSaveTime(saveTime);
         GameController.Instance.SetStats(stats);
         GameController.Instance.SetTasks(tasks);
         GameController.Instance.GetInventory().SetItemsFromSave(inventory);
         GameController.Instance.LoadBuildings(buildings);
+    }
+
+    private void NewSave()
+    {
+        stats = new Dictionary<string, string>();
+        tasks = new Dictionary<string, Task>();
+        inventory = new Dictionary<int, Item>();
+        buildings = new List<BuildingSave>();
+
+        stats.Add("money", "500");
+        stats.Add("points", "15");
+
+        buildings.Add(new BuildingSave("house_tier1", new Vector2(-2, 7)));
+
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-2, -2)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-10, 2)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-17, 3)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-18, 9)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-9, 13)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(1, 14)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(8, 13)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(8, 0)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(11, 4)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-18, -7)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-18, -18)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-13, -20)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-12, -6)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-8, -8)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-4, -11)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-6, -17)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-1, -19)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(-1, -10)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(4, -2)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(7, -6)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(13, -6)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(17, 0)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(6, -14)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(13, -17)));
+        buildings.Add(new BuildingSave("tree_1", new Vector2(15, -10)));
+
+        buildings.Add(new BuildingSave("rock_1", new Vector2(-11, 15)));
+        buildings.Add(new BuildingSave("rock_1", new Vector2(-7, 4)));
+        buildings.Add(new BuildingSave("rock_1", new Vector2(-12, -14)));
+        buildings.Add(new BuildingSave("rock_1", new Vector2(14, 10)));
+
+        saveTime = DateTime.UtcNow;
     }
 }
 
@@ -55,9 +100,16 @@ public class EntitySave
 public class BuildingSave : EntitySave
 {
     public int producedItems = 0;
-    public float lastProduceTime = 0;
+    public float nextProduceTime = 0;
     public bool restocked = true;
-    public float lastRestockTime = 0;
+    public float nextRestockTime = 0;
+
+    public BuildingSave(string id, Vector2 position)
+    {
+        this.id = id;
+        this.positionX = position.x;
+        this.positionY = position.y;
+    }
 
     public static List<BuildingSave> ConvertToSave(List<Building> buildings)
     {
@@ -67,14 +119,12 @@ public class BuildingSave : EntitySave
         {
             foreach (Building building in buildings)
             {
-                BuildingSave buildingSave = new BuildingSave();
-                buildingSave.id = building.GetID();
-                buildingSave.positionX = building.transform.position.x;
-                buildingSave.positionY = building.transform.position.y;
+                BuildingSave buildingSave = new BuildingSave(building.GetID(), building.transform.position);
+
                 buildingSave.producedItems = building.GetProducedItems();
-                buildingSave.lastProduceTime = building.GetLastProduceTime();
+                buildingSave.nextProduceTime =  building.GetNextProduceTime() - Time.time;
                 buildingSave.restocked = building.GetRestocked();
-                buildingSave.lastRestockTime = building.GetLastRestockTime();
+                buildingSave.nextRestockTime = building.GetNextRestockTime() - Time.time;
 
                 save.Add(buildingSave);
             }

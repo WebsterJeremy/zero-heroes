@@ -127,7 +127,26 @@ public class Item
     #endregion
     #region Core
 
+    public bool Delete()
+    {
+        return GameController.Instance.GetInventory().RemoveItem(GetSlot());
+    }
 
+    public bool Sell()
+    {
+        if (Delete())
+        {
+            GameController.Instance.GiveMoney((int)(GetSellPrice() * GetQuantity()));
+            SoundController.PlaySound("sell_buy_item");
+        }
+
+        return true;
+    }
+
+    public bool Use()
+    {
+        return false;
+    }
 
     #endregion
 }

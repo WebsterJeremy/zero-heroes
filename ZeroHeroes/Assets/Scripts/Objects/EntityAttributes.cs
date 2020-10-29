@@ -10,6 +10,7 @@ public class EntityAttributes : ScriptableObject
 
     [Header("Entity")]
     [SerializeField] private string title = "New Entity";
+    [SerializeField] private string id = "entity";
     [SerializeField] private Sprite icon;
     [TextArea(20, 20)]
     [SerializeField] private string description = "None";
@@ -61,7 +62,7 @@ public class EntityAttributes : ScriptableObject
 
     public string GetID()
     {
-        return GetTitle().ToLower().Replace(" ", "_");
+        return id;
     }
 
     #endregion

@@ -159,7 +159,7 @@ public class UIController : MonoBehaviour
     public IEnumerator _EnableBlur()
     {
         if (hudBlur == null || hudBlur.activeSelf) yield break;
-
+        
         blurMaterial.SetColor("_Color", new Color(1, 1, 1, 1));
         blurMaterial.SetFloat("_Size", 0f);
 
@@ -170,6 +170,7 @@ public class UIController : MonoBehaviour
 
         blurMaterial.color = new Color(1, 1, 1, 0f);
 
+        CameraFollower.ENABLED = false;
         while (animTime < blurDuration)
         {
             blurC = Mathf.Lerp(blurMaterial.color.r, blurColor.r, animTime / blurDuration);
@@ -197,6 +198,7 @@ public class UIController : MonoBehaviour
         float animTime = 0f;
         float blurC;
 
+        CameraFollower.ENABLED = true;
         while (animTime < (blurDuration/2))
         {
             if (hudBlur == null) break;

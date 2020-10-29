@@ -10,6 +10,8 @@ public class Notify : MonoBehaviour
     public int quantity = 1;
     public TextMeshProUGUI textQuantity;
 
+    private Building building;
+
     public void Setup(string label, int quantity, Sprite icon, Transform Transform, Vector3 offset)
     {
         this.label = label;
@@ -19,6 +21,11 @@ public class Notify : MonoBehaviour
         if (icon != null ) GetComponent<Image>().sprite = icon;
         GetComponent<UITween>().SetFollowTransform(Transform);
         GetComponent<UITween>().SetFollowOffset(offset);
+
+        if (transform != null && transform.GetComponent<Building>())
+        {
+            building = transform.GetComponent<Building>();
+        }
     }
 
     public void SetLabel(string label)

@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: rock_1
   m_EditorClassIdentifier: 
   title: Rock 1
+  id: rock_1
   icon: {fileID: 0}
   description: None
   size: {x: 1, y: 1}
   prefab: {fileID: 8162582637761495044, guid: 78189f194bc5cef49bfd2e6d556944c4, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 200
+  buyEcoPrice: 1
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

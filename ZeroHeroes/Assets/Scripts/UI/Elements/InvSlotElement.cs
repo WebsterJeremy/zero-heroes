@@ -17,12 +17,16 @@ public class InvSlotElement : MonoBehaviour, IPointerClickHandler, IPointerEnter
     {
         draggedItem = new DraggedItem();
         
-        hoverElement = new GameObject();
-        hoverElement.AddComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
-        hoverElement.transform.SetParent(transform.parent);
+        if (hoverElement == null)
+        {
+            hoverElement = new GameObject();
+            hoverElement.gameObject.name = "Hover Item";
+            hoverElement.AddComponent<RectTransform>().sizeDelta = new Vector2(150, 150);
+            hoverElement.transform.SetParent(transform.parent.parent);
 
-        hoverElementImage = hoverElement.AddComponent<Image>();
-        hoverElementImage.raycastTarget = false;
+            hoverElementImage = hoverElement.AddComponent<Image>();
+            hoverElementImage.raycastTarget = false;
+        }
     }
 
     public void OnPointerClick(PointerEventData eventData)

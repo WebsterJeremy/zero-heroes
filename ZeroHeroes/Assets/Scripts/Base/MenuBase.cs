@@ -18,7 +18,7 @@ abstract public class MenuBase : MonoBehaviour
     #region PrivateVariables
 
 
-    private bool inTransistion = false;
+    protected bool inTransistion = false;
 
 
     #endregion
@@ -55,6 +55,8 @@ abstract public class MenuBase : MonoBehaviour
 
     public void Open()
     {
+        if (inTransistion) return;
+
         gameObject.SetActive(true);
         StartCoroutine(_Open());
         opened = true;
@@ -62,6 +64,8 @@ abstract public class MenuBase : MonoBehaviour
 
     public void Close()
     {
+        if (inTransistion) return;
+
         gameObject.SetActive(true);
         StartCoroutine(_Close());
         opened = false;

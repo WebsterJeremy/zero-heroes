@@ -139,7 +139,9 @@ public class GameController : MonoBehaviour
     public void SetMoney(int money) {
         SetStat("Money", money);
         UIController.Instance.GetHUD().ChangeMoney();
+        UIController.Instance.GetBuildMenu().UpdateCardPrices();
     }
+    public void GiveMoney(int money) { SetMoney(GetMoney() + money); }
 
     public int GetPoints()
     {
@@ -150,7 +152,9 @@ public class GameController : MonoBehaviour
     {
         SetStat("Points", points);
         UIController.Instance.GetHUD().ChangePoints();
+        UIController.Instance.GetBuildMenu().UpdateCardPrices();
     }
+    public void GivePoints(int points) { SetPoints(GetPoints() + points); }
 
     public void AddBuilding(Building building)
     {
@@ -205,7 +209,7 @@ public class GameController : MonoBehaviour
 
         if (SaveLoadManager.loadData()) // If new Game without any save data
         {
-            GenerateNewWorld();
+            Debug.LogWarning("New World Loaded!");
         }
 
         yield return new WaitForSeconds(0.1f);
@@ -215,11 +219,8 @@ public class GameController : MonoBehaviour
         GAME_STATE = GameState.PLAYING;
 
         UIController.Instance.GetHUD().gameObject.SetActive(true);
-
-        /*
-        collisionTilemap = GameObject.Find("Grid").transform.Find("Collision").GetComponent<Tilemap>();
-        */
-
+        UIController.Instance.GetHUD().DisplayMoney(GetMoney());
+        UIController.Instance.GetHUD().DisplayPoints(GetPoints());
     }
 
     public void PauseGame() { StartCoroutine(_PauseGame()); }
@@ -245,11 +246,14 @@ public class GameController : MonoBehaviour
     public void StopGame()
     {
         UIController.Instance.CloseAllPanels(UIController.Instance.GetMainMenu());
+        UIController.Instance.GetHUD().RemoveAllNotifys();
         UIController.Instance.GetMainMenu().Open();
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
 
         SaveLoadManager.saveData();
+
+        if (entitiesContainer != null && entitiesContainer.childCount > 0) for (int i = 0;i < entitiesContainer.childCount;i++) Destroy(entitiesContainer.GetChild(i).gameObject);
 
         for (int i = 0;i < SceneManager.sceneCount;i++)
         {
@@ -286,45 +290,10 @@ public class GameController : MonoBehaviour
         {
             Building building = SpawnBuilding(buildingSave.id, new Vector2(buildingSave.positionX, buildingSave.positionY));
             building.SetProducedItems(buildingSave.producedItems);
-            building.SetLastProduceTime(buildingSave.lastProduceTime); // Check with the GetSaveTime() for currect
             building.SetRestocked(buildingSave.restocked);
-            building.SetLastRestockTime(buildingSave.lastRestockTime);
-            building.CalculateIdledProduces(GetTimeSinceSave());
+            building.SetNextRestockTime(buildingSave.nextRestockTime);
+            building.CalculateIdledProduces(GetTimeSinceSave(), buildingSave.nextProduceTime);
         }
-    }
-
-    public void GenerateNewWorld() // World is -21, 19 to 21, -19
-    {
-        SpawnBuilding("tree_1", new Vector2(-2,-2));
-        SpawnBuilding("tree_1", new Vector2(-10,2));
-        SpawnBuilding("tree_1", new Vector2(-17,3));
-        SpawnBuilding("tree_1", new Vector2(-18,9));
-        SpawnBuilding("tree_1", new Vector2(-9,13));
-        SpawnBuilding("tree_1", new Vector2(1,14));
-        SpawnBuilding("tree_1", new Vector2(8,13));
-        SpawnBuilding("tree_1", new Vector2(8,0));
-        SpawnBuilding("tree_1", new Vector2(11,4));
-        SpawnBuilding("tree_1", new Vector2(-18,-7));
-        SpawnBuilding("tree_1", new Vector2(-18,-18));
-        SpawnBuilding("tree_1", new Vector2(-13,-20));
-        SpawnBuilding("tree_1", new Vector2(-12,-6));
-        SpawnBuilding("tree_1", new Vector2(-8,-8));
-        SpawnBuilding("tree_1", new Vector2(-4,-11));
-        SpawnBuilding("tree_1", new Vector2(-6,-17));
-        SpawnBuilding("tree_1", new Vector2(-1,-19));
-        SpawnBuilding("tree_1", new Vector2(-1,-10));
-        SpawnBuilding("tree_1", new Vector2(4,-2));
-        SpawnBuilding("tree_1", new Vector2(7,-6));
-        SpawnBuilding("tree_1", new Vector2(13,-6));
-        SpawnBuilding("tree_1", new Vector2(17,0));
-        SpawnBuilding("tree_1", new Vector2(6,-14));
-        SpawnBuilding("tree_1", new Vector2(13,-17));
-        SpawnBuilding("tree_1", new Vector2(15,-10));
-
-        SpawnBuilding("rock_1", new Vector2(-11,15));
-        SpawnBuilding("rock_1", new Vector2(-7,4));
-        SpawnBuilding("rock_1", new Vector2(-12,-14));
-        SpawnBuilding("rock_1", new Vector2(14,10));
     }
 
     #endregion

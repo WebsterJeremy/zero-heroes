@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: tree_1
   m_EditorClassIdentifier: 
   title: Tree 1
+  id: tree_1
   icon: {fileID: 0}
   description: None
   size: {x: 2, y: 5}
   prefab: {fileID: 8162582637761495044, guid: f461651a3143b5348b45234154906a1d, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 200
+  buyEcoPrice: 1
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

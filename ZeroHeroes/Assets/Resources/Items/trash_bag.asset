@@ -16,5 +16,5 @@ MonoBehaviour:
   icon: {fileID: -1219709769797622719, guid: 00b5512db69047e47b89c258be8a41ad, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: Trash left by someone, will cause damage to nature if left untouched.
   maxQuantity: 50

@@ -16,5 +16,6 @@ MonoBehaviour:
   icon: {fileID: 8822401888003895507, guid: 362e6f7458543794f9d9f1dc69dc1ece, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: Stone fruit grown on trees, medium texture when ripe, hard texture
+    when not.
   maxQuantity: 50

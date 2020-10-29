@@ -17,5 +17,5 @@ MonoBehaviour:
   sellPrice: 10
   buyPrice: 10
   description: Common and versatile fruit in white and red varieties, high in nutrients
-    and vitamins
+    and vitamins.
   maxQuantity: 50

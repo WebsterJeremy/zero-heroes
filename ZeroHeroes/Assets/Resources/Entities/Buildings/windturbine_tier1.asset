@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a85642e818227540a9ebebea0c218e6, type: 3}
   m_Name: windturbine_tier1
   m_EditorClassIdentifier: 
-  title: Well
-  icon: {fileID: 21300000, guid: bfdc5fe5d6f35b94e936875c0e0c0c02, type: 3}
+  title: Wind Turbine
+  id: windturbine_tier1
+  icon: {fileID: 21300000, guid: 9e9fc0a58f2652e478fe6a74a6920e8d, type: 3}
   description: None
   size: {x: 2, y: 2}
-  prefab: {fileID: 8162582637761495044, guid: 9129c6be4484d534098c3632027a605b, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  prefab: {fileID: 8162582637761495044, guid: 3e8a67fe11ac97645936fdba17788d0e, type: 3}
+  sellPrice: 760
+  buyPrice: 900
+  buyEcoPrice: 8
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

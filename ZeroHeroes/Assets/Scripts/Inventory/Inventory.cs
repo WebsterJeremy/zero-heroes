@@ -15,7 +15,7 @@ public class Inventory : MonoBehaviour
     #endregion
     #region PrivateVariables
 
-    private Dictionary<int, Item> items = new Dictionary<int, Item>();
+    private Dictionary<int, Item> items;
 
     #endregion
     #region Initlization
@@ -41,7 +41,7 @@ public class Inventory : MonoBehaviour
 
     private void Start()
     {
-
+        items = new Dictionary<int, Item>();
     }
 
 
@@ -241,6 +241,14 @@ public class Inventory : MonoBehaviour
         
 
         return false;
+    }
+
+    public bool RemoveItem(int slot)
+    {
+        items.Remove(slot);
+        UIController.Instance.GetInventoryMenu().UpdateDisplay();
+
+        return (!items.ContainsKey(slot));
     }
 
     public Item[] GetItems()

@@ -16,7 +16,5 @@ MonoBehaviour:
   icon: {fileID: 6179203067663430544, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: The potato is a root vegetable native to the Americas, a starchy tuber
-    of the plant Solanum tuberosum, and the plant itself is a perennial in the nightshade
-    family, Solanaceae.
+  description: "Common root vegetable, used in several cuisines\r."
   maxQuantity: 50

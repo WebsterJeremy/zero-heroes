@@ -16,5 +16,5 @@ MonoBehaviour:
   icon: {fileID: 4625717601883258249, guid: d021b4e95c2b02d4bb66bb3a8ae69ff5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: Natural and versatile source of protein and substitute for meat
+  description: Natural and versatile source of protein and substitute for meat.
   maxQuantity: 50

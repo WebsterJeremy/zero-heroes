@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: windmill
   m_EditorClassIdentifier: 
   title: Wind Mill
+  id: windmill
   icon: {fileID: 21300000, guid: c6976c1a92f962840993c1ad467acc4a, type: 3}
   description: None
   size: {x: 1, y: 2}
   prefab: {fileID: 8162582637761495044, guid: 133b90b1580cc754583a607888667c32, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 260
+  buyPrice: 350
+  buyEcoPrice: 5
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

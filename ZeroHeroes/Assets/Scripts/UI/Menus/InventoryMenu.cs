@@ -11,9 +11,12 @@ public class InventoryMenu : MenuBase
 
     [Header("Buttons")]
     [SerializeField] private Button buttonClose;
+    [SerializeField] private Button buttonUse;
+    [SerializeField] private Button buttonSell;
 
     [Header("Content")]
     [SerializeField] private RectTransform rectInventory;
+    [SerializeField] private RectTransform rectSellPanel;
     [SerializeField] private GameObject prefabUIItem;
     [SerializeField] private InvSlotElement[] slotElements;
 
@@ -31,6 +34,8 @@ public class InventoryMenu : MenuBase
     private List<GameObject> itemElements = new List<GameObject>();
 
     private InvItemElement selectedItem;
+    private InvSlotElement selectedSlot;
+    private Item selectedI;
 
 
     #endregion
@@ -53,12 +58,17 @@ public class InventoryMenu : MenuBase
 
     public void SetSelectedItem(InvItemElement selection)
     {
-        if (selectedItem != null)
+        if (selectedSlot != null)
         {
-            selectedItem.slotElement.GetComponent<Image>().color = new Color32(207, 206, 167, 255);
+            selectedSlot.GetComponent<Image>().color = new Color32(207, 206, 167, 255);
         }
 
         selectedItem = selection;
+        selectedI = selectedItem.item;
+
+        selectedSlot = selectedItem.slotElement;
+        selectedSlot.GetComponent<Image>().color = new Color32(167, 166, 127, 255);
+
         UpdateItemDetails();
     }
 
@@ -73,6 +83,18 @@ public class InventoryMenu : MenuBase
             SoundController.PlaySound("button");
 
             Close();
+        });
+        buttonUse.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            if (selectedItem != null && selectedItem.item != null) selectedItem.item.Use();
+        });
+        buttonSell.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            if (selectedItem != null && selectedItem.item != null) selectedItem.item.Sell();
         });
     }
 
@@ -96,6 +118,14 @@ public class InventoryMenu : MenuBase
     private void Populate()
     {
         Item[] items = GameController.Instance.GetInventory().GetItems();
+        bool foundItem = false;
+
+        selectedItem = null;
+
+        if (selectedSlot != null)
+        {
+            selectedSlot.GetComponent<Image>().color = new Color32(207, 206, 167, 255);
+        }
 
         if (itemElements != null && itemElements.Count > 0)
         {
@@ -125,13 +155,16 @@ public class InventoryMenu : MenuBase
 
                 itemElements.Add(itemElement);
 
-                if (selectedItem == null)
+                if (selectedItem == null || items[i].GetSlot() == selectedSlot.slotNumber && !foundItem || items[i] == selectedI)
                 {
-                    selectedItem = itemElement.GetComponent<InvItemElement>();
-                    UpdateItemDetails();
+                    SetSelectedItem(itemElement.GetComponent<InvItemElement>());
+
+                    if (items[i] == selectedI) foundItem = true;
                 }
             }
         }
+
+        UpdateItemDetails();
     }
 
     public void UpdateDisplay()
@@ -139,24 +172,38 @@ public class InventoryMenu : MenuBase
         if (!IsOpened()) return;
 
         Populate();
+        UpdateItemDetails();
     }
 
     public void UpdateItemDetails()
     {
-        if (selectedItem == null) return;
 
-        txtTitle.text = selectedItem.item.GetTitle();
-        txtAmount.text = "x"+ selectedItem.item.GetQuantity().ToString();
-        txtDescription.text = selectedItem.item.GetDescription();
-        txtPrice.text = "Sell for $"+ selectedItem.item.GetSellPrice();
-        imgIcon.sprite = selectedItem.item.GetIcon();
+        if (selectedItem != null)
+        {
+            txtTitle.text = selectedItem.item.GetTitle();
+            txtAmount.text = "x" + selectedItem.item.GetQuantity().ToString();
+            txtDescription.text = selectedItem.item.GetDescription();
+            imgIcon.sprite = selectedItem.item.GetIcon();
 
-        selectedItem.slotElement.GetComponent<Image>().color = new Color32(167, 166, 127, 255);
-    }
+            if (selectedItem.item.GetSellPrice() > 0)
+            {
+                rectSellPanel.gameObject.SetActive(true);
+                txtPrice.text = "Sell for $" + (selectedItem.item.GetSellPrice() * selectedItem.item.GetQuantity());
+            }
+            else
+            {
+                rectSellPanel.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            txtTitle.text = "Select a Item!";
+            txtAmount.text = "";
+            txtDescription.text = "View all the important details of each item in your inventory just by selecting them!";
+            imgIcon.sprite = null;
 
-    public void GiveNewItem(string item_id)
-    {
-        GameController.Instance.GetInventory().GiveItem(item_id, 5, -1);
+            rectSellPanel.gameObject.SetActive(false);
+        }
     }
 
     #endregion

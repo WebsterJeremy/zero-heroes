@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: composter
   m_EditorClassIdentifier: 
   title: Composter
+  id: composter
   icon: {fileID: 21300000, guid: 99c88172185104841901eb65494dd4c6, type: 3}
   description: None
   size: {x: 2, y: 2}
   prefab: {fileID: 8162582637761495044, guid: a83d4753ca7d5d14d81bed3f5cafa195, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 200
+  buyEcoPrice: 1
   produces: 1
   produceTime: 120
-  produceQuantity: {x: 20, y: 30}
+  produceQuantity: {x: 1, y: 4}
   restockTime: 0
   restockPrice: 0
   producedItem: fertilizer_bag

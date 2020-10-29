@@ -16,5 +16,6 @@ MonoBehaviour:
   icon: {fileID: -5190403580929443904, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: "Contains plant \u201Cfood\u201D to encourage food growth for more
+    frequent harvest\r."
   maxQuantity: 50

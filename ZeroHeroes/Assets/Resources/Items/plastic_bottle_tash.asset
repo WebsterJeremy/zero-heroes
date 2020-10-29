@@ -17,5 +17,5 @@ MonoBehaviour:
   sellPrice: 10
   buyPrice: 10
   description: "Recycling system for discarding plastic bottles to enable reuse and
-    entering landline\r"
+    entering landline\r."
   maxQuantity: 50

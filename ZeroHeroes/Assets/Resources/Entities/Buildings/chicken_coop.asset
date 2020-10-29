@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: chicken_coop
   m_EditorClassIdentifier: 
   title: Chicken Coop
+  id: chicken_coop
   icon: {fileID: 21300000, guid: 323e9e35c10b5324b9ef7d90aeab59c4, type: 3}
   description: None
   size: {x: 2, y: 2}
   prefab: {fileID: 8162582637761495044, guid: addf2005aa97b0543be4fcb76bffb266, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 200
+  buyEcoPrice: 1
   produces: 1
   produceTime: 120
-  produceQuantity: {x: 20, y: 30}
+  produceQuantity: {x: 1, y: 4}
   restockTime: 300
   restockPrice: 300
   producedItem: eggs

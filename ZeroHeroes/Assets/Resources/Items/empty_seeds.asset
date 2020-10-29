@@ -16,5 +16,5 @@ MonoBehaviour:
   icon: {fileID: -3441246028824064889, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: Currently empty waiting for more seeds to be filled inside.
   maxQuantity: 50

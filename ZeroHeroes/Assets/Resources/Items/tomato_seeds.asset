@@ -16,6 +16,5 @@ MonoBehaviour:
   icon: {fileID: 1045561740751445308, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: The tomato is the edible, often red berry of the plant Solanum lycopersicum,
-    commonly known as a tomato plant.
+  description: Most commonly red and used in creating salads in food preparation.
   maxQuantity: 50

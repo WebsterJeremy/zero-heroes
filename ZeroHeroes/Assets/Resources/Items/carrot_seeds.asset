@@ -16,6 +16,6 @@ MonoBehaviour:
   icon: {fileID: -3915631379582085759, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: The carrot is a root vegetable, usually orange in color, though purple,
-    black, red, white, and yellow cultivars exist.
+  description: Long orange vegetable, used in several cuisines. Typically used as
+    a steamed vegetable in cooking.
   maxQuantity: 50

@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: green_house
   m_EditorClassIdentifier: 
   title: Green House
+  id: green_house
   icon: {fileID: 21300000, guid: b95c8081ed1d75646ac1cefc90c8789b, type: 3}
   description: None
   size: {x: 4, y: 4}
   prefab: {fileID: 8162582637761495044, guid: 475cc564c77c9734c8f704ce103cc8a0, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 425
+  buyPrice: 650
+  buyEcoPrice: 4
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

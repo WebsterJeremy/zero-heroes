@@ -1,29 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System; //to access DateTime
+using UnityEngine.EventSystems;
 
 
 public class Building : Entity
 {
+    public static float OFFLINE_PENALTY_PERCENT = 0.1f; // 10% increased times per production when offline
+
     #region AccessVariables
 
     [System.NonSerialized] public static BuildingAttributes[] buildingAttributesList;
 
     [Header("Entity")]
     [SerializeField] private int producedItems = 0;
-    [SerializeField] private float lastProduceTime = 0;
+    [SerializeField] private float nextProduceTime = 999;
     [SerializeField] private bool restocked = true;
-    [SerializeField] private float lastRestockTime = 0; // When Time.time is greater then ( lastRestockTime + GetRestockTime() ), then restock [GetRestockTime() is an attribute of the building]
+    [SerializeField] private float nextRestockTime = 999; // When Time.time is greater then ( lastRestockTime + GetRestockTime() ), then restock [GetRestockTime() is an attribute of the building]
+
+
+    /*
     private float realTime; //placeholder so that timespan can be changed 
     [SerializeField]DateTime oldDate; //start time away interval0
     DateTime currentDate;  //
+    */
 
     #endregion
     #region PrivateVariables
 
 
-[System.NonSerialized] private BuildingAttributes buildingAttributes;
+    [System.NonSerialized] private BuildingAttributes buildingAttributes;
     [System.NonSerialized] private Notify notify;
 
 
@@ -33,6 +39,9 @@ public class Building : Entity
     protected override void Start()
     {
         base.Start();
+
+        nextProduceTime = Time.time + GetProduceTime();
+        nextRestockTime = Time.time + GetRestockTime();
     }
 
     public static void LoadBuildingAttributes()
@@ -141,14 +150,14 @@ public class Building : Entity
         }
     }
 
-    public float GetLastProduceTime()
+    public float GetNextProduceTime()
     {
-        return lastProduceTime;
+        return nextProduceTime;
     }
 
-    public void SetLastProduceTime(float lastProduceTime)
+    public void SetNextProduceTime(float nextProduceTime)
     {
-        this.lastProduceTime = lastProduceTime;
+        this.nextProduceTime = nextProduceTime;
     }
 
     public bool GetRestocked()
@@ -161,14 +170,14 @@ public class Building : Entity
         this.restocked = restocked;
     }
 
-    public float GetLastRestockTime()
+    public float GetNextRestockTime()
     {
-        return lastRestockTime;
+        return nextRestockTime;
     }
 
-    public void SetLastRestockTime(float lastRestockTime)
+    public void SetNextRestockTime(float nextRestockTime)
     {
-        this.lastRestockTime = lastRestockTime;
+        this.nextRestockTime = nextRestockTime;
     }
 
     #endregion
@@ -177,26 +186,29 @@ public class Building : Entity
     public void CopyTo(Building ent)
     {
         ent.SetProducedItems(ent.GetProducedItems());
-        ent.SetLastProduceTime(ent.GetLastProduceTime());
+        ent.SetNextProduceTime(ent.GetNextProduceTime());
         ent.SetRestocked(ent.GetRestocked());
-        ent.SetLastRestockTime(ent.GetLastRestockTime());
+        ent.SetNextRestockTime(ent.GetNextRestockTime());
     }
 
     private void OnMouseDown()
     {
+        if (EventSystem.current.currentSelectedGameObject != null) return;
+
         if (GetProduces())
         {
             if (producedItems < 1 || GetProducedItem() == null || GetProducedItem().Equals(string.Empty))
             {
-                Debug.Log("No produced items opening menu for " + GetTitle() +" : Next produce in "+ (lastProduceTime - Time.time) + " seconds");
+                Debug.Log("No produced items opening menu for " + GetTitle() +" : Next produce in "+ (nextProduceTime - Time.time) + " seconds");
             }
             else
             {
                 GameController.Instance.GetInventory().GiveItem(GetProducedItem(), producedItems, -1); // Slot of -1, means it will find a new empty slot in the inventory instead
+                SoundController.PlaySound("inventory_pickup");
 
                 if (GetEcoFriendly())
                 {
-                    GameController.Instance.SetPoints(GameController.Instance.GetPoints() + UnityEngine.Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
+                    GameController.Instance.SetPoints(GameController.Instance.GetPoints() + Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
                 }
 
                 // How many seconds have pasted / GetProduceTime()
@@ -213,38 +225,94 @@ public class Building : Entity
 
     private void Update()
     {
-        if (GetProduces() && lastProduceTime < Time.time)
-        {
-            SetProducedItems((int) UnityEngine.Random.Range(GetProduceQuantity().x, GetProduceQuantity().y));
-
-            lastProduceTime = Time.time + GetProduceTime() + realTime;
-        }
+        if (GetProduces() && nextProduceTime < Time.time) Produce();
     }
 
-    void OnApplicationQuit()
+    private void Produce()
     {
-        //setting the time when leaving the game
-        oldDate = System.DateTime.Now;
+        SetProducedItems(GetProducedItems() + (int)Random.Range(GetProduceQuantity().x, GetProduceQuantity().y));
 
+        nextProduceTime = Time.time + GetProduceTime();
     }
 
-    void awake()
-    {
-        //setting current time
-        currentDate = System.DateTime.Now;
-
-        //calculation for the time that game has be off for
-        TimeSpan elapsedTime = currentDate.Subtract(oldDate);
-
-        //converting to float
-        realTime = (float)elapsedTime.TotalMinutes;
-    }
-
-    public void CalculateIdledProduces(int secondsSinceSave)
+    public void CalculateIdledProduces(int elapsedTime, float produceIn)
     {
         if (!GetProduces()) return;
 
-        // Debug.Log("Time elapsed since last save " + secondsSinceSave + " seconds");
+        float offlineProductionTime = GetProduceTime() + (GetProduceTime() * OFFLINE_PENALTY_PERCENT); // Increased production time when offline
+        float producedTime = elapsedTime + (offlineProductionTime - produceIn);
+        int timesProduced = (int)(producedTime / offlineProductionTime);
+        float nextTime = producedTime - (timesProduced * offlineProductionTime);
+
+        Debug.Log("Time elapsed: "+ elapsedTime +" Base Produce In: "+ produceIn +", Produce time: "+ producedTime +", Produced "+ timesProduced + " Times, New next time: "+ nextTime);
+
+        if (timesProduced > 0)
+        {
+            for (int i = 0; i < timesProduced; i++) Produce();
+        }
+
+        nextProduceTime = Time.time + nextTime;
+    }
+
+    public void OnDestroy()
+    {
+        Building.RemoveColliders(transform.position, GetSize());
+    }
+
+    #endregion
+    #region Static Helpers
+
+    public static Vector2 MAP_BOUNDS_MIN = new Vector2(-18,-18);
+    public static Vector2 MAP_BOUNDS_MAX = new Vector2(20,20);
+    public static bool[,] colliders = new bool[50,50];
+
+    public static void AddColliders(Vector2 position, Vector2 size) { AddColliders(new Vector2Int((int)position.x, (int)position.y), new Vector2Int((int)size.x, (int)size.y)); }
+    public static void AddColliders(Vector2Int position, Vector2Int size)
+    {
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                colliders[20 + position.x + x, 20 + position.y + y] = true;
+            }
+        }
+    }
+
+    public static void RemoveColliders(Vector2 position, Vector2 size) { RemoveColliders(new Vector2Int((int)position.x, (int)position.y), new Vector2Int((int)size.x, (int)size.y)); }
+    public static void RemoveColliders(Vector2Int position, Vector2Int size)
+    {
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                colliders[20 + position.x + x, 20 + position.y + y] = false;
+            }
+        }
+    }
+
+    public static bool IsBlocked(Vector2 position, Vector2 size) { return IsBlocked(new Vector2Int((int)position.x, (int)position.y), new Vector2Int((int)size.x, (int)size.y)); }
+    public static bool IsBlocked(Vector2Int position, Vector2Int size)
+    {
+        if (position.x < MAP_BOUNDS_MIN.x || position.x > MAP_BOUNDS_MAX.x) return true;
+        if (position.y < MAP_BOUNDS_MIN.y || position.y > MAP_BOUNDS_MAX.y) return true;
+
+
+        if (size.x == 1 && size.y == 1)
+        {
+            return colliders[20 + position.x, 20 + position.y];
+        }
+        else
+        {
+            for (int x = 0; x < size.x; x++)
+            {
+                for (int y = 0; y < size.y; y++)
+                {
+                    if (colliders[20 + position.x + x, 20 + position.y + y]) return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     #endregion

@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: peach_tree
   m_EditorClassIdentifier: 
   title: Peach Tree
+  id: peach_tree
   icon: {fileID: -5004111759389066315, guid: 362e6f7458543794f9d9f1dc69dc1ece, type: 3}
   description: None
   size: {x: 3, y: 4}
   prefab: {fileID: 8162582637761495044, guid: 58289db3ad6bb024c9e05bf60ea72f48, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 270
+  buyEcoPrice: 1
   produces: 1
   produceTime: 120
-  produceQuantity: {x: 20, y: 30}
+  produceQuantity: {x: 1, y: 4}
   restockTime: 0
   restockPrice: 0
   producedItem: peach

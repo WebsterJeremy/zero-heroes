@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a85642e818227540a9ebebea0c218e6, type: 3}
   m_Name: solarpanel_tier1
   m_EditorClassIdentifier: 
-  title: Small Solar Panel
+  title: Solar Panel
+  id: solarpanel_tier1
   icon: {fileID: 21300000, guid: d1135ad4d3bf6234c989b4d7623472f2, type: 3}
   description: None
   size: {x: 1, y: 1}
   prefab: {fileID: 8162582637761495044, guid: bc10b57877962e4468444800ae48de82, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 300
+  buyEcoPrice: 8
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

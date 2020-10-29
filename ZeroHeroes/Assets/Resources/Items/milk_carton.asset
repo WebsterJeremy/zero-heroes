@@ -16,5 +16,5 @@ MonoBehaviour:
   icon: {fileID: 5660923757545321170, guid: d021b4e95c2b02d4bb66bb3a8ae69ff5, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: Container for storing milk collected from the cow barn.
   maxQuantity: 50

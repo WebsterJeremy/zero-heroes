@@ -4,18 +4,12 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-//This is a static manager class to interact with the Game's saving system
-//This should be attached to the game manager
 public class SaveLoadManager : MonoBehaviour
 {
     public static GameSaveData currentSaveData = new GameSaveData();
-
-    //This is the name of the file where the data will be stored to
     private static string defaultSaveFileName;
 
-    // Start is called before the first frame update
     void Start(){
-        //This sets the save location of the game's data to an external folder accessible on Windows and Android
         defaultSaveFileName = Application.persistentDataPath + "/save.dat";
     }
 
@@ -28,7 +22,7 @@ public class SaveLoadManager : MonoBehaviour
 
         if (File.Exists(fileName)){
             file = File.OpenWrite(fileName);
-        }else file = File.Create(fileName);
+        } else file = File.Create(fileName);
         
         BinaryFormatter bf = new BinaryFormatter();
         currentSaveData.QuickSave();
@@ -39,11 +33,11 @@ public class SaveLoadManager : MonoBehaviour
     public static bool loadData() { return loadData(defaultSaveFileName); }
 
     public static bool loadData(string fileName){
-        //Load currentSaveData from a file
         FileStream file;
 
         if (File.Exists(fileName)) {
             file = File.OpenRead(fileName);
+
             BinaryFormatter bf = new BinaryFormatter();
             currentSaveData = (GameSaveData)bf.Deserialize(file);
             currentSaveData.QuickLoad();
@@ -53,9 +47,19 @@ public class SaveLoadManager : MonoBehaviour
             Debug.LogWarning("File not found");
             currentSaveData = new GameSaveData();
             currentSaveData.QuickLoad();
+
             return true;
         }
 
         return false;
+    }
+
+    public static void resetData() { resetData(defaultSaveFileName); }
+    public static void resetData(string fileName)
+    {
+        if (File.Exists(fileName))
+        {
+            File.Delete(fileName);
+        }
     }
 }

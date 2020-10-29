@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: small_pond
   m_EditorClassIdentifier: 
   title: Small Pond
+  id: small_pond
   icon: {fileID: 21300000, guid: 861ebf5c2ea2ec04992bef9ab4fe9463, type: 3}
   description: None
   size: {x: 2, y: 1}
   prefab: {fileID: 8162582637761495044, guid: 9580867a166da7f47a048cfdfa867cc7, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 720
+  buyEcoPrice: 5
   produces: 0
   produceTime: 0
   produceQuantity: {x: 0, y: 0}

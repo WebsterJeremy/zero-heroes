@@ -16,5 +16,6 @@ MonoBehaviour:
   icon: {fileID: -7284776416018803500, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
   sellPrice: 70
   buyPrice: 120
-  description: Most commonly purple, the spongy, absorbent fruit is used in serval
-    cuisines. Typically used as a vegetable in cooking, it is a berry.
+  description: "Most commonly purple, the spongy, absorbent fruit is used in several
+    cuisines. Typically used as a vegetable in cooking, it is a berry.\r"
+  maxQuantity: 50

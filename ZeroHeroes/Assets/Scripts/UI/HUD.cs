@@ -10,7 +10,12 @@ public class HUD : MonoBehaviour
 
 
     [Header("Buttons")]
-    [SerializeField] private Button buttonAddMoney;
+    [SerializeField] private Button buttonBuild;
+    [SerializeField] private Button buttonTask;
+    [SerializeField] private Button buttonMap;
+    [SerializeField] private Button buttonInventory;
+    [SerializeField] private Button buttonShop;
+    [SerializeField] private Button buttonProgress;
 
     [Header("Text")]
     [SerializeField] private TextMeshProUGUI textMoney;
@@ -52,11 +57,41 @@ public class HUD : MonoBehaviour
 
     protected void AddButtonListeners()
     {
-        buttonAddMoney.onClick.AddListener(() =>
+        buttonBuild.onClick.AddListener(() =>
         {
             SoundController.PlaySound("button");
 
-            GameController.Instance.SetMoney(GameController.Instance.GetMoney() + Random.Range(20,35));
+            UIController.Instance.GetBuildMenu().ToggleVisibility();
+        });
+        buttonTask.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            UIController.Instance.GetTasklogMenu().Open();
+        });
+        buttonMap.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+//            UIController.Instance.GetBuildMenu().Open();
+        });
+        buttonInventory.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            UIController.Instance.GetInventoryMenu().Open();
+        });
+        buttonShop.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+//            UIController.Instance.GetBuildMenu().Open();
+        });
+        buttonProgress.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+//            UIController.Instance.GetBuildMenu().Open();
         });
     }
 
@@ -76,12 +111,14 @@ public class HUD : MonoBehaviour
             yield return new WaitForEndOfFrame();
             animTime += Time.deltaTime;
         }
+
+        oldMoney = endValue;
     }
 
     public void DisplayMoney(int money)
     {
-        textMoney.text = "$" + money.ToString();
-        rectMoney.sizeDelta = new Vector2(0 + (textMoney.text.Length * 40), rectMoney.sizeDelta.y);
+        textMoney.text = money.ToString();
+        rectMoney.sizeDelta = new Vector2(0 + (textMoney.text.Length * 40 + 220), rectMoney.sizeDelta.y);
     }
 
     public void ChangePoints() { StartCoroutine(_ChangePoints()); }
@@ -100,12 +137,14 @@ public class HUD : MonoBehaviour
             yield return new WaitForEndOfFrame();
             animTime += Time.deltaTime;
         }
+
+        oldPoints = endValue;
     }
 
     public void DisplayPoints(int points)
     {
-        textPoints.text = "$" + points.ToString();
-        rectPoints.sizeDelta = new Vector2(0 + (textPoints.text.Length * 40), rectPoints.sizeDelta.y);
+        textPoints.text = points.ToString();
+        rectPoints.sizeDelta = new Vector2(0 + (textPoints.text.Length * 40 + 220), rectPoints.sizeDelta.y);
     }
 
     public Notify CreateNotify(string label, int quantity, Sprite icon, Transform follow, Vector3 offset)
@@ -123,8 +162,22 @@ public class HUD : MonoBehaviour
 
     public void RemoveNotify(Notify notify)
     {
-        notifyList.Remove(notify);
         Destroy(notify.gameObject);
+        notifyList.Remove(notify);
+    }
+
+    public void RemoveAllNotifys()
+    {
+        if (notifyList == null || notifyList.Count < 1) return;
+
+        for (int i = 0;i < notifyList.Count;i++)
+        {
+            Notify notify = notifyList[i];
+            if (notify == null) continue;
+
+            if (notify.gameObject != null) Destroy(notify.gameObject);
+            notifyList.Remove(notify);
+        }
     }
 
     #endregion

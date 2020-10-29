@@ -16,5 +16,6 @@ MonoBehaviour:
   icon: {fileID: 4637521470187664152, guid: 362e6f7458543794f9d9f1dc69dc1ece, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: None
+  description: Sweet citrus fruit grown on trees. Original thought to prevent scurvy.
+    Skins may be used to prevent and eliminate slugs.
   maxQuantity: 50

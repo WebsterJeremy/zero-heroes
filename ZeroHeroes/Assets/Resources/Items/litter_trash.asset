@@ -16,5 +16,5 @@ MonoBehaviour:
   icon: {fileID: -3934363111333963526, guid: 00b5512db69047e47b89c258be8a41ad, type: 3}
   sellPrice: 10
   buyPrice: 10
-  description: Disposal system for unwanted items to prevent them entering landfill
+  description: Disposal system for unwanted items to prevent them entering landfill.
   maxQuantity: 50

@@ -13,15 +13,17 @@ MonoBehaviour:
   m_Name: well_tier1
   m_EditorClassIdentifier: 
   title: Well
+  id: well_tier1
   icon: {fileID: 21300000, guid: bfdc5fe5d6f35b94e936875c0e0c0c02, type: 3}
   description: None
   size: {x: 2, y: 2}
   prefab: {fileID: 8162582637761495044, guid: 9129c6be4484d534098c3632027a605b, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 140
+  buyPrice: 260
+  buyEcoPrice: 3
   produces: 1
   produceTime: 120
-  produceQuantity: {x: 20, y: 30}
+  produceQuantity: {x: 1, y: 4}
   restockTime: 300
   restockPrice: 300
   producedItem: water_bucket
