@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Tomato Seeds
   icon: {fileID: 1045561740751445308, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 4
+  ecoSellPrice: 0
+  buyPrice: 25
+  buyQuantity: 5
   description: Most commonly red and used in creating salads in food preparation.
   maxQuantity: 50

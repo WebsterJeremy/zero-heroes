@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269aea41d965072479728ccd4a63c02b, type: 3}
+  m_Name: chapter_1
+  m_EditorClassIdentifier: 
+  title: Zero Waste
+  graphics: {fileID: 21300000, guid: 0daf892cc8af9184abcb957d3b576152, type: 3}
+  number: 1
+  tasks:
+  - {fileID: 11400000, guid: 572e1330659b4404e876aedaa7e9e3e8, type: 2}
+  - {fileID: 11400000, guid: d403e1077b1d40241bd1141a2c1f47be, type: 2}
+  - {fileID: 11400000, guid: 3e07865acaa942649bfb717a4442168a, type: 2}
+  - {fileID: 11400000, guid: f7d1fc134c050b542af17f7523c147bc, type: 2}
+  - {fileID: 11400000, guid: 19de866af82a077438573ff756ca7265, type: 2}
+  description: "The early adopters of the Zero Waste movement in the U.S. \u2014
+    Seattle, San Francisco and Oakland, to name a few \u2014 have had their hands
+    full as the pioneers trying to shift from waste management to resource management.
+    Their work has paved the way for much of the success we see today in the U.S.,
+    including 45 communities with Zero Waste plans/goals and 200-plus communities
+    composting food scraps from residents.\n\nNo one has all the answers yet, but
+    we know enough now to help any community in the U.S. make serious strides quickly
+    toward a Zero Waste future. And that\u2019s critical, because we don\u2019t have
+    time for 25-year goals."

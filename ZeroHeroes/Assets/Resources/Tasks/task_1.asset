@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8565c8e70cd8ba2409c86cdc8c86678a, type: 3}
+  m_Name: task_1
+  m_EditorClassIdentifier: 
+  title: Community Composting
+  npc: {fileID: 11400000, guid: 199ecdd1246284445b78913c48b2b706, type: 2}
+  description: Food and garden waste can be composted instead of being sent to landfill.
+    Composting is a much more environmentally friendly option. Could you install
+    one on the plot?
+  objectives:
+  - title: Build a farm
+    id: 0
+    data: farm_4x4
+    objectiveType: 1
+    total: 1
+  - title: Gather 15 lettuce
+    id: 1
+    data: lettuce
+    objectiveType: 0
+    total: 15
+  - title: Build a composter
+    id: 2
+    data: composter
+    objectiveType: 1
+    total: 1
+  rewards:
+  - rewardType: 0
+    quantity: 15
+    data: carrot_seeds
+  - rewardType: 2
+    quantity: 5
+    data: 

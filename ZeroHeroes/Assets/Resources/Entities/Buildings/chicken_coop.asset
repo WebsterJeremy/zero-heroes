@@ -18,14 +18,14 @@ MonoBehaviour:
   description: None
   size: {x: 2, y: 2}
   prefab: {fileID: 8162582637761495044, guid: addf2005aa97b0543be4fcb76bffb266, type: 3}
+  tiled: 0
   sellPrice: 140
-  buyPrice: 200
+  buyPrice: 400
   buyEcoPrice: 1
   produces: 1
-  produceTime: 120
+  produceTime: 30
   produceQuantity: {x: 1, y: 4}
-  restockTime: 300
-  restockPrice: 300
+  stockedItem: wheat
   producedItem: eggs
   ecoFriendly: 0
   ecoFriendlyPoints: {x: 1, y: 3}

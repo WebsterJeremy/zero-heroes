@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
 
     public enum GameState { PAUSED, PLAYING };
     public static GameState GAME_STATE = GameState.PAUSED;
-    public static int WIN_CONDITION = 500;
+    public static bool NEW_GAME = false;
 
 
     [Header("Containers")]
@@ -21,6 +21,8 @@ public class GameController : MonoBehaviour
 
     [Header("Player")]
     public int currentZoneSceneID = 1;
+    public NpcAttributes[] npcs;
+    public ChapterAttributes[] chapterList;
 
 
     #endregion
@@ -28,7 +30,7 @@ public class GameController : MonoBehaviour
 
 
     private Dictionary<string, string> stats = new Dictionary<string, string>();
-    private Dictionary<string, Task> tasks = new Dictionary<string, Task>();
+    private List<Chapter> chapters = new List<Chapter>();
     private Texture2D screenshot;
 
     private List<Building> buildings = new List<Building>();
@@ -38,6 +40,7 @@ public class GameController : MonoBehaviour
     private Tilemap collisionTilemap;
 
     private DateTime saveTime;
+    private float gameTime;
 
     #endregion
     #region Initlization
@@ -63,7 +66,7 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForFixedUpdate();
 
-        EffectController.TweenFadeScene(1f, 0f, 5f, () => { }); // Fade in from White on start.
+        EffectController.TweenFadeScene(1f, 0f, 10f, () => { }); // Fade in from White on start.
 
         for (int i = 0;i < SceneManager.sceneCount;i++) // Unload scene if opened while testing
         {
@@ -74,8 +77,36 @@ public class GameController : MonoBehaviour
 
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        if (pause)
+        {
+            SaveGame();
+        }
+        else
+        {
+            if (PLAYING()) SaveLoadManager.loadData();
+        }
+    }
+
     private void OnApplicationQuit() {
+        
+    }
+
+    public void SaveGame() { StartCoroutine(_SaveGame()); }
+    private IEnumerator _SaveGame()
+    {
         SaveLoadManager.saveData();
+
+        yield return new WaitForFixedUpdate();
+
+        for (int i = 0;i < entitiesContainer.childCount;i++)
+        {
+            if (entitiesContainer.GetChild(i) != null && entitiesContainer.GetChild(i).gameObject != null)
+            {
+                Destroy(entitiesContainer.GetChild(i).gameObject);
+            }
+        }
     }
 
 
@@ -93,23 +124,19 @@ public class GameController : MonoBehaviour
         get { return GAME_STATE; }
     }
 
-    public Dictionary<string, Task> GetTasks()
-    {
-        return tasks;
-    }
-
-    public void SetTasks(Dictionary<string, Task> tasks)
-    {
-        this.tasks = tasks;
-    }
-
     public string GetStat(string key, string _default)
     {
         key = key.ToLower();
 
         return stats.ContainsKey(key) ? stats[key] : _default;
     }
-    public int GetStat(string key, int _default) { return int.Parse(GetStat(key, _default.ToString())); }
+    public int GetStat(string key, int _default) {
+        int number = _default;
+
+        bool success = Int32.TryParse(GetStat(key, _default.ToString()), out number);
+
+        return number;
+    }
 
     public void SetStat(string key, string stat)
     {
@@ -119,8 +146,11 @@ public class GameController : MonoBehaviour
             stats.Add(key, stat);
 
         stats[key] = stat;
+
+        CheckObjectivies(TaskAttributes.ObjectiveType.STAT);
     }
     public void SetStat(string key, int stat) { SetStat(key, stat.ToString()); }
+    public void SetStat(string key, float stat) { SetStat(key, ((int) stat).ToString()); }
 
     public Dictionary<string, string> GetStats()
     {
@@ -156,9 +186,60 @@ public class GameController : MonoBehaviour
     }
     public void GivePoints(int points) { SetPoints(GetPoints() + points); }
 
+    public int GetChapterStat()
+    {
+        return GetStat("Chapter", 1);
+    }
+
+    public void SetChapterStat(int chapter)
+    {
+        SetStat("Chapter", chapter);
+    }
+
+    public Chapter GetChapter(int key)
+    {
+        return GetChapters() != null ? GetChapters()[key] : null;
+    }
+
+    public Chapter GetCurrentChapter()
+    {
+        return GetChapter(GetChapterStat() - 1);
+    }
+
+    public List<Chapter> GetChapters()
+    {
+        if (chapters == null || chapters.Count != 5)
+        {
+            chapters = new List<Chapter>();
+
+            foreach (ChapterAttributes attributes in chapterList)
+            {
+                Chapter chapter = new Chapter();
+                chapter.Setup(attributes);
+
+                chapters.Add(chapter);
+            }
+        }
+
+        return chapters;
+    }
+
+    public void SetChapters(List<Chapter> chapters)
+    {
+        this.chapters = chapters;
+    }
+
     public void AddBuilding(Building building)
     {
         buildings.Add(building);
+    }
+
+    public void RemoveBuilding(Building building)
+    {
+        if (!buildings.Contains(building)) return;
+
+        buildings.Remove(building);
+        Destroy(building.gameObject);
     }
 
     public List<Building> GetBuildings()
@@ -181,9 +262,24 @@ public class GameController : MonoBehaviour
         return saveTime;
     }
 
+    public void SetGameTime(float time)
+    {
+        gameTime = time;
+    }
+
+    public float GetGameTime()
+    {
+        return gameTime;
+    }
+
     public int GetTimeSinceSave()
     {
         return ((int)(DateTime.UtcNow - saveTime).TotalSeconds);
+    }
+
+    public NpcAttributes GetMayor()
+    {
+        return npcs[0];
     }
 
 
@@ -192,9 +288,16 @@ public class GameController : MonoBehaviour
 
     public void StartGame() { StartCoroutine(_StartGame()); }
     IEnumerator _StartGame() {
-        SceneManager.LoadScene(currentZoneSceneID, LoadSceneMode.Additive);
 
-        EffectController.TweenFadeScene(0f, 1f, 0.4f, () => { }); // Fade to loading screen
+        EffectController.TweenFadeScene(0f, 1f, 0.1f, () => {
+            EffectController.Instance.fadeImage.color = new Color(1, 1, 1, 1);
+        }); // Fade to loading screen
+
+        yield return new WaitForSeconds(0.1f);
+
+        EffectController.Instance.fadeImage.color = new Color(1, 1, 1, 1);
+
+        SceneManager.LoadScene(currentZoneSceneID, LoadSceneMode.Additive);
 
         while (!SceneManager.GetSceneByBuildIndex(currentZoneSceneID).isLoaded) // Force wait until it's loaded (Could add Loading screen if required)
         {
@@ -212,15 +315,32 @@ public class GameController : MonoBehaviour
             Debug.LogWarning("New World Loaded!");
         }
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
 
-        EffectController.TweenFadeScene(1f, 0f, 0.4f, () => { }); // Fade to playspace scene
+        EffectController.TweenFadeScene(1f, 0f, 1f, () => { }); // Fade to playspace scene
 
         GAME_STATE = GameState.PLAYING;
 
         UIController.Instance.GetHUD().gameObject.SetActive(true);
         UIController.Instance.GetHUD().DisplayMoney(GetMoney());
         UIController.Instance.GetHUD().DisplayPoints(GetPoints());
+
+        GetChapters();
+
+        if (NEW_GAME)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            UIController.Instance.GetDialog().StartReading("" +
+                "Welcome to Zero Heros!\nOur goal here in this town is to achieve a zero emissions lifestyle in our everyday life's." +
+                "Thanks to people like you who have volunteered  for this lifestyle were getting one step closer." +
+                "This plot of land here is yours for free along as you achieve a zero emissions lifestyle within the first year." +
+                "To help you get started we've given you $500 dollars, and 15 eco-points, to earn more complete tasks and sell your produced items." +
+                "Now I better get going, but I've filled your task log with the first chapter's tasks." +
+                "When you haved completed all the tasks for a given chapter the next one is opened, with a total of five chapters to complete before reaching a zero emissions lifestyle." +
+                "Once all the chapters have been completed, you will have completed this challenge and have achieved a zero emissions lifestyle." +
+                "Well was great meeting you, and I hope you enjoy yourself in our town!", GetMayor());
+        }
     }
 
     public void PauseGame() { StartCoroutine(_PauseGame()); }
@@ -251,9 +371,9 @@ public class GameController : MonoBehaviour
 
         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
 
-        SaveLoadManager.saveData();
+        SaveGame();
 
-        if (entitiesContainer != null && entitiesContainer.childCount > 0) for (int i = 0;i < entitiesContainer.childCount;i++) Destroy(entitiesContainer.GetChild(i).gameObject);
+        NEW_GAME = false;
 
         for (int i = 0;i < SceneManager.sceneCount;i++)
         {
@@ -284,38 +404,34 @@ public class GameController : MonoBehaviour
     {
         if (buildingsSave == null || buildingsSave.Count < 1) return;
 
-        Debug.Log("Time elapsed since last save " + GetTimeSinceSave() + " seconds");
-
         foreach (BuildingSave buildingSave in buildingsSave)
         {
             Building building = SpawnBuilding(buildingSave.id, new Vector2(buildingSave.positionX, buildingSave.positionY));
-            building.SetProducedItems(buildingSave.producedItems);
-            building.SetRestocked(buildingSave.restocked);
-            building.SetNextRestockTime(buildingSave.nextRestockTime);
-            building.CalculateIdledProduces(GetTimeSinceSave(), buildingSave.nextProduceTime);
+            building.GetLoad(buildingSave);
         }
+    }
+
+    public Building GetBuilding(string building_id)
+    {
+        foreach (Building building in buildings)
+        {
+            if (building.GetID() == building_id) return building;
+        }
+
+        return null;
     }
 
     #endregion
     #region Tasks
 
-    public void ReceiveTask(Task task)
-    {
-        if (HasTask(task.taskName)) return;
 
-        tasks.Add(task.taskName, task);
-        task.OnBeginTask();
+    public void CheckObjectivies(TaskAttributes.ObjectiveType objectiveType)
+    {
+        if (!PLAYING()) return;
+
+        GetCurrentChapter().CheckObjectivies(objectiveType);
     }
 
-    public bool HasTask(string id)
-    {
-        return tasks.ContainsKey(id);
-    }
-
-    public void CompleteTask()
-    {
-
-    }
 
     #endregion
     #region Zones

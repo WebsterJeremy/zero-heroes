@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8565c8e70cd8ba2409c86cdc8c86678a, type: 3}
+  m_Name: task_6
+  m_EditorClassIdentifier: 
+  title: Bezzzz
+  npc: {fileID: 11400000, guid: 199ecdd1246284445b78913c48b2b706, type: 2}
+  description: 'Local produce doesn''t need to be transport very far... so its great
+    for the envionrment! Could you build be some bee boxes? Bees are great at polinating
+    plants. Could you install some for me so i can attract and  keep bees?  '
+  objectives:
+  - title: Build 5 bee boxes
+    id: 0
+    data: bee_box
+    objectiveType: 1
+    total: 5
+  - title: Collect 20 honey jars
+    id: 1
+    data: honey_jar
+    objectiveType: 0
+    total: 20
+  rewards:
+  - rewardType: 0
+    quantity: 50
+    data: honey

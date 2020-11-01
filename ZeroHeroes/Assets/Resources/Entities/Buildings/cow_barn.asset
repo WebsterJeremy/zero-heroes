@@ -18,14 +18,14 @@ MonoBehaviour:
   description: None
   size: {x: 4, y: 4}
   prefab: {fileID: 8162582637761495044, guid: 3459ee0a05615e74fa2522b6f9a20493, type: 3}
-  sellPrice: 140
-  buyPrice: 200
-  buyEcoPrice: 1
+  tiled: 0
+  sellPrice: 600
+  buyPrice: 800
+  buyEcoPrice: 12
   produces: 1
-  produceTime: 120
+  produceTime: 30
   produceQuantity: {x: 1, y: 4}
-  restockTime: 300
-  restockPrice: 300
+  stockedItem: wheat
   producedItem: milk_carton
   ecoFriendly: 0
   ecoFriendlyPoints: {x: 1, y: 3}

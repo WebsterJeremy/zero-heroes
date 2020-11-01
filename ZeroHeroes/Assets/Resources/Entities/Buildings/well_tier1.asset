@@ -19,10 +19,10 @@ MonoBehaviour:
   size: {x: 2, y: 2}
   prefab: {fileID: 8162582637761495044, guid: 9129c6be4484d534098c3632027a605b, type: 3}
   sellPrice: 140
-  buyPrice: 260
+  buyPrice: 450
   buyEcoPrice: 3
   produces: 1
-  produceTime: 120
+  produceTime: 30
   produceQuantity: {x: 1, y: 4}
   restockTime: 300
   restockPrice: 300

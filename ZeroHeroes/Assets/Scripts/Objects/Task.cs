@@ -1,86 +1,157 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public class QuestLine
+[Serializable]
+public class Task
 {
-    public string title;
-    //        public Task[] tasks;
-}
+    [System.NonSerialized] private TaskAttributes attributes;
+    [SerializeField] private int[] progress;
+    [SerializeField] private bool completed = false;
 
-public class Condition
-{
-    public bool passed = false;
-}
-
-public class Reward
-{
-
-}
-
-[CreateAssetMenu(fileName = "New Task", menuName = "Tasks/Task")]
-public class Task : ScriptableObject
-{
-    public string taskName = "Task";
-    public int id = -1;
-    public string npc;
-    public QuestLine questLine;
-    [TextArea(20,20)]
-    public string dialog;
-    public Objective[] objectives;
-    public Condition[] conditions;
-    public Reward[] rewards;
-
-    private Dictionary<string, Objective> _objectives = new Dictionary<string, Objective>();
-
-    public Dictionary<string, Objective> Objectives
+    public void Setup(TaskAttributes attributes)
     {
-        get { return _objectives; }
+        this.attributes = attributes;
+
+        progress = new int[GetObjectives().Length];
     }
 
-    public Objective GetObjective(string id)
+    public string GetTitle()
     {
-        return _objectives[id];
+        return attributes.GetTitle();
     }
 
-    public void Awake()
+    public NpcAttributes GetNpc()
     {
-        if (objectives.Length < 1) return;
+        return attributes.GetNpc();
+    }
 
-        foreach (Objective obj in objectives)
+    public string GetDescription()
+    {
+        return attributes.GetDescription();
+    }
+
+    public TaskAttributes.Objective[] GetObjectives()
+    {
+        return attributes.GetObjectives();
+    }
+
+    public TaskAttributes.Objective GetObjective(int id)
+    {
+        return attributes.GetObjectives()[id];
+    }
+
+    public TaskAttributes.Reward[] GetRewards()
+    {
+        return attributes.GetRewards();
+    }
+
+    public bool GetCompleted()
+    {
+        if (completed) return true;
+        if (this == null || attributes == null || GetObjectives() == null) return false;
+
+        for (int i = 0; i < progress.Length; i++) if (progress[i] < GetObjectives()[i].total) return false;
+        completed = true;
+
+        UIController.Instance.GetPopupTaskElement().Setup(this);
+
+        if (GetRewards().Length > 0)
         {
-            _objectives.Add(obj.objectiveDisplay, obj);
-        }
-    }
-
-    public void ReadTask()
-    {
-        Dialogue.Instance.StartReading(dialog);
-    }
-
-    public void OnBeginTask() // When the player clicks accept
-    {
-        ReadTask(); // Remove later, instead this is called when they are only getting the task from NPC not once they have accepted it.
-
-        if (_objectives.Count < objectives.Length)
-        {
-            foreach (Objective obj in objectives)
+            for (int i = 0;i < GetRewards().Length;i++)
             {
-                obj.OnBeginTask();
-                _objectives.Add(obj.objectiveDisplay, obj);
+                TaskAttributes.Reward reward = GetRewards()[i];
+
+                switch (reward.rewardType)
+                {
+                    case TaskAttributes.RewardType.ITEM:
+                        GameController.Instance.GetInventory().GiveItem(reward.data, reward.quantity, -1);
+
+                        break;
+                    case TaskAttributes.RewardType.POINTS:
+                        GameController.Instance.GivePoints(reward.quantity);
+
+                        break;
+                    default:
+                        GameController.Instance.GiveMoney(reward.quantity);
+
+                        break;
+                }
             }
         }
+
+        return true;
     }
 
-    public void CompleteObjective(Objective objective)
+    public int GetObjectiveProgress(int id)
     {
-        foreach (Objective obj in _objectives.Values)
+        return progress[id];
+    }
+
+    public void CheckObjectives(TaskAttributes.ObjectiveType type)
+    {
+        if (completed || GetObjectives() == null) return;
+
+        foreach (TaskAttributes.Objective objective in GetObjectives())
         {
-            if (!obj.Completed) return;
+            if (objective.objectiveType == type) Check(objective.id);
         }
 
-        Debug.Log("You have completed this task!");
-        // Remove from Task Log
-        // Reward Player
+        GetCompleted();
+    }
+
+    public void CheckObjectives()
+    {
+        if (completed || GetObjectives() == null) return;
+
+        foreach (TaskAttributes.Objective objective in GetObjectives())
+        {
+            Check(objective.id);
+        }
+
+        GetCompleted();
+    }
+
+    public void Check(int id)
+    {
+        if (completed || progress[id] == GetObjectives()[id].total) return;
+
+        TaskAttributes.Objective objective = GetObjective(id);
+        int change = 0;
+
+        switch (objective.objectiveType)
+        {
+            case TaskAttributes.ObjectiveType.ITEM:
+                List<Item> foundItems = GameController.Instance.GetInventory().FindItem(objective.data);
+                int quantity = 0;
+
+                if (foundItems != null && foundItems.Count > 0)
+                {
+                    foreach (Item item in foundItems) quantity += item.GetQuantity();
+                }
+
+                change = quantity;
+
+                break;
+            case TaskAttributes.ObjectiveType.BUILDING:
+                List<Building> foundBuildings = GameController.Instance.GetBuildings();
+                int count = 0;
+
+                if (foundBuildings != null && foundBuildings.Count > 0)
+                {
+                    foreach (Building building in foundBuildings) if (building.GetID() == objective.data) count++;
+                }
+
+                change = count;
+
+                break;
+            default:
+                change = GameController.Instance.GetStat(objective.data, 0);
+
+                break;
+        }
+
+        progress[id] = change;
     }
 }

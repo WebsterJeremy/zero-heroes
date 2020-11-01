@@ -17,6 +17,9 @@ public class UIController : MonoBehaviour
     [Header("UI")]
     [SerializeField] private HUD hud;
     [SerializeField] private GameObject hudBlur;
+    [SerializeField] private PopupElement popupElement;
+    [SerializeField] private PopupTaskElement popupTaskElement;
+    [SerializeField] private Dialog dialog;
 
     [Header("Menus")]
     [SerializeField] private MainMenu mainMenu;
@@ -25,11 +28,19 @@ public class UIController : MonoBehaviour
     [SerializeField] private InventoryMenu inventoryMenu;
     [SerializeField] private TasklogMenu tasklogMenu;
     [SerializeField] private BuildMenu buildMenu;
+    [SerializeField] private MapMenu mapMenu;
+    [SerializeField] private ProgressMenu progressMenu;
+    [SerializeField] private BuildingInspectMenu buildingInspectMenu;
 
     [Header("Blur")]
     [SerializeField] Color blurColor = new Color(0.7f, 0.7f, 0.7f, 1f);
     [SerializeField] float blurIntensity = 10f;
     [SerializeField] float blurDuration = 1.5f;
+
+    [Header("Stat Sprites")]
+    [SerializeField] private Sprite iconMoney;
+    [SerializeField] private Sprite iconPoints;
+    [SerializeField] private Sprite iconTime;
 
 
     #endregion
@@ -54,6 +65,9 @@ public class UIController : MonoBehaviour
         menus.Add(inventoryMenu);
         menus.Add(tasklogMenu);
         menus.Add(buildMenu);
+        menus.Add(mapMenu);
+        menus.Add(progressMenu);
+        menus.Add(buildingInspectMenu);
 
         CloseAllPanels();
 
@@ -91,6 +105,21 @@ public class UIController : MonoBehaviour
         return hud;
     }
 
+    public PopupElement GetPopup()
+    {
+        return popupElement;
+    }
+
+    public Dialog GetDialog()
+    {
+        return dialog;
+    }
+
+    public PopupTaskElement GetPopupTaskElement()
+    {
+        return popupTaskElement;
+    }
+
     public MainMenu GetMainMenu()
     {
         return mainMenu;
@@ -121,6 +150,22 @@ public class UIController : MonoBehaviour
         return buildMenu;
     }
 
+    public MapMenu GetMapMenu()
+    {
+        return mapMenu;
+    }
+
+    public ProgressMenu GetProgressMenu()
+    {
+        return progressMenu;
+    }
+
+    public BuildingInspectMenu GetBuildingInspectMenu()
+    {
+        return buildingInspectMenu;
+    }
+
+
     public MenuBase[] GetMenus()
     {
         return menus.ToArray();
@@ -134,6 +179,22 @@ public class UIController : MonoBehaviour
     public static void SetDebugStatistic(string statistic, int value) { SetDebugStatistic(statistic, value.ToString()); }
     public static void SetDebugStatistic(string statistic, Vector3 value) { SetDebugStatistic(statistic, value.ToString()); }
     public static void SetDebugStatistic(string statistic, Vector2 value) { SetDebugStatistic(statistic, value.ToString()); }
+
+    public Sprite GetMoneyIcon()
+    {
+        return iconMoney;
+    }
+
+    public Sprite GetPointsIcon()
+    {
+        return iconPoints;
+    }
+
+    public Sprite GetTimeIcon()
+    {
+        return iconTime;
+    }
+
 
     #endregion
     #region Core

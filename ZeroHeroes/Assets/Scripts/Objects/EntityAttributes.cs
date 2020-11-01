@@ -16,6 +16,7 @@ public class EntityAttributes : ScriptableObject
     [SerializeField] private string description = "None";
     [SerializeField] private Vector2 size = new Vector2(2, 2); // Pivot top left
     [SerializeField] private GameObject prefab;
+    [SerializeField] private bool tiled = false;
 
 
     #endregion
@@ -53,6 +54,11 @@ public class EntityAttributes : ScriptableObject
     public GameObject GetPrefab()
     {
         return prefab;
+    }
+
+    public bool GetTiled()
+    {
+        return tiled;
     }
 
     public Vector2 GetSize()

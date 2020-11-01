@@ -12,8 +12,9 @@ public class GameSaveData {
     //Add any data to be saved here (make sure its public and not static)
 
     public DateTime saveTime;
+    public float gameTime;
     public Dictionary<string, string> stats;
-    public Dictionary<string, Task> tasks;
+    public List<Chapter> chapters;
     public Dictionary<int, Item> inventory;
     public List<BuildingSave> buildings;
 
@@ -25,8 +26,9 @@ public class GameSaveData {
     public void QuickSave()
     {
         saveTime = DateTime.UtcNow;
+        gameTime = Time.time;
         stats = GameController.Instance.GetStats();
-        tasks = GameController.Instance.GetTasks();
+        chapters = GameController.Instance.GetChapters();
         inventory = GameController.Instance.GetInventory().GetItemsForSave();
         buildings = BuildingSave.ConvertToSave(GameController.Instance.GetBuildings());
     }
@@ -36,21 +38,25 @@ public class GameSaveData {
         if (stats == null) NewSave();
 
         GameController.Instance.SetSaveTime(saveTime);
+        GameController.Instance.SetGameTime(gameTime);
         GameController.Instance.SetStats(stats);
-        GameController.Instance.SetTasks(tasks);
+        GameController.Instance.SetChapters(chapters);
         GameController.Instance.GetInventory().SetItemsFromSave(inventory);
         GameController.Instance.LoadBuildings(buildings);
     }
 
     private void NewSave()
     {
+        saveTime = DateTime.UtcNow;
+        gameTime = Time.time;
         stats = new Dictionary<string, string>();
-        tasks = new Dictionary<string, Task>();
+        chapters = new List<Chapter>();
         inventory = new Dictionary<int, Item>();
         buildings = new List<BuildingSave>();
 
         stats.Add("money", "500");
         stats.Add("points", "15");
+        stats.Add("chapter", "1");
 
         buildings.Add(new BuildingSave("house_tier1", new Vector2(-2, 7)));
 
@@ -86,6 +92,8 @@ public class GameSaveData {
         buildings.Add(new BuildingSave("rock_1", new Vector2(14, 10)));
 
         saveTime = DateTime.UtcNow;
+
+        GameController.NEW_GAME = true;
     }
 }
 
@@ -101,8 +109,8 @@ public class BuildingSave : EntitySave
 {
     public int producedItems = 0;
     public float nextProduceTime = 0;
-    public bool restocked = true;
-    public float nextRestockTime = 0;
+    public int stockQuantity = 0;
+    public Type buildingType;
 
     public BuildingSave(string id, Vector2 position)
     {
@@ -119,14 +127,11 @@ public class BuildingSave : EntitySave
         {
             foreach (Building building in buildings)
             {
-                BuildingSave buildingSave = new BuildingSave(building.GetID(), building.transform.position);
+                if (building == null) continue;
 
-                buildingSave.producedItems = building.GetProducedItems();
-                buildingSave.nextProduceTime =  building.GetNextProduceTime() - Time.time;
-                buildingSave.restocked = building.GetRestocked();
-                buildingSave.nextRestockTime = building.GetNextRestockTime() - Time.time;
+                save.Add(building.GetSave());
 
-                save.Add(buildingSave);
+                if (building != null) GameObject.Destroy(building);
             }
         }
 

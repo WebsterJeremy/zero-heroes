@@ -79,6 +79,16 @@ public class Item
         return GetItemAttributes().GetSellPrice();
     }
 
+    public int GetBuyQuantity()
+    {
+        return GetItemAttributes().GetBuyQuantity();
+    }
+
+    public float GetEcoSellPrice()
+    {
+        return GetItemAttributes().GetEcoSellPrice();
+    }
+
     public float GetBuyPrice()
     {
         return GetItemAttributes().GetBuyPrice();
@@ -136,8 +146,16 @@ public class Item
     {
         if (Delete())
         {
-            GameController.Instance.GiveMoney((int)(GetSellPrice() * GetQuantity()));
-            SoundController.PlaySound("sell_buy_item");
+            if (GetEcoSellPrice() <= 0)
+            {
+                GameController.Instance.GiveMoney((int)(GetSellPrice() * GetQuantity()));
+                SoundController.PlaySound("sell_buy_item");
+            }
+            else
+            {
+                GameController.Instance.GivePoints((int)(GetEcoSellPrice() * GetQuantity()));
+                SoundController.PlaySound("sell_buy_eco");
+            }
         }
 
         return true;

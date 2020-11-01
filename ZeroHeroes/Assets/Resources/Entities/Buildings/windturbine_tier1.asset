@@ -18,14 +18,14 @@ MonoBehaviour:
   description: None
   size: {x: 2, y: 2}
   prefab: {fileID: 8162582637761495044, guid: 3e8a67fe11ac97645936fdba17788d0e, type: 3}
-  sellPrice: 760
-  buyPrice: 900
+  sellPrice: 580
+  buyPrice: 700
   buyEcoPrice: 8
-  produces: 0
-  produceTime: 0
-  produceQuantity: {x: 0, y: 0}
+  produces: 1
+  produceTime: 30
+  produceQuantity: {x: 1, y: 3}
   restockTime: 0
   restockPrice: 0
-  producedItem: 
+  producedItem: battery
   ecoFriendly: 0
   ecoFriendlyPoints: {x: 1, y: 3}

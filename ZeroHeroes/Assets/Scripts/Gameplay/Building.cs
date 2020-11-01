@@ -13,11 +13,9 @@ public class Building : Entity
     [System.NonSerialized] public static BuildingAttributes[] buildingAttributesList;
 
     [Header("Entity")]
-    [SerializeField] private int producedItems = 0;
-    [SerializeField] private float nextProduceTime = 999;
-    [SerializeField] private bool restocked = true;
-    [SerializeField] private float nextRestockTime = 999; // When Time.time is greater then ( lastRestockTime + GetRestockTime() ), then restock [GetRestockTime() is an attribute of the building]
-
+    [SerializeField] protected int producedItems = 0;
+    [SerializeField] protected float nextProduceTime = 999;
+    [SerializeField] protected int stockQuantity = 0;
 
     /*
     private float realTime; //placeholder so that timespan can be changed 
@@ -29,8 +27,8 @@ public class Building : Entity
     #region PrivateVariables
 
 
-    [System.NonSerialized] private BuildingAttributes buildingAttributes;
-    [System.NonSerialized] private Notify notify;
+    [System.NonSerialized] protected BuildingAttributes buildingAttributes;
+    [System.NonSerialized] protected Notify notify;
 
 
     #endregion
@@ -40,8 +38,9 @@ public class Building : Entity
     {
         base.Start();
 
-        nextProduceTime = Time.time + GetProduceTime();
-        nextRestockTime = Time.time + GetRestockTime();
+        SetNextProduceTime(GetProduceTime());
+
+        Building.AddColliders(transform.position, GetSize());
     }
 
     public static void LoadBuildingAttributes()
@@ -71,9 +70,19 @@ public class Building : Entity
         return buildingAttributes;
     }
 
-    public bool GetProduces()
+    public float GetSellPrice()
     {
-        return GetBuildingAttributes().GetProduces();
+        return GetBuildingAttributes().GetSellPrice();
+    }
+
+    public float GetBuyPrice()
+    {
+        return GetBuildingAttributes().GetBuyPrice();
+    }
+
+    public float GetBuyEcoPrice()
+    {
+        return GetBuildingAttributes().GetBuyEcoPrice();
     }
 
     public float GetProduceTime()
@@ -81,22 +90,22 @@ public class Building : Entity
         return GetBuildingAttributes().GetProduceTime();
     }
 
+    public virtual bool GetProduces()
+    {
+        return GetBuildingAttributes().GetProduces();
+    }
+
     public Vector2 GetProduceQuantity()
     {
         return GetBuildingAttributes().GetProduceQuantity();
     }
 
-    public float GetRestockTime()
+    public virtual string GetStockedItem()
     {
-        return GetBuildingAttributes().GetRestockTime();
+        return GetBuildingAttributes().GetStockedItem();
     }
 
-    public float GetRestockPrice()
-    {
-        return GetBuildingAttributes().GetRestockPrice();
-    }
-
-    public string GetProducedItem()
+    public virtual string GetProducedItem()
     {
         return GetBuildingAttributes().GetProducedItem();
     }
@@ -111,7 +120,6 @@ public class Building : Entity
         return GetBuildingAttributes().GetEcoFriendlyPoints();
     }
 
-
     public int GetProducedItems()
     {
         return producedItems;
@@ -119,7 +127,12 @@ public class Building : Entity
 
     public void SetProducedItems(int producedItems)
     {
-        this.producedItems = producedItems;
+        if (!GetProduces() || GetProducedItem() == null) return;
+
+        ItemAttributes attr = Item.FindItemAttributes(GetProducedItem());
+        if (attr == null) return;
+
+        this.producedItems = Mathf.Clamp(producedItems,0,attr.GetMaxQuantity());
 
         if (producedItems > 0)
         {
@@ -128,11 +141,7 @@ public class Building : Entity
                 Sprite icon = GetIcon();
                 if (GetProducedItem() != null && !GetProducedItem().Equals(string.Empty))
                 {
-                    ItemAttributes attr = Item.FindItemAttributes(GetProducedItem());
-                    if (attr != null)
-                    {
-                        icon = attr.GetIcon();
-                    }
+                    icon = attr.GetIcon();
                 }
 
                 notify = UIController.Instance.GetHUD().CreateNotify(GetTitle(), this.producedItems, icon, transform, new Vector3(GetSize().x / 2, GetSize().y, 0));
@@ -157,28 +166,19 @@ public class Building : Entity
 
     public void SetNextProduceTime(float nextProduceTime)
     {
-        this.nextProduceTime = nextProduceTime;
+        this.nextProduceTime = Time.time + Mathf.Clamp(nextProduceTime, 0, GetProduceTime());
     }
 
-    public bool GetRestocked()
+    public int GetStockQuantity()
     {
-        return restocked;
+        return stockQuantity;
     }
 
-    public void SetRestocked(bool restocked)
+    public void SetStockQuantity(int stock)
     {
-        this.restocked = restocked;
+        stockQuantity = stock;
     }
 
-    public float GetNextRestockTime()
-    {
-        return nextRestockTime;
-    }
-
-    public void SetNextRestockTime(float nextRestockTime)
-    {
-        this.nextRestockTime = nextRestockTime;
-    }
 
     #endregion
     #region Core
@@ -187,52 +187,88 @@ public class Building : Entity
     {
         ent.SetProducedItems(ent.GetProducedItems());
         ent.SetNextProduceTime(ent.GetNextProduceTime());
-        ent.SetRestocked(ent.GetRestocked());
-        ent.SetNextRestockTime(ent.GetNextRestockTime());
+        ent.SetStockQuantity(ent.GetStockQuantity());
     }
 
     private void OnMouseDown()
     {
-        if (EventSystem.current.currentSelectedGameObject != null) return;
+        if (EventSystem.current.currentSelectedGameObject != null || !CameraFollower.PANNING_ENABLED || !GameController.PLAYING() || !CameraFollower.ENABLED || UIController.Instance.GetBuildMenu().GetMarkerActive()) return;
 
         if (GetProduces())
         {
             if (producedItems < 1 || GetProducedItem() == null || GetProducedItem().Equals(string.Empty))
             {
-                Debug.Log("No produced items opening menu for " + GetTitle() +" : Next produce in "+ (nextProduceTime - Time.time) + " seconds");
+                OpenMenu();
             }
             else
             {
-                GameController.Instance.GetInventory().GiveItem(GetProducedItem(), producedItems, -1); // Slot of -1, means it will find a new empty slot in the inventory instead
-                SoundController.PlaySound("inventory_pickup");
-
-                if (GetEcoFriendly())
-                {
-                    GameController.Instance.SetPoints(GameController.Instance.GetPoints() + Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
-                }
-
-                // How many seconds have pasted / GetProduceTime()
-
-                Debug.Log("Giving player stocked items!");
-                SetProducedItems(0);
+                Collect();
             }
         }
         else
         {
-            Debug.Log("Opening menu!");
+            OpenMenu();
         }
     }
 
-    private void Update()
+    protected virtual void Collect()
+    {
+        GameController.Instance.GetInventory().GiveItem(GetProducedItem(), producedItems, -1); // Slot of -1, means it will find a new empty slot in the inventory instead
+        SoundController.PlaySound("inventory_pickup");
+
+        if (GetEcoFriendly())
+        {
+            GameController.Instance.SetPoints(GameController.Instance.GetPoints() + Random.Range((int)GetEcoFriendlyPoints().x, (int)GetEcoFriendlyPoints().y));
+        }
+
+        SetProducedItems(0);
+    }
+
+    protected virtual void Update()
     {
         if (GetProduces() && nextProduceTime < Time.time) Produce();
     }
 
-    private void Produce()
+    protected virtual void Produce()
     {
         SetProducedItems(GetProducedItems() + (int)Random.Range(GetProduceQuantity().x, GetProduceQuantity().y));
 
-        nextProduceTime = Time.time + GetProduceTime();
+        SetNextProduceTime(GetProduceTime() * (GetStockQuantity() > 0 ? 0.75f : 1f));
+
+        if (GetStockQuantity() > 0)
+        {
+            SetStockQuantity(GetStockQuantity() - 1);
+            UIController.Instance.GetBuildingInspectMenu().UpdateDisplay();
+        }
+    }
+
+    protected virtual void OpenMenu()
+    {
+        switch (GetID())
+        {
+            case "tree_1":
+                UIController.Instance.GetPopup().Setup("Cut down tree", 
+                    "Are you sure you want to cut down this tree, as deforestation contributes 4.8 billion tonnes of carbon dioxide per year.",
+                    UIController.Instance.GetPointsIcon(), "Takes 5 eco-points", () => {
+                        GameController.Instance.GivePoints(-5);
+                        SoundController.PlaySound("sell_buy_item");
+                        GameController.Instance.RemoveBuilding(this);
+                    }, () => { }, () => { UIController.Instance.GetPopup().check = (GameController.Instance.GetPoints() >= 5); });
+                break;
+            case "rock_1":
+                UIController.Instance.GetPopup().Setup("Smash boulder",
+                    "Are you sure you want to smash this boulder, as it could be home to local widelife and plantlife.",
+                    UIController.Instance.GetPointsIcon(), "Takes 12 eco-points", () => {
+                        GameController.Instance.GivePoints(-12);
+                        SoundController.PlaySound("sell_buy_item");
+                        GameController.Instance.RemoveBuilding(this);
+                    }, () => { }, () => { UIController.Instance.GetPopup().check = (GameController.Instance.GetPoints() >= 12); });
+                break;
+            default:
+                UIController.Instance.GetBuildingInspectMenu().InspectBuilding(this);
+
+                break;
+        }
     }
 
     public void CalculateIdledProduces(int elapsedTime, float produceIn)
@@ -244,14 +280,31 @@ public class Building : Entity
         int timesProduced = (int)(producedTime / offlineProductionTime);
         float nextTime = producedTime - (timesProduced * offlineProductionTime);
 
-        Debug.Log("Time elapsed: "+ elapsedTime +" Base Produce In: "+ produceIn +", Produce time: "+ producedTime +", Produced "+ timesProduced + " Times, New next time: "+ nextTime);
-
         if (timesProduced > 0)
         {
             for (int i = 0; i < timesProduced; i++) Produce();
         }
 
-        nextProduceTime = Time.time + nextTime;
+        SetNextProduceTime(nextTime);
+    }
+
+    public virtual BuildingSave GetSave()
+    {
+        BuildingSave buildingSave = new BuildingSave(GetID(), transform.position);
+
+        buildingSave.producedItems = GetProducedItems();
+        buildingSave.nextProduceTime = GetNextProduceTime() - Time.time;
+        buildingSave.stockQuantity = stockQuantity;
+        buildingSave.buildingType = GetType();
+
+        return buildingSave;
+    }
+
+    public virtual void GetLoad(BuildingSave save)
+    {
+        SetProducedItems(save.producedItems);
+        SetStockQuantity(save.stockQuantity);
+        CalculateIdledProduces(GameController.Instance.GetTimeSinceSave(), save.nextProduceTime);
     }
 
     public void OnDestroy()
@@ -259,11 +312,12 @@ public class Building : Entity
         Building.RemoveColliders(transform.position, GetSize());
     }
 
+
     #endregion
     #region Static Helpers
 
-    public static Vector2 MAP_BOUNDS_MIN = new Vector2(-18,-18);
-    public static Vector2 MAP_BOUNDS_MAX = new Vector2(20,20);
+    public static Vector2 MAP_BOUNDS_MIN = new Vector2(-19,-19);
+    public static Vector2 MAP_BOUNDS_MAX = new Vector2(21,21);
     public static bool[,] colliders = new bool[50,50];
 
     public static void AddColliders(Vector2 position, Vector2 size) { AddColliders(new Vector2Int((int)position.x, (int)position.y), new Vector2Int((int)size.x, (int)size.y)); }
@@ -293,13 +347,13 @@ public class Building : Entity
     public static bool IsBlocked(Vector2 position, Vector2 size) { return IsBlocked(new Vector2Int((int)position.x, (int)position.y), new Vector2Int((int)size.x, (int)size.y)); }
     public static bool IsBlocked(Vector2Int position, Vector2Int size)
     {
-        if (position.x < MAP_BOUNDS_MIN.x || position.x > MAP_BOUNDS_MAX.x) return true;
-        if (position.y < MAP_BOUNDS_MIN.y || position.y > MAP_BOUNDS_MAX.y) return true;
+        if (position.x < MAP_BOUNDS_MIN.x || position.x + size.x - 1 > MAP_BOUNDS_MAX.x) return true;
+        if (position.y < MAP_BOUNDS_MIN.y || position.y + size.y - 1 > MAP_BOUNDS_MAX.y) return true;
 
 
         if (size.x == 1 && size.y == 1)
         {
-            return colliders[20 + position.x, 20 + position.y];
+            return colliders[20 + position.x - 1, 20 + position.y - 1];
         }
         else
         {
@@ -307,7 +361,7 @@ public class Building : Entity
             {
                 for (int y = 0; y < size.y; y++)
                 {
-                    if (colliders[20 + position.x + x, 20 + position.y + y]) return true;
+                    if (colliders[20 + position.x + x - 1, 20 + position.y + y - 1]) return true;
                 }
             }
         }

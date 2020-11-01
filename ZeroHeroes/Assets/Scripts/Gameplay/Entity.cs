@@ -84,6 +84,11 @@ public class Entity : MonoBehaviour
         return GetEntityAttributes().GetPrefab();
     }
 
+    public bool GetTiled()
+    {
+        return GetEntityAttributes().GetTiled();
+    }
+
     public string GetID()
     {
         return GetEntityAttributes().GetID();

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8565c8e70cd8ba2409c86cdc8c86678a, type: 3}
+  m_Name: task_8
+  m_EditorClassIdentifier: 
+  title: Scrap Disposal
+  npc: {fileID: 11400000, guid: 199ecdd1246284445b78913c48b2b706, type: 2}
+  description: Chickens feed is a great way to use food scraps, instead of sending
+    it to landfill. Could you build a chicken coop for me?   Growing your own food
+    is healthy and good for the environment. Thats why i want some   chicken coops!
+  objectives:
+  - title: Build 5 chicken coops
+    id: 0
+    data: chicken_coop
+    objectiveType: 1
+    total: 5
+  - title: Collect 50 eggs
+    id: 1
+    data: eggs
+    objectiveType: 0
+    total: 50
+  rewards:
+  - rewardType: 0
+    quantity: 20
+    data: wheat
+  - rewardType: 1
+    quantity: 100
+    data: 

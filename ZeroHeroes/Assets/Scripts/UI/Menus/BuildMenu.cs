@@ -44,6 +44,10 @@ public class BuildMenu : MenuBase
         Populate();
     }
 
+    public bool GetMarkerActive()
+    {
+        return (marker.gameObject.activeSelf);
+    }
 
     #endregion
     #region Core
@@ -172,6 +176,8 @@ public class BuildMenu : MenuBase
             SoundController.PlaySound("building_place");
 
             GameController.Instance.SpawnBuilding(selectedBuilding, new Vector3(marker.transform.position.x - 1f, marker.transform.position.y - 1f, 0));
+
+            GameController.Instance.CheckObjectivies(TaskAttributes.ObjectiveType.BUILDING);
 
             Cancel();
         }

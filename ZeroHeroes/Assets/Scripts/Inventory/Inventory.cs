@@ -216,7 +216,7 @@ public class Inventory : MonoBehaviour
 
                 if (items[slot].GetQuantity() <= 0)
                 {
-                    items[slot] = null;
+                    items.Remove(slot);
                 }
 
                 UIController.Instance.GetInventoryMenu().UpdateDisplay();
@@ -238,7 +238,20 @@ public class Inventory : MonoBehaviour
 
     public bool TakeItem(string id, int quantity)
     {
-        
+        List<Item> findItems = FindItem(id);
+
+        if (findItems.Count > 0)
+        {
+            foreach (Item item in findItems)
+            {
+                if (item.GetQuantity() >= quantity)
+                {
+                    if (TakeItem(item.GetSlot(), quantity) == 0) {
+                        return true;
+                    }
+                }
+            }
+        }
 
         return false;
     }

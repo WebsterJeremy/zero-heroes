@@ -11,7 +11,7 @@ public class EffectController : MonoBehaviour
     #region AccessVariables
 
 
-    [SerializeField] private Image fadeImage;
+    [SerializeField] public Image fadeImage;
     [Serializable]
     public class Effect
     {
@@ -266,14 +266,11 @@ public class EffectController : MonoBehaviour
         float animTime = 0f;
         Image fadeImage = Instance.fadeImage;
 
-        if (!fadeImage.gameObject.activeSelf)
-        {
-            fadeImage.gameObject.SetActive(true);
-        }
+        if (!fadeImage.gameObject.activeSelf) fadeImage.gameObject.SetActive(true);
 
         fadeImage.color = new Color(1, 1, 1, startValue);
 
-        while (animTime < duration)
+        while (fadeImage.color.a != endValue)
         {
             fadeImage.color = new Color(1, 1, 1, Mathf.Lerp(fadeImage.color.a, endValue, animTime / duration));
 
@@ -281,10 +278,7 @@ public class EffectController : MonoBehaviour
             animTime += (timescaled ? Time.deltaTime : Time.unscaledDeltaTime);
         }
 
-        if (endValue < 0.1f)
-        {
-            fadeImage.gameObject.SetActive(false);
-        }
+        fadeImage.color = new Color(1, 1, 1, endValue);
 
         callback();
     }

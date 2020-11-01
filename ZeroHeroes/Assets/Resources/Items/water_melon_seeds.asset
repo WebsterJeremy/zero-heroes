@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Water Melon Seeds
   icon: {fileID: -3394515542192926635, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 4
+  ecoSellPrice: 0
+  buyPrice: 35
+  buyQuantity: 5
   description: 'Most commonly red with green skin, watery and sweet solid content.
 
 '

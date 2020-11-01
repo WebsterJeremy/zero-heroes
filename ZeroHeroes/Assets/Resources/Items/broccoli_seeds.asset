@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Broccoli Seeds
   icon: {fileID: 6083045433768953848, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
-  sellPrice: 10
-  buyPrice: 10
+  sellPrice: 4
+  ecoSellPrice: 0
+  buyPrice: 45
+  buyQuantity: 5
   description: Most commonly leafy green, used in several cuisines. Typically used
     as a steamed vegetable in cooking.
   maxQuantity: 50

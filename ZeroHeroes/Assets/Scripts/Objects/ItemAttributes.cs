@@ -12,7 +12,9 @@ public class ItemAttributes : ScriptableObject
     [SerializeField] private string title = "New Item";
     [SerializeField] private Sprite icon;
     [SerializeField] private float sellPrice = 10;
+    [SerializeField] private float ecoSellPrice = 0;
     [SerializeField] private float buyPrice = 10;
+    [SerializeField] private int buyQuantity = 1;
     [TextArea(20, 20)]
     [SerializeField] private string description = "None";
     [SerializeField] private int maxQuantity = 50;
@@ -48,6 +50,16 @@ public class ItemAttributes : ScriptableObject
     public float GetSellPrice()
     {
         return sellPrice;
+    }
+
+    public int GetBuyQuantity()
+    {
+        return buyQuantity;
+    }
+
+    public float GetEcoSellPrice()
+    {
+        return ecoSellPrice;
     }
 
     public float GetBuyPrice()

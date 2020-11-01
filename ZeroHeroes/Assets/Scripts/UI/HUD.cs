@@ -73,25 +73,25 @@ public class HUD : MonoBehaviour
         {
             SoundController.PlaySound("button");
 
-//            UIController.Instance.GetBuildMenu().Open();
+            UIController.Instance.GetMapMenu().Open();
         });
         buttonInventory.onClick.AddListener(() =>
         {
             SoundController.PlaySound("button");
 
-            UIController.Instance.GetInventoryMenu().Open();
+            UIController.Instance.GetInventoryMenu().Open(0);
         });
         buttonShop.onClick.AddListener(() =>
         {
             SoundController.PlaySound("button");
 
-//            UIController.Instance.GetBuildMenu().Open();
+            UIController.Instance.GetInventoryMenu().Open(1);
         });
         buttonProgress.onClick.AddListener(() =>
         {
             SoundController.PlaySound("button");
 
-//            UIController.Instance.GetBuildMenu().Open();
+            UIController.Instance.GetProgressMenu().Open();
         });
     }
 

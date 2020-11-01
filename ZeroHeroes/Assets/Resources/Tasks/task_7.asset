@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8565c8e70cd8ba2409c86cdc8c86678a, type: 3}
+  m_Name: task_7
+  m_EditorClassIdentifier: 
+  title: Going Solar
+  npc: {fileID: 11400000, guid: 199ecdd1246284445b78913c48b2b706, type: 2}
+  description: I want to increase production of my locally made goods here in an
+    environmentally conscious way, can you help me?
+  objectives:
+  - title: Build 10 solar panels
+    id: 0
+    data: solar_panel
+    objectiveType: 1
+    total: 10
+  - title: Collect 20 batteries
+    id: 1
+    data: battery
+    objectiveType: 0
+    total: 20
+  rewards:
+  - rewardType: 1
+    quantity: 500
+    data: 

@@ -15,8 +15,7 @@ public class BuildingAttributes : EntityAttributes
     [SerializeField] private bool produces = false; // Does this item produce items
     [SerializeField] private float produceTime = 120; // How often does it produce items [In Seconds]
     [SerializeField] private Vector2 produceQuantity = new Vector2(20,30); // How many items does it produce each time [Random between Min,Max]
-    [SerializeField] private float restockTime = 300; // How often does the player need to restock [In Minutes]
-    [SerializeField] private float restockPrice = 300; // How much does it cost to restock [In Money]
+    [SerializeField] private string stockedItem; // What item stocks it?
     [SerializeField] private string producedItem; // Which item does it produce?
     [SerializeField] private bool ecoFriendly = false;
     [SerializeField] private Vector2 ecoFriendlyPoints = new Vector2(1, 3);
@@ -68,14 +67,9 @@ public class BuildingAttributes : EntityAttributes
         return produceQuantity;
     }
 
-    public float GetRestockTime()
+    public string GetStockedItem()
     {
-        return restockTime;
-    }
-
-    public float GetRestockPrice()
-    {
-        return restockPrice;
+        return stockedItem;
     }
 
     public string GetProducedItem()

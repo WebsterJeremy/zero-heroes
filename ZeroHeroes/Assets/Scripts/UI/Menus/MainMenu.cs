@@ -74,13 +74,22 @@ public class MainMenu : MenuBase
             SoundController.PlaySound("button");
 
 #if UNITY_EDITOR
-            Debug.Log("Quitting Game");
-
             EditorApplication.ExecuteMenuItem("Edit/Play");
 #else
             Application.Quit();
 #endif
         });
+        buttonHelp.onClick.AddListener(() =>
+        {
+            SoundController.PlaySound("button");
+
+            UIController.Instance.GetPopup().Setup("Reset Save",
+        "Are you sure you want to reset your save?",
+        UIController.Instance.GetPointsIcon(), "Permanent", () => {
+            SaveLoadManager.resetData();
+        }, () => { }, () => { UIController.Instance.GetPopup().check = true; });
+        });
+
     }
     
     protected override IEnumerator _Open()

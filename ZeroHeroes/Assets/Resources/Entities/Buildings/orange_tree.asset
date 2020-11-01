@@ -18,14 +18,14 @@ MonoBehaviour:
   description: None
   size: {x: 3, y: 4}
   prefab: {fileID: 8162582637761495044, guid: a61c72cf0ec4c13459bad36ba5054333, type: 3}
-  sellPrice: 140
-  buyPrice: 270
+  tiled: 0
+  sellPrice: 40
+  buyPrice: 160
   buyEcoPrice: 1
   produces: 1
-  produceTime: 120
+  produceTime: 30
   produceQuantity: {x: 1, y: 4}
-  restockTime: 0
-  restockPrice: 0
+  stockedItem: water_bucket
   producedItem: orange
-  ecoFriendly: 1
+  ecoFriendly: 0
   ecoFriendlyPoints: {x: 1, y: 3}

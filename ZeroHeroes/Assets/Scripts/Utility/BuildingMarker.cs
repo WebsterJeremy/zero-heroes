@@ -19,19 +19,23 @@ public class BuildingMarker : MonoBehaviour
     private float overUI = 0;
     private string building_id;
 
+    private GameObject tiledIcon;
+
     private List<GameObject> tiles;
 
     public void Setup(BuildingAttributes buildingAttributes)
     {
-        icon.sprite = buildingAttributes.GetIcon();
+        icon.sprite = !buildingAttributes.GetTiled() ? buildingAttributes.GetIcon() : null;
         building_id = buildingAttributes.GetID();
         size = buildingAttributes.GetSize();
+
+        if (tiledIcon != null) Destroy(tiledIcon);
 
         float max = size.x > size.y ? size.y : size.x;
         outline.transform.localScale = new Vector3(max, max, 1);
         outline.transform.localPosition = new Vector3(size.x * 0.5f - 1f, size.y * 0.5f - 1f, 0);
 
-        markerHUD.SetFollowOffset(new Vector3(size.x * 0.5f - 1f, size.y * 0.5f + (size.y / 2), 0));
+        markerHUD.SetFollowOffset(new Vector3(size.x * 0.5f - 1f, size.y * 0.5f + (size.y / 2) + 2f, 0));
 
         for (int i = 0; i < tileContainer.childCount; i++) Destroy(tileContainer.GetChild(i).gameObject);
 
@@ -43,6 +47,17 @@ public class BuildingMarker : MonoBehaviour
                 tile.transform.SetParent(tileContainer);
                 tile.transform.localPosition = new Vector3(x - 1,y - 1,0);
             }
+        }
+
+        if (buildingAttributes.GetTiled())
+        {
+            tiledIcon = Instantiate(buildingAttributes.GetPrefab());
+            tiledIcon.transform.SetParent(icon.transform);
+            tiledIcon.GetComponent<Entity>().enabled = false;
+            tiledIcon.GetComponent<BoxCollider2D>().enabled = false;
+            tiledIcon.transform.localPosition = new Vector3(0, 0, 0);
+
+            // Position
         }
     }
 
@@ -63,15 +78,6 @@ public class BuildingMarker : MonoBehaviour
     {
         isDragging = false;
         CameraFollower.PANNING_ENABLED = true;
-
-        if (Building.IsBlocked(new Vector2(transform.position.x, transform.position.y), size))
-        {
-            outline.color = new Color32(255, 0, 0, 40);
-        }
-        else
-        {
-            outline.color = new Color32(0, 0, 0, 20);
-        }
     }
 
     private void Update()
@@ -94,5 +100,14 @@ public class BuildingMarker : MonoBehaviour
         float snappedY = (float)Math.Round(transform.position.y, MidpointRounding.AwayFromZero);
 
         transform.position = new Vector3(snappedX, snappedY, 0);
+
+        if (Building.IsBlocked(new Vector2(transform.position.x, transform.position.y), size))
+        {
+            outline.color = new Color32(255, 0, 0, 40);
+        }
+        else
+        {
+            outline.color = new Color32(0, 0, 0, 20);
+        }
     }
 }

@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: Lettuce Seeds
   icon: {fileID: -8677660808077169785, guid: aa20a722e1aabf544b7ea04e43578ad5, type: 3}
-  sellPrice: 10
+  sellPrice: 4
+  ecoSellPrice: 0
   buyPrice: 10
+  buyQuantity: 5
   description: Most commonly leafy green. Typically used as the foundation for creating
     salads in food preparation.
   maxQuantity: 50

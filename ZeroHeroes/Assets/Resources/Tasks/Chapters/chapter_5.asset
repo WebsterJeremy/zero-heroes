@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 269aea41d965072479728ccd4a63c02b, type: 3}
+  m_Name: chapter_5
+  m_EditorClassIdentifier: 
+  title: Zero Emissions
+  graphics: {fileID: 21300000, guid: 0ceac9467004e804cac0be5b7e27a53d, type: 3}
+  number: 5
+  tasks:
+  - {fileID: 11400000, guid: f8c2c690753e39744ace35cc2b8ae047, type: 2}
+  - {fileID: 11400000, guid: f2050b028ffb30c4aa76d3659c15e028, type: 2}
+  - {fileID: 11400000, guid: cdff1579ae4e4054b82c25871a757b01, type: 2}
+  - {fileID: 11400000, guid: 836af3ea94f0a3348b0f586fc097cdf6, type: 2}
+  - {fileID: 11400000, guid: 3a7b68ba46b12f2488685f2063f40b48, type: 2}
+  description: 
